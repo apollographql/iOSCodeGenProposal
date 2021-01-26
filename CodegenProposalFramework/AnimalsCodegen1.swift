@@ -1,14 +1,20 @@
 import Foundation
 // query {
 //   allAnimals {
+//     height {
+//       feet
+//       inches
+//     }
 //     species
 //     ... on Pet {
 //       ...PetDetails
-//       ... on WarmBlooded {
-//         ...WarmBloodedDetails
-//       }
+//       ...WarmBloodedDetails
 //     }
 //     ...WarmBloodedDetails
+//     predators {
+//       species
+//       ...WarmBloodedDetails
+//     }
 //   }
 // }
 //
@@ -46,13 +52,42 @@ public extension HasParent where Parent: WarmBloodedDetails {
 public struct AllAnimals {
   var __typename: String
   var species: String
+  var height: Height
 
   var asPet: AsPet?
   var asWarmBlooded: AsWarmBlooded?
 
-  init(__typename: String, species: String) {
+  init(__typename: String, species: String, height: Height) {
     self.__typename = __typename
     self.species = species
+    self.height = height
+  }
+
+  /// `AllAnimals.Height`
+  struct Height {
+    let __typename: String = "Height" // TODO: Can we do this?
+    var feet: Int
+    var inches: Int
+  }
+
+  /// `AllAnimals.Predators`
+  struct Predators {
+    var __typename: String // Animal
+    var species: String
+
+    var asWarmBlooded: AsWarmBlooded?
+
+    /// `AllAnimals.Predators.AsWarmBlooded`
+    @dynamicMemberLookup
+    struct AsWarmBlooded: WarmBloodedDetails, HasParent {
+      var bodyTemperature: Int
+
+      internal let parent: Reference<AllAnimals.Predators>
+
+      subscript<T>(dynamicMember keyPath: KeyPath<Self.Parent, T>) -> T {
+        parent.value[keyPath: keyPath]
+      }
+    }
   }
 
   /// `AllAnimals.AsPet`
