@@ -53,6 +53,7 @@ public struct AllAnimals {
   var __typename: String
   var species: String
   var height: Height
+  var predators: [Predators] = [] // TODO
 
   var asPet: AsPet?
   var asWarmBlooded: AsWarmBlooded?
@@ -89,7 +90,7 @@ public struct AllAnimals {
       }
     }
   }
-
+  
   /// `AllAnimals.AsPet`
   @dynamicMemberLookup
   struct AsPet: PetDetails, HasParent { // AllAnimals.AsPet
@@ -128,6 +129,7 @@ public struct AllAnimals {
       parent.value[keyPath: keyPath]
     }
   }
+
 }
 
 // MARK: - Extensions for creating mock objects
