@@ -15,6 +15,12 @@
 		DE60EE3125BF973B00E80299 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE0625BF973A00E80299 /* ContentView.swift */; };
 		DE60EE3225BF973B00E80299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE60EE0725BF973B00E80299 /* Assets.xcassets */; };
 		DE60EE3325BF973B00E80299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE60EE0725BF973B00E80299 /* Assets.xcassets */; };
+		DE60EE4725BF976F00E80299 /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE4625BF976F00E80299 /* Reference.swift */; };
+		DE60EE4825BF976F00E80299 /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE4625BF976F00E80299 /* Reference.swift */; };
+		DE60EE4E25BF977700E80299 /* HasParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE4D25BF977700E80299 /* HasParent.swift */; };
+		DE60EE4F25BF977700E80299 /* HasParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE4D25BF977700E80299 /* HasParent.swift */; };
+		DE60EE5525BF977B00E80299 /* AnimalsCodegen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE5425BF977B00E80299 /* AnimalsCodegen.swift */; };
+		DE60EE5625BF977B00E80299 /* AnimalsCodegen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE5425BF977B00E80299 /* AnimalsCodegen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +55,9 @@
 		DE60EE2725BF973B00E80299 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE60EE2B25BF973B00E80299 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		DE60EE2D25BF973B00E80299 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DE60EE4625BF976F00E80299 /* Reference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reference.swift; sourceTree = "<group>"; };
+		DE60EE4D25BF977700E80299 /* HasParent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HasParent.swift; sourceTree = "<group>"; };
+		DE60EE5425BF977B00E80299 /* AnimalsCodegen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimalsCodegen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +107,9 @@
 		DE60EE0425BF973A00E80299 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				DE60EE5425BF977B00E80299 /* AnimalsCodegen.swift */,
+				DE60EE4625BF976F00E80299 /* Reference.swift */,
+				DE60EE4D25BF977700E80299 /* HasParent.swift */,
 				DE60EE0525BF973A00E80299 /* CodegenProposalApp.swift */,
 				DE60EE0625BF973A00E80299 /* ContentView.swift */,
 				DE60EE0725BF973B00E80299 /* Assets.xcassets */,
@@ -308,6 +320,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE60EE4E25BF977700E80299 /* HasParent.swift in Sources */,
+				DE60EE4725BF976F00E80299 /* Reference.swift in Sources */,
+				DE60EE5525BF977B00E80299 /* AnimalsCodegen.swift in Sources */,
 				DE60EE3025BF973B00E80299 /* ContentView.swift in Sources */,
 				DE60EE2E25BF973B00E80299 /* CodegenProposalApp.swift in Sources */,
 			);
@@ -317,6 +332,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE60EE4F25BF977700E80299 /* HasParent.swift in Sources */,
+				DE60EE4825BF976F00E80299 /* Reference.swift in Sources */,
+				DE60EE5625BF977B00E80299 /* AnimalsCodegen.swift in Sources */,
 				DE60EE3125BF973B00E80299 /* ContentView.swift in Sources */,
 				DE60EE2F25BF973B00E80299 /* CodegenProposalApp.swift in Sources */,
 			);
