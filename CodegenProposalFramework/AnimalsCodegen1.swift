@@ -1,25 +1,25 @@
 import Foundation
-//query {
-//  allAnimals {
-//    species
-//    ... on Pet {
-//      ...PetDetails
-//      ... on WarmBlooded {
-//        ...WarmBloodedDetails
-//      }
-//    }
-//    ...WarmBloodedDetails
-//  }
-//}
+// query {
+//   allAnimals {
+//     species
+//     ... on Pet {
+//       ...PetDetails
+//       ... on WarmBlooded {
+//         ...WarmBloodedDetails
+//       }
+//     }
+//     ...WarmBloodedDetails
+//   }
+// }
 //
-//fragment PetDetails on Pet {
-// humanName
-// favoriteToy
-//}
+// fragment PetDetails on Pet {
+//  humanName
+//  favoriteToy
+// }
 //
-//fragment WarmBloodedDetails on WarmBlooded {
-//  bodyTemperature
-//}
+// fragment WarmBloodedDetails on WarmBlooded {
+//   bodyTemperature
+// }
 
 // MARK: Fragments
 
