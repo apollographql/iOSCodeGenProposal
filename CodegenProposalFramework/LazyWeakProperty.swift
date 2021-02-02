@@ -32,7 +32,7 @@ import Foundation
 
 }
 
-@propertyWrapper struct AsInterface<T: TypeCase> {
+@propertyWrapper struct AsType<T: TypeCase> {
   let subType: SubType<T>?
 
   static var `nil`: Self {
