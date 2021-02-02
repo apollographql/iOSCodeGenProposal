@@ -7,7 +7,7 @@
 
 import Foundation
 
-@propertyWrapper final class SubType<T: TypeCase> {
+final class SubType<T: TypeCase> {
   private weak var value: T?
 
   private unowned let parent: T.Parent
@@ -18,7 +18,13 @@ import Foundation
     self.props = props
   }
 
-  var wrappedValue: T? {
+  init(wrappedValue: T) {
+    self.value = wrappedValue
+    self.parent = wrappedValue.parent
+    self.props = wrappedValue.props
+  }
+
+  var wrappedValue: T {
     get {
       if let value = value {
         return value
@@ -29,7 +35,6 @@ import Foundation
       return value
     }
   }
-
 }
 
 @propertyWrapper struct AsType<T: TypeCase> {
@@ -50,5 +55,28 @@ import Foundation
   var wrappedValue: T? {
     guard let subType = subType else { return nil }
     return subType.wrappedValue
+  }
+}
+
+@propertyWrapper struct FragmentSpread<T: FragmentTypeCase> {
+  let subType: SubType<T>
+  let props: T.Props
+
+  init(parent: T.Parent, props: T.Props) {
+    self.subType = SubType(parent: parent, props: props)
+    self.props = props
+  }
+
+  init(wrappedValue: T!) {
+    self.subType = SubType(parent: wrappedValue.parent, props: wrappedValue.props)
+    self.props = wrappedValue.props
+  }
+
+  var wrappedValue: T! {
+    return subType.wrappedValue
+  }
+
+  var projectedValue: T.Props {
+    return props
   }
 }

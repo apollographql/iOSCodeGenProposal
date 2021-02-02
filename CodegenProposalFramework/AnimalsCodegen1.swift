@@ -5,6 +5,7 @@ import Foundation
 //       feet
 //       inches
 //     }
+//     ... HeightInMeters
 //     species
 //     ... on Pet {
 //       ...PetDetails
@@ -32,6 +33,12 @@ import Foundation
 //     meters
 //   }
 // }
+//
+// fragment HeightInMeters on Animal {
+//   height {
+//     meters
+//   }
+// }
 
 // MARK: Protocols
 
@@ -45,6 +52,8 @@ protocol TypeCase: ResponseData {
   associatedtype Parent: ResponseData
 
   init(parent: Parent, props: Props)
+
+  var parent: Parent { get }
 }
 
 protocol FragmentTypeCase: TypeCase {
@@ -92,26 +101,14 @@ final class AsPetDetails<Parent: ResponseData>: FragmentTypeCase {
   }
 }
 
-final class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
-  let props: Props
-  let parent: Parent
-
-  init(parent: Parent, props: Props) {
-    self.parent = parent
-    self.props = props
-  }
-
-  func toFragment() -> WarmBloodedDetails {
-    WarmBloodedDetails(props: self.props)
-  }
-}
-
 final class WarmBloodedDetails: Fragment {
   final class Props {
     let bodyTemperature: Int
+    let height: Height
 
-    init(bodyTemperature: Int) {
+    init(bodyTemperature: Int, height: Height) {
       self.bodyTemperature = bodyTemperature
+      self.height = height
     }
   }
 
@@ -129,6 +126,66 @@ final class WarmBloodedDetails: Fragment {
         self.meters = meters
       }
     }
+  }
+}
+
+final class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
+  let props: Props
+  let parent: Parent
+
+  init(parent: Parent, props: Props) {
+    self.parent = parent
+    self.props = props
+  }
+
+  func toFragment() -> WarmBloodedDetails {
+    WarmBloodedDetails(props: self.props)
+  }
+}
+
+final class HeightInMeters: Fragment {
+  final class Props {
+    let height: Height
+
+    init(height: Height) {
+      self.height = height
+    }
+  }
+
+  let props: Props
+
+  init(props: Props) {
+    self.props = props
+  }
+
+  final class Height {
+    final class Props {
+      let meters: Int
+
+      init(meters: Int) {
+        self.meters = meters
+      }
+    }
+
+      let props: Props
+
+      init(props: Props) {
+        self.props = props
+      }
+    }
+}
+
+final class AsHeightInMeters<Parent: ResponseData>: FragmentTypeCase {
+  let props: Props
+  let parent: Parent
+
+  init(parent: Parent, props: Props) {
+    self.parent = parent
+    self.props = props
+  }
+
+  func toFragment() -> HeightInMeters {
+    HeightInMeters(props: self.props)
   }
 }
 
@@ -157,10 +214,18 @@ public final class AllAnimals: ResponseData {
   // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
   @AsType var asWarmBlooded: AsWarmBloodedDetails<AllAnimals>?
 
+  @FragmentSpread var asHeightInMeters: AsHeightInMeters<AllAnimals>!
+
   init(__typename: String, species: String, height: Height) {
     self.props = Props(__typename: __typename, species: species, height: height)
     self._asPet = .nil
     self._asWarmBlooded = .nil
+    self._asHeightInMeters = .init(parent: self,
+                                   props: .init(
+                                    height: .init(
+                                      props: .init(
+                                        meters: height.props.meters
+                                      ))))
   }
 
   /// `AllAnimals.Height`
