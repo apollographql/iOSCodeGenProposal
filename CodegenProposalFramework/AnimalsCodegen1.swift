@@ -152,10 +152,10 @@ public final class AllAnimals: ResponseData {
 
   @AsType var asPet: AsPet?
 
-  /// - Note: Because the type case for `WarmBlooded` only includes the fragment, we can just use the fragment type case.
-  /// For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
-  /// with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
-  @AsType var asWarmBlooded: AsWarmBloodedDetails<AllAnimals.AsPet>?
+  // Because the type case for `WarmBlooded` only includes the fragment, we can just use the fragment type case.
+  // For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
+  // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
+  @AsType var asWarmBlooded: AsWarmBloodedDetails<AllAnimals>?
 
   init(__typename: String, species: String, height: Height) {
     self.props = Props(__typename: __typename, species: species, height: height)
@@ -169,11 +169,16 @@ public final class AllAnimals: ResponseData {
       let __typename: String
       let feet: Int
       let inches: Int
+      // This field is merged in from `HeightInMeters` fragment.
+      // Because the fragment type identically matches the type it is queried on, we do
+      // not need an optional `TypeCase` and can merge the field up.
+      let meters: Int // TODO: might remove this if we merge the matched fragment fields upwards?
 
-      init(__typename: String, feet: Int, inches: Int) {
+      init(__typename: String, feet: Int, inches: Int, meters: Int) {
         self.__typename = __typename
         self.feet = feet
         self.inches = inches
+        self.meters = meters
       }
     }
 
@@ -220,9 +225,9 @@ public final class AllAnimals: ResponseData {
     let props: Props
     let parent: AllAnimals
 
-    /// - Note: Because the type case for `WarmBlooded` only includes the fragment, we can just use the fragment type case.
-    /// For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
-    /// with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
+    // Because the type case for `WarmBlooded` only includes the fragment, we can just use the fragment type case.
+    // For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
+    // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
     @AsType var asWarmBlooded: AsWarmBloodedDetails<AllAnimals.AsPet>?
 
     convenience init(
@@ -244,59 +249,46 @@ public final class AllAnimals: ResponseData {
 //      parent.value[keyPath: keyPath]
 //    }
   }
-
-  /// `AllAnimals.AsWarmBlooded`
-////    @dynamicMemberLookup
-//  final class AsWarmBlooded: TypeCase {
-//    final class Props {
-//      let bodyTemperature: Int
-//
-//      internal init(bodyTemperature: Int) {
-//        self.bodyTemperature = bodyTemperature
-//      }
-//    }
-//
-//    let props: Props
-//    let parent: AllAnimals
-//
-//    init(parent: AllAnimals, props: Props) {
-//      self.parent = parent
-//      self.props = props
-//    }
-//
-////      subscript<T>(dynamicMember keyPath: KeyPath<Self.Parent, T>) -> T {
-////        parent.value[keyPath: keyPath]
-////      }
-//  }
-
 }
 
 // MARK: - Extensions for creating mock objects
 // I am NOT at all happy with this part yet.
 //
-//extension AllAnimals {
-//
-//  func makeAsPet(humanName: String, favoriteToy: String) -> AsPet {
-//    let asPetProps = AsPet.Props(humanName: humanName,
-//                                 favoriteToy: favoriteToy)
-//    self._asPet = AsType(parent: self, props: asPetProps)
-//    return self.asPet!
-//  }
-//
-//  func makeAsWarmBlooded(bodyTemperature: Int) -> AsWarmBlooded {
-//    let asWarmBloodedProps = AsWarmBlooded.Props(bodyTemperature: bodyTemperature)
-//    self._asWarmBlooded = AsType(parent: self, props: asWarmBloodedProps)
-//    return self.asWarmBlooded!
-//  }
-//
-//}
-//
-//extension AllAnimals.AsPet {
-//
-//  func makeAsWarmBlooded(bodyTemperature: Int) -> AsWarmBlooded {
-//    let asWarmBloodedProps = AsWarmBlooded.Props(bodyTemperature: bodyTemperature)
-//    self._asWarmBlooded = AsType(parent: self, props: asWarmBloodedProps)
-//    return self.asWarmBlooded!
-//  }
-//
-//}
+extension AllAnimals {
+
+  func makeAsPet(humanName: String, favoriteToy: String) -> AsPet {
+    let asPetProps = AsPet.Props(humanName: humanName,
+                                 favoriteToy: favoriteToy)
+    self._asPet = AsType(parent: self, props: asPetProps)
+    return self.asPet!
+  }
+
+  func makeAsWarmBlooded(
+    bodyTemperature: Int,
+    height: WarmBloodedDetails.Height
+  ) -> AsWarmBloodedDetails<AllAnimals> {
+    let asWarmBloodedProps = AsWarmBloodedDetails<AllAnimals>.Props(
+      bodyTemperature: bodyTemperature,
+      height: height
+    )
+    self._asWarmBlooded = AsType(parent: self, props: asWarmBloodedProps)
+    return self.asWarmBlooded!
+  }
+
+}
+
+extension AllAnimals.AsPet {
+
+  func makeAsWarmBlooded(
+    bodyTemperature: Int,
+    height: WarmBloodedDetails.Height
+  ) -> AsWarmBloodedDetails<AllAnimals.AsPet> {
+    let asWarmBloodedProps = AsWarmBloodedDetails<AllAnimals.AsPet>.Props(
+      bodyTemperature: bodyTemperature,
+      height: height
+    )
+    self._asWarmBlooded = AsType(parent: self, props: asWarmBloodedProps)
+    return self.asWarmBlooded!
+  }
+
+}
