@@ -29,105 +29,188 @@ import Foundation
 
 // MARK: Fragments
 
-public protocol PetDetails {
-  var humanName: String { get }
-  var favoriteToy: String { get }
+public struct PetDetails {
+  let humanName: String
+  let favoriteToy: String
 }
 
-public extension HasParent where Parent: PetDetails {
-  var humanName: String { parent.humanName }
-  var favoriteToy: String { parent.favoriteToy }
+//public extension HasParent where Parent: PetDetails {
+//  var humanName: String { parent.humanName }
+//  var favoriteToy: String { parent.favoriteToy }
+//}
+
+public struct WarmBloodedDetails {
+  let bodyTemperature: Int
 }
 
-public protocol WarmBloodedDetails {
-  var bodyTemperature: Int { get }
+//public extension HasParent where Parent: WarmBloodedDetails {
+//  var bodyTemperature: Int { parent.bodyTemperature }
+//}
+
+protocol ResponseData: AnyObject {
+  associatedtype Props
+
+  var props: Props { get }
 }
 
-public extension HasParent where Parent: WarmBloodedDetails {
-  var bodyTemperature: Int { parent.bodyTemperature }
+protocol TypeCase: ResponseData {
+  associatedtype Parent: ResponseData
+
+  init(parent: Parent, props: Props)
 }
 
 // MARK: Query Response Data Structs
 
-public struct AllAnimals {
-  var __typename: String
-  var species: String
-  var height: Height
-  var predators: [Predators] = [] // TODO
+public final class AllAnimals: ResponseData {
+  final class Props {
+    let __typename: String
+    let species: String
+    let height: Height
+    //  let predators: [Predators] = [] // TODO
 
-  var asPet: AsPet?
-  var asWarmBlooded: AsWarmBlooded?
+    init(__typename: String, species: String, height: AllAnimals.Height) {
+      self.__typename = __typename
+      self.species = species
+      self.height = height
+    }
+  }
+
+  let props: Props
+
+  @AsInterface var asPet: AsPet?
+  @AsInterface var asWarmBlooded: AsWarmBlooded?
 
   init(__typename: String, species: String, height: Height) {
-    self.__typename = __typename
-    self.species = species
-    self.height = height
+    self.props = Props(__typename: __typename, species: species, height: height)
+    self._asPet = .nil
+    self._asWarmBlooded = .nil
   }
 
   /// `AllAnimals.Height`
-  struct Height {
-    let __typename: String = "Height" // TODO: Can we do this?
-    var feet: Int
-    var inches: Int
+  final class Height: ResponseData {
+    final class Props {
+      let __typename: String
+      let feet: Int
+      let inches: Int
+
+      init(__typename: String, feet: Int, inches: Int) {
+        self.__typename = __typename
+        self.feet = feet
+        self.inches = inches
+      }
+    }
+
+    let props: Props
+
+    init(props: Props) {
+      self.props = props
+    }
   }
 
   /// `AllAnimals.Predators`
-  struct Predators {
-    var __typename: String // Animal
-    var species: String
-
-    var asWarmBlooded: AsWarmBlooded?
-
-    /// `AllAnimals.Predators.AsWarmBlooded`
-    @dynamicMemberLookup
-    struct AsWarmBlooded: WarmBloodedDetails, HasParent {
-      var bodyTemperature: Int
-
-      internal let parent: Reference<AllAnimals.Predators>
-
-      subscript<T>(dynamicMember keyPath: KeyPath<Self.Parent, T>) -> T {
-        parent.value[keyPath: keyPath]
-      }
-    }
-  }
+//  struct Predators {
+//    var __typename: String // Animal
+//    var species: String
+//
+//    var asWarmBlooded: AsWarmBlooded?
+//
+//    /// `AllAnimals.Predators.AsWarmBlooded`
+//    @dynamicMemberLookup
+//    struct AsWarmBlooded: WarmBloodedDetails, HasParent {
+//      var bodyTemperature: Int
+//
+//      internal let parent: Reference<AllAnimals.Predators>
+//
+//      subscript<T>(dynamicMember keyPath: KeyPath<Self.Parent, T>) -> T {
+//        parent.value[keyPath: keyPath]
+//      }
+//    }
+//  }
   
   /// `AllAnimals.AsPet`
-  @dynamicMemberLookup
-  struct AsPet: PetDetails, HasParent { // AllAnimals.AsPet
-    var humanName: String
-    var favoriteToy: String
+//  @dynamicMemberLookup
+  final class AsPet: TypeCase {
+    final class Props {
+      let humanName: String
+      let favoriteToy: String
 
-    var asWarmBlooded: AsWarmBlooded?
-
-    internal let parent: Reference<AllAnimals>
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Self.Parent, T>) -> T {
-      parent.value[keyPath: keyPath]
+      init(humanName: String, favoriteToy: String) {
+        self.humanName = humanName
+        self.favoriteToy = favoriteToy
+      }
     }
 
+    let props: Props
+    let parent: AllAnimals
+
+    @AsInterface var asWarmBlooded: AsWarmBlooded?
+
+    convenience init(
+      humanName: String = "",
+      favoriteToy: String,
+      parent: AllAnimals
+    ) {
+      let props = Props(humanName: humanName, favoriteToy: favoriteToy)
+      self.init(parent: parent, props: props)
+    }
+
+    init(parent: AllAnimals, props: Props) {
+      self.parent = parent
+      self.props = props
+      self._asWarmBlooded = .nil
+    }
+
+//    subscript<T>(dynamicMember keyPath: KeyPath<AllAnimals.AsPet.Parent, T>) -> T {
+//      parent.value[keyPath: keyPath]
+//    }
+
     /// `AllAnimals.AsPet.AsWarmBlooded`
-    @dynamicMemberLookup
-    struct AsWarmBlooded: WarmBloodedDetails, PetDetails, HasParent {
-      var bodyTemperature: Int
+//    @dynamicMemberLookup
+    final class AsWarmBlooded: TypeCase {
+      final class Props {
+        let bodyTemperature: Int
 
-      internal let parent: Reference<AllAnimals.AsPet>
-
-      subscript<T>(dynamicMember keyPath: KeyPath<Self.Parent, T>) -> T {
-        parent.value[keyPath: keyPath]
+        internal init(bodyTemperature: Int) {
+          self.bodyTemperature = bodyTemperature
+        }
       }
+
+      let props: Props
+      let parent: AllAnimals.AsPet
+
+      init(parent: AllAnimals.AsPet, props: Props) {
+        self.parent = parent
+        self.props = props
+      }
+
+//      subscript<T>(dynamicMember keyPath: KeyPath<Self.Parent, T>) -> T {
+//        parent.value[keyPath: keyPath]
+//      }
     }
   }
 
   /// `AllAnimals.AsWarmBlooded`
-  @dynamicMemberLookup
-  struct AsWarmBlooded: WarmBloodedDetails, HasParent {
-    var bodyTemperature: Int
+//    @dynamicMemberLookup
+  final class AsWarmBlooded: TypeCase {
+    final class Props {
+      let bodyTemperature: Int
 
-    internal let parent: Reference<AllAnimals>
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Self.Parent, T>) -> T {
-      parent.value[keyPath: keyPath]
+      internal init(bodyTemperature: Int) {
+        self.bodyTemperature = bodyTemperature
+      }
     }
+
+    let props: Props
+    let parent: AllAnimals
+
+    init(parent: AllAnimals, props: Props) {
+      self.parent = parent
+      self.props = props
+    }
+
+//      subscript<T>(dynamicMember keyPath: KeyPath<Self.Parent, T>) -> T {
+//        parent.value[keyPath: keyPath]
+//      }
   }
 
 }
@@ -138,21 +221,16 @@ public struct AllAnimals {
 extension AllAnimals {
 
   func makeAsPet(humanName: String, favoriteToy: String) -> AsPet {
-    let ref = MutableReference(value: self)
-    let asPet = AsPet(humanName: humanName,
-                 favoriteToy: favoriteToy,
-                 asWarmBlooded: nil,
-                 parent: ref)
-    ref.asPet = asPet
-    return asPet
+    let asPetProps = AsPet.Props(humanName: humanName,
+                                 favoriteToy: favoriteToy)
+    self._asPet = AsInterface(parent: self, props: asPetProps)
+    return self.asPet!
   }
 
   func makeAsWarmBlooded(bodyTemperature: Int) -> AsWarmBlooded {
-    let ref = MutableReference(value: self)
-    let asWarmBlooded = AsWarmBlooded(bodyTemperature: bodyTemperature,
-                                      parent: Reference(value: self))
-    ref.asWarmBlooded = asWarmBlooded
-    return asWarmBlooded
+    let asWarmBloodedProps = AsWarmBlooded.Props(bodyTemperature: bodyTemperature)
+    self._asWarmBlooded = AsInterface(parent: self, props: asWarmBloodedProps)
+    return self.asWarmBlooded!
   }
 
 }
@@ -160,11 +238,9 @@ extension AllAnimals {
 extension AllAnimals.AsPet {
 
   func makeAsWarmBlooded(bodyTemperature: Int) -> AsWarmBlooded {
-    let ref = MutableReference(value: self)
-    let asWarmBlooded = AsWarmBlooded(bodyTemperature: bodyTemperature,
-                                      parent: Reference(value: self))
-    ref.asWarmBlooded = asWarmBlooded
-    return asWarmBlooded
+    let asWarmBloodedProps = AsWarmBlooded.Props(bodyTemperature: bodyTemperature)
+    self._asWarmBlooded = AsInterface(parent: self, props: asWarmBloodedProps)
+    return self.asWarmBlooded!
   }
 
 }
