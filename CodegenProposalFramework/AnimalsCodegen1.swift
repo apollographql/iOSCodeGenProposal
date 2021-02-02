@@ -33,11 +33,63 @@ import Foundation
 //   }
 // }
 
+// MARK: Protocols
+
+protocol ResponseData: AnyObject {
+  associatedtype Props
+
+  var props: Props { get }
+}
+
+protocol TypeCase: ResponseData {
+  associatedtype Parent: ResponseData
+
+  init(parent: Parent, props: Props)
+}
+
+protocol FragmentTypeCase: TypeCase {
+  associatedtype FragmentType: Fragment
+  associatedtype Props = FragmentType.Props
+
+  func toFragment() -> FragmentType
+}
+
+protocol Fragment: ResponseData {
+
+}
+
 // MARK: Fragments
 
-public struct PetDetails {
-  let humanName: String
-  let favoriteToy: String
+final class PetDetails: Fragment {
+  final class Props {
+    let humanName: String
+    let favoriteToy: String
+
+    init(humanName: String, favoriteToy: String) {
+      self.humanName = humanName
+      self.favoriteToy = favoriteToy
+    }
+  }
+
+  let props: Props
+
+  init(props: Props) {
+    self.props = props
+  }
+}
+
+final class AsPetDetails<Parent: ResponseData>: FragmentTypeCase {
+  let props: Props
+  let parent: Parent
+
+  init(parent: Parent, props: Props) {
+    self.parent = parent
+    self.props = props
+  }
+
+  func toFragment() -> PetDetails {
+    PetDetails(props: self.props)
+  }
 }
 
 final class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
@@ -50,7 +102,7 @@ final class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
   }
 
   func toFragment() -> WarmBloodedDetails {
-    WarmBloodedDetails(props: .init(bodyTemperature: self.props.bodyTemperature))
+    WarmBloodedDetails(props: self.props)
   }
 }
 
@@ -78,31 +130,6 @@ final class WarmBloodedDetails: Fragment {
       }
     }
   }
-}
-
-// MARK: Protocols
-
-protocol ResponseData: AnyObject {
-  associatedtype Props
-
-  var props: Props { get }
-}
-
-protocol TypeCase: ResponseData {
-  associatedtype Parent: ResponseData
-
-  init(parent: Parent, props: Props)
-}
-
-protocol FragmentTypeCase: TypeCase {
-  associatedtype FragmentType: Fragment
-  associatedtype Props = FragmentType.Props
-
-  func toFragment() -> FragmentType
-}
-
-protocol Fragment: ResponseData {
-
 }
 
 // MARK: Query Response Data Structs
