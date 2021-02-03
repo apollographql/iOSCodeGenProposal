@@ -8,33 +8,28 @@
 import Foundation
 
 final class SubType<T: TypeCase> {
-  private weak var value: T?
+  private weak var _value: T?
 
   private unowned let parent: T.Parent
-  private let props: T.Props
+  fileprivate let props: T.Props
 
   init(parent: T.Parent, props: T.Props) {
     self.parent = parent
     self.props = props
   }
 
-  init(wrappedValue: T) {
-    self.value = wrappedValue
-    self.parent = wrappedValue.parent
-    self.props = wrappedValue.props
-  }
-
-  var wrappedValue: T {
+  var value: T {
     get {
-      if let value = value {
+      if let value = _value {
         return value
       }
 
       let value = T.init(parent: parent, props: props)
-      self.value = value
+      self._value = value
       return value
     }
   }
+
 }
 
 @propertyWrapper struct AsType<T: TypeCase> {
@@ -54,29 +49,29 @@ final class SubType<T: TypeCase> {
 
   var wrappedValue: T? {
     guard let subType = subType else { return nil }
-    return subType.wrappedValue
+    return subType.value
   }
 }
 
 @propertyWrapper struct FragmentSpread<T: FragmentTypeCase> {
-  let subType: SubType<T>
-  let props: T.Props
+  let subType: SubType<T>!
 
   init(parent: T.Parent, props: T.Props) {
     self.subType = SubType(parent: parent, props: props)
-    self.props = props
   }
 
+  @available(*, message: "Do not use")
   init(wrappedValue: T!) {
-    self.subType = SubType(parent: wrappedValue.parent, props: wrappedValue.props)
-    self.props = wrappedValue.props
+    // TODO: If we pass `Parent.Props` around instead of `Parent` we wont have the issue with
+    // initializing with `self`?
+    self.subType = nil
   }
 
   var wrappedValue: T! {
-    return subType.wrappedValue
+    return subType.value
   }
 
   var projectedValue: T.Props {
-    return props
+    return subType.props
   }
 }

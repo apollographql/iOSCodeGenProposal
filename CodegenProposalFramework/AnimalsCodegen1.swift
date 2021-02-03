@@ -167,12 +167,12 @@ final class HeightInMeters: Fragment {
       }
     }
 
-      let props: Props
+    let props: Props
 
-      init(props: Props) {
-        self.props = props
-      }
+    init(props: Props) {
+      self.props = props
     }
+  }
 }
 
 final class AsHeightInMeters<Parent: ResponseData>: FragmentTypeCase {
