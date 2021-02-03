@@ -5,7 +5,7 @@ import Foundation
 //       feet
 //       inches
 //     }
-//     ... HeightInMeters
+//     ...HeightInMeters
 //     species
 //     ... on Pet {
 //       ...PetDetails
@@ -31,7 +31,7 @@ import Foundation
 //   bodyTemperature
 //   height {
 //     meters
-//   }
+//   } // TODO: use HeightInMeters fragment?
 // }
 //
 // fragment HeightInMeters on Animal {
@@ -191,14 +191,14 @@ final class AsHeightInMeters<Parent: ResponseData>: FragmentTypeCase {
 
 // MARK: Query Response Data Structs
 
-public final class AllAnimals: ResponseData {
+public final class Animal: ResponseData {
   final class Props {
     let __typename: String
     let species: String
     let height: Height
-    //  let predators: [Predators] = [] // TODO
+//    let predators: [Predators] = [] // TODO
 
-    init(__typename: String, species: String, height: AllAnimals.Height) {
+    init(__typename: String, species: String, height: Animal.Height) {
       self.__typename = __typename
       self.species = species
       self.height = height
@@ -212,9 +212,9 @@ public final class AllAnimals: ResponseData {
   // Because the type case for `WarmBlooded` only includes the fragment, we can just use the fragment type case.
   // For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
   // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
-  @AsType var asWarmBlooded: AsWarmBloodedDetails<AllAnimals>?
+  @AsType var asWarmBlooded: AsWarmBloodedDetails<Animal>?
 
-  @FragmentSpread var asHeightInMeters: AsHeightInMeters<AllAnimals>!
+  @FragmentSpread var asHeightInMeters: AsHeightInMeters<Animal>!
 
   init(__typename: String, species: String, height: Height) {
     self.props = Props(__typename: __typename, species: species, height: height)
@@ -228,7 +228,15 @@ public final class AllAnimals: ResponseData {
                                       ))))
   }
 
-  /// `AllAnimals.Height`
+//  subscript<T>(dynamicMember keyPath: KeyPath<Animal.Props, T>) -> T {
+//    return props[keyPath: keyPath]
+//  }
+
+//  subscript<T>(dynamicMember keyPath: KeyPath<AsHeightInMeters<AllAnimals>.Props, T>) -> T {
+//    return $asHeightInMeters[keyPath: keyPath]
+//  }
+
+  /// `Animal.Height`
   final class Height: ResponseData {
     final class Props {
       let __typename: String
@@ -254,10 +262,12 @@ public final class AllAnimals: ResponseData {
     }
   }
 
-  /// `AllAnimals.Predators`
-//  struct Predators {
-//    var __typename: String // Animal
-//    var species: String
+  /// `Animal.Predators`
+//  final class Predators {
+//    final class Props {
+//      var __typename: String // Animal
+//      var species: String
+//    }
 //
 //    var asWarmBlooded: AsWarmBlooded?
 //
@@ -274,7 +284,7 @@ public final class AllAnimals: ResponseData {
 //    }
 //  }
   
-  /// `AllAnimals.AsPet`
+  /// `Animal.AsPet`
 //  @dynamicMemberLookup
   final class AsPet: TypeCase {
     final class Props {
@@ -288,23 +298,23 @@ public final class AllAnimals: ResponseData {
     }
 
     let props: Props
-    let parent: AllAnimals
+    let parent: Animal
 
     // Because the type case for `WarmBlooded` only includes the fragment, we can just use the fragment type case.
     // For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
     // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
-    @AsType var asWarmBlooded: AsWarmBloodedDetails<AllAnimals.AsPet>?
+    @AsType var asWarmBlooded: AsWarmBloodedDetails<Animal.AsPet>?
 
     convenience init(
       humanName: String = "",
       favoriteToy: String,
-      parent: AllAnimals
+      parent: Animal
     ) {
       let props = Props(humanName: humanName, favoriteToy: favoriteToy)
       self.init(parent: parent, props: props)
     }
 
-    init(parent: AllAnimals, props: Props) {
+    init(parent: Animal, props: Props) {
       self.parent = parent
       self.props = props
       self._asWarmBlooded = .nil
@@ -319,7 +329,7 @@ public final class AllAnimals: ResponseData {
 // MARK: - Extensions for creating mock objects
 // I am NOT at all happy with this part yet.
 //
-extension AllAnimals {
+extension Animal {
 
   func makeAsPet(humanName: String, favoriteToy: String) -> AsPet {
     let asPetProps = AsPet.Props(humanName: humanName,
@@ -331,8 +341,8 @@ extension AllAnimals {
   func makeAsWarmBlooded(
     bodyTemperature: Int,
     height: WarmBloodedDetails.Height
-  ) -> AsWarmBloodedDetails<AllAnimals> {
-    let asWarmBloodedProps = AsWarmBloodedDetails<AllAnimals>.Props(
+  ) -> AsWarmBloodedDetails<Animal> {
+    let asWarmBloodedProps = AsWarmBloodedDetails<Animal>.Props(
       bodyTemperature: bodyTemperature,
       height: height
     )
@@ -342,13 +352,13 @@ extension AllAnimals {
 
 }
 
-extension AllAnimals.AsPet {
+extension Animal.AsPet {
 
   func makeAsWarmBlooded(
     bodyTemperature: Int,
     height: WarmBloodedDetails.Height
-  ) -> AsWarmBloodedDetails<AllAnimals.AsPet> {
-    let asWarmBloodedProps = AsWarmBloodedDetails<AllAnimals.AsPet>.Props(
+  ) -> AsWarmBloodedDetails<Animal.AsPet> {
+    let asWarmBloodedProps = AsWarmBloodedDetails<Animal.AsPet>.Props(
       bodyTemperature: bodyTemperature,
       height: height
     )

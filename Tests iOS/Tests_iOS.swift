@@ -19,7 +19,7 @@ class Tests_iOS: XCTestCase {
   }
 
   func testExample() throws {
-    let cat = AllAnimals(__typename: "Cat",
+    let cat = Animal(__typename: "Cat",
                          species: "Cat",
                          height: .init(props: .init(__typename: "Height", feet: 2, inches: 10, meters: 4)))
 
