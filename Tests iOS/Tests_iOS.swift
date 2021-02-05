@@ -22,7 +22,6 @@ class Tests_iOS: XCTestCase {
     let cat = Animal(__typename: "Cat",
                          species: "Cat",
                          height: .init(props: .init(__typename: "Height", feet: 2, inches: 10, meters: 4)))
-
     XCTAssertEqual(cat.species, "Cat")
   }
 

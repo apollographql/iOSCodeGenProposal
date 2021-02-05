@@ -42,10 +42,13 @@ import Foundation
 
 // MARK: Protocols
 
+@dynamicMemberLookup
 protocol ResponseData: AnyObject {
   associatedtype Props
 
   var props: Props { get }
+
+  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T { get }
 }
 
 protocol TypeCase: ResponseData {
@@ -85,6 +88,10 @@ final class PetDetails: Fragment {
   init(props: Props) {
     self.props = props
   }
+
+  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
+    return props[keyPath: keyPath]
+  }
 }
 
 final class AsPetDetails<Parent: ResponseData>: FragmentTypeCase {
@@ -98,6 +105,10 @@ final class AsPetDetails<Parent: ResponseData>: FragmentTypeCase {
 
   func toFragment() -> PetDetails {
     PetDetails(props: self.props)
+  }
+
+  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
+    return props[keyPath: keyPath]
   }
 }
 
@@ -127,6 +138,10 @@ final class WarmBloodedDetails: Fragment {
       }
     }
   }
+
+  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
+    return props[keyPath: keyPath]
+  }
 }
 
 final class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
@@ -140,6 +155,10 @@ final class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
 
   func toFragment() -> WarmBloodedDetails {
     WarmBloodedDetails(props: self.props)
+  }
+
+  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
+    return props[keyPath: keyPath]
   }
 }
 
@@ -158,6 +177,10 @@ final class HeightInMeters: Fragment {
     self.props = props
   }
 
+  init(height: Height) {
+    self.props = Props(height: height)
+  }
+
   final class Height {
     final class Props {
       let meters: Int
@@ -172,6 +195,14 @@ final class HeightInMeters: Fragment {
     init(props: Props) {
       self.props = props
     }
+
+    init(meters: Int) {
+      self.props = Props(meters: meters)
+    }
+  }
+
+  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
+    return props[keyPath: keyPath]
   }
 }
 
@@ -186,6 +217,10 @@ final class AsHeightInMeters<Parent: ResponseData>: FragmentTypeCase {
 
   func toFragment() -> HeightInMeters {
     HeightInMeters(props: self.props)
+  }
+
+  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
+    return props[keyPath: keyPath]
   }
 }
 
@@ -214,27 +249,26 @@ public final class Animal: ResponseData {
   // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
   @AsType var asWarmBlooded: AsWarmBloodedDetails<Animal>?
 
-  @FragmentSpread var asHeightInMeters: AsHeightInMeters<Animal>!
+  private(set) var fragments: Fragments
+
+  struct Fragments {
+    let props: Props
+
+    lazy var heightInMeters: HeightInMeters = {
+      HeightInMeters(height: .init(meters: props.height.meters))
+    }()
+  }
 
   init(__typename: String, species: String, height: Height) {
     self.props = Props(__typename: __typename, species: species, height: height)
+    self.fragments = Fragments(props: props)
     self._asPet = .nil
     self._asWarmBlooded = .nil
-    self._asHeightInMeters = .init(parent: self,
-                                   props: .init(
-                                    height: .init(
-                                      props: .init(
-                                        meters: height.props.meters
-                                      ))))
   }
 
-//  subscript<T>(dynamicMember keyPath: KeyPath<Animal.Props, T>) -> T {
-//    return props[keyPath: keyPath]
-//  }
-
-//  subscript<T>(dynamicMember keyPath: KeyPath<AsHeightInMeters<AllAnimals>.Props, T>) -> T {
-//    return $asHeightInMeters[keyPath: keyPath]
-//  }
+  subscript<T>(dynamicMember keyPath: KeyPath<Animal.Props, T>) -> T {
+    return props[keyPath: keyPath]
+  }
 
   /// `Animal.Height`
   final class Height: ResponseData {
@@ -245,7 +279,7 @@ public final class Animal: ResponseData {
       // This field is merged in from `HeightInMeters` fragment.
       // Because the fragment type identically matches the type it is queried on, we do
       // not need an optional `TypeCase` and can merge the field up.
-      let meters: Int // TODO: might remove this if we merge the matched fragment fields upwards?
+      let meters: Int
 
       init(__typename: String, feet: Int, inches: Int, meters: Int) {
         self.__typename = __typename
@@ -259,6 +293,10 @@ public final class Animal: ResponseData {
 
     init(props: Props) {
       self.props = props
+    }
+
+    subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
+      return props[keyPath: keyPath]
     }
   }
 
@@ -320,9 +358,13 @@ public final class Animal: ResponseData {
       self._asWarmBlooded = .nil
     }
 
-//    subscript<T>(dynamicMember keyPath: KeyPath<AllAnimals.AsPet.Parent, T>) -> T {
-//      parent.value[keyPath: keyPath]
-//    }
+    subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
+      return props[keyPath: keyPath]
+    }
+
+    subscript<T>(dynamicMember keyPath: KeyPath<Parent.Props, T>) -> T {
+      parent.props[keyPath: keyPath]
+    }
   }
 }
 
