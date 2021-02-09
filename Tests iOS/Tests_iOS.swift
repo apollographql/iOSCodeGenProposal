@@ -18,11 +18,21 @@ class Tests_iOS: XCTestCase {
     try super.tearDownWithError()
   }
 
-  func testExample() throws {
+  func testSpecies() throws {
     let cat = Animal(__typename: "Cat",
                          species: "Cat",
                          height: .init(props: .init(__typename: "Height", feet: 2, inches: 10, meters: 4)))
     XCTAssertEqual(cat.species, "Cat")
+  }
+
+  func testAsTypeFragment_withDuplicateFieldOnParent() throws {
+    let subject = Animal(__typename: "Cat",
+                         species: "Cat",
+                         height: .init(props: .init(__typename: "Height", feet: 2, inches: 10, meters: 4)))
+      .makeAsWarmBlooded(bodyTemperature: 98, height: .init(props: .init(meters: 10))).parent
+
+    XCTAssertEqual(subject.height.meters, 4)
+    XCTAssertEqual(subject.asWarmBlooded?.height.meters, 10)
   }
 
 }
