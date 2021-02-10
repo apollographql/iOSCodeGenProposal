@@ -30,8 +30,9 @@ import Foundation
 // fragment WarmBloodedDetails on WarmBlooded {
 //   bodyTemperature
 //   height {
-//     meters
-//   } // TODO: use HeightInMeters fragment?
+//     meters // TODO: Use HeightInMeters fragment?
+//     yards
+//   }
 // }
 //
 // fragment HeightInMeters on Animal {
@@ -150,9 +151,11 @@ final class WarmBloodedDetails: Fragment {
   final class Height: ResponseData {
     final class Props {
       let meters: Int
+      let yards: Int
 
-      init(meters: Int) {
+      init(meters: Int, yards: Int) {
         self.meters = meters
+        self.yards = yards
       }
     }
 
@@ -172,14 +175,14 @@ final class WarmBloodedDetails: Fragment {
   }
 }
 
-final class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
+class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
   typealias FragmentType = WarmBloodedDetails
 
   let props: Props
   let parent: Parent
   private(set) var fragments: Fragments
 
-  init(parent: Parent, props: Props) {
+  required init(parent: Parent, props: Props) {
     self.parent = parent
     self.props = props
     self.fragments = Fragments(parent: parent, props: props)
@@ -290,10 +293,7 @@ public final class Animal: ResponseData {
 
   @AsType var asPet: AsPet?
 
-  // Because the type case for `WarmBlooded` only includes the fragment, we can just use the fragment type case.
-  // For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
-  // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
-  @AsType var asWarmBlooded: AsWarmBloodedDetails<Animal>?
+  @AsType var asWarmBlooded: AsWarmBlooded?
 
   private(set) var fragments: Fragments
 
@@ -344,6 +344,14 @@ public final class Animal: ResponseData {
     subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
       return props[keyPath: keyPath]
     }
+  }
+
+  // Because the type case for `WarmBlooded` only includes the fragment, we can just inherit the fragment type case.
+  // For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
+  // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
+  /// `Animal.AsWarmBlooded`
+  final class AsWarmBlooded: AsWarmBloodedDetails<Animal> {
+//    var height:
   }
 
   /// `Animal.Predators`

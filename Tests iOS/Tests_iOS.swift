@@ -28,11 +28,12 @@ class Tests_iOS: XCTestCase {
   func testAsTypeFragment_withDuplicateFieldOnParent() throws {
     let subject = Animal(__typename: "Cat",
                          species: "Cat",
-                         height: .init(props: .init(__typename: "Height", feet: 2, inches: 10, meters: 4)))
-      .makeAsWarmBlooded(bodyTemperature: 98, height: .init(props: .init(meters: 10))).parent
+                         height: .init(props: .init(__typename: "Height", feet: 2, inches: 10, meters: 10)))
+      .makeAsWarmBlooded(bodyTemperature: 98, height: .init(props: .init(meters: 10, yards: 3))).parent
 
-    XCTAssertEqual(subject.height.meters, 4)
+    XCTAssertEqual(subject.height.meters, 10)
     XCTAssertEqual(subject.asWarmBlooded?.height.meters, 10)
+    XCTAssertEqual(subject.asWarmBlooded?.height.yards, 3)
   }
 
 }
