@@ -75,3 +75,22 @@ final class SubType<T: TypeCase> {
     return subType.props
   }
 }
+
+@dynamicMemberLookup
+class FieldJoiner<T, U> {
+  let first: T
+  let second: U
+
+  init(first: T, second: U) {
+    self.first = first
+    self.second = second
+  }
+
+  subscript<Value>(dynamicMember keyPath: KeyPath<T, Value>) -> Value {
+    return first[keyPath: keyPath]
+  }
+
+  subscript<Value>(dynamicMember keyPath: KeyPath<U, Value>) -> Value {
+    return second[keyPath: keyPath]
+  }
+}
