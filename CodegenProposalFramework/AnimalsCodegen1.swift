@@ -427,7 +427,7 @@ public final class Animal: ResponseData, HasFragments {
     // Because the type case for `WarmBlooded` only includes the fragment, we can just use the fragment type case.
     // For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
     // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
-    @AsType var asWarmBlooded: AsWarmBloodedDetails<Animal.AsPet>?
+    @AsType var asWarmBlooded: AsWarmBlooded?
 
     convenience init(
       humanName: String = "",
@@ -450,6 +450,19 @@ public final class Animal: ResponseData, HasFragments {
 
     subscript<T>(dynamicMember keyPath: KeyPath<Parent.Props, T>) -> T {
       parent.props[keyPath: keyPath]
+    }
+
+    final class AsWarmBlooded: AsWarmBloodedDetails<Animal.AsPet> {
+      final class Height: FieldJoiner<Animal.Height, WarmBloodedDetails.Height> {
+        var meters: Int { first.meters }
+      }
+
+      let height: Height
+
+      required init(parent: Animal.AsPet, props: AsWarmBloodedDetails<Animal.AsPet>.Props) {
+        self.height = .init(first: parent.height, second: props.height)
+        super.init(parent: parent, props: props)
+      }
     }
   }
 }
