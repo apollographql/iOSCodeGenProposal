@@ -18,6 +18,9 @@
 		DE79A55325DC4C280043A00A /* FieldJoiner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE79A55225DC4C280043A00A /* FieldJoiner.swift */; };
 		DE79A55E25DC4F880043A00A /* ResponseDataProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE79A55D25DC4F880043A00A /* ResponseDataProtocols.swift */; };
 		DE79A56C25DC7C9B0043A00A /* ToFragments.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE79A56B25DC7C9B0043A00A /* ToFragments.swift */; };
+		DE79A57325DC7E220043A00A /* PetDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE79A57225DC7E220043A00A /* PetDetails.swift */; };
+		DE79A57D25DC7F860043A00A /* WarmBloodedDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE79A57C25DC7F860043A00A /* WarmBloodedDetails.swift */; };
+		DE79A58325DC806D0043A00A /* HeightInMeters.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE79A58225DC806D0043A00A /* HeightInMeters.swift */; };
 		DEAA585825C8B52F00545460 /* AsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAA585725C8B52F00545460 /* AsType.swift */; };
 		DEED64EB25C0BE2F0068DD7D /* CodegenProposalFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = DEED64E925C0BE2F0068DD7D /* CodegenProposalFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DEED64EE25C0BE2F0068DD7D /* CodegenProposalFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEED64E725C0BE2F0068DD7D /* CodegenProposalFramework.framework */; };
@@ -82,6 +85,9 @@
 		DE79A55225DC4C280043A00A /* FieldJoiner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldJoiner.swift; sourceTree = "<group>"; };
 		DE79A55D25DC4F880043A00A /* ResponseDataProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseDataProtocols.swift; sourceTree = "<group>"; };
 		DE79A56B25DC7C9B0043A00A /* ToFragments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToFragments.swift; sourceTree = "<group>"; };
+		DE79A57225DC7E220043A00A /* PetDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetDetails.swift; sourceTree = "<group>"; };
+		DE79A57C25DC7F860043A00A /* WarmBloodedDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarmBloodedDetails.swift; sourceTree = "<group>"; };
+		DE79A58225DC806D0043A00A /* HeightInMeters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightInMeters.swift; sourceTree = "<group>"; };
 		DEAA585725C8B52F00545460 /* AsType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsType.swift; sourceTree = "<group>"; };
 		DEED64DD25C0BDF20068DD7D /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DEED64E725C0BE2F0068DD7D /* CodegenProposalFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CodegenProposalFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -212,6 +218,16 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		DE79A57125DC7E130043A00A /* Fragments */ = {
+			isa = PBXGroup;
+			children = (
+				DE79A57225DC7E220043A00A /* PetDetails.swift */,
+				DE79A57C25DC7F860043A00A /* WarmBloodedDetails.swift */,
+				DE79A58225DC806D0043A00A /* HeightInMeters.swift */,
+			);
+			path = Fragments;
+			sourceTree = "<group>";
+		};
 		DEAA586925CA1B9800545460 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,6 +238,7 @@
 		DEED64E825C0BE2F0068DD7D /* CodegenProposalFramework */ = {
 			isa = PBXGroup;
 			children = (
+				DE79A57125DC7E130043A00A /* Fragments */,
 				DE79A55C25DC4F660043A00A /* Common */,
 				DE60EE5425BF977B00E80299 /* AllAnimalsQuery.swift */,
 				DEED64E925C0BE2F0068DD7D /* CodegenProposalFramework.h */,
@@ -465,9 +482,12 @@
 			files = (
 				DE79A55E25DC4F880043A00A /* ResponseDataProtocols.swift in Sources */,
 				DEED64F825C0BE3E0068DD7D /* AllAnimalsQuery.swift in Sources */,
+				DE79A57D25DC7F860043A00A /* WarmBloodedDetails.swift in Sources */,
 				DE79A56C25DC7C9B0043A00A /* ToFragments.swift in Sources */,
 				DE79A55325DC4C280043A00A /* FieldJoiner.swift in Sources */,
+				DE79A57325DC7E220043A00A /* PetDetails.swift in Sources */,
 				DEAA585825C8B52F00545460 /* AsType.swift in Sources */,
+				DE79A58325DC806D0043A00A /* HeightInMeters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

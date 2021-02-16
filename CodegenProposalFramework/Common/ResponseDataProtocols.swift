@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - ResponseData
+
 /// A protocol representing any data object that is part of the response
 /// data for a `GraphQLOperation`.
 @dynamicMemberLookup
@@ -24,6 +26,8 @@ protocol ResponseData: AnyObject {
   /// A subscript used by `@dynamicMemberLookup` to access the `Field`s on the data object directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
 }
+
+// MARK: - TypeCase
 
 /// A protocol representing a type case response data object.
 /// A type case is a more specific type, that a `ResponseData` object may also be, such as an
@@ -54,6 +58,18 @@ protocol TypeCase: ResponseData {
   subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T { get }
 }
 
+extension TypeCase where TypeCaseFields == Void {
+  /// Designated initializer for a `TypeCase`.
+  /// - Parameters:
+  ///   - parent: The parent data object that the `TypeCase` is a more specific type for.
+  ///   - fields: The fields for the specific `TypeCase`.
+  init(parent: Parent, fields: Fields) {
+    self.init(parent: parent, fields: fields, typeCaseFields: ())
+  }
+}
+
+// MARK: - FragmentTypeCase
+
 /// A protocol representing a `TypeCase` that is included as a fragment.
 ///
 /// Each fragment defined has a generic class generated that conforms to `FragmentTypeCase`.
@@ -70,6 +86,8 @@ protocol FragmentTypeCase: TypeCase, HasFragments {
   associatedtype Fields = FragmentType.Fields
 }
 
+// MARK: - Fragment
+
 /// A protocol representing a fragment that a `ResponseData` object may be converted to.
 ///
 /// Any `ResponseData` object that conforms to `HasFragments` can be converted to
@@ -80,6 +98,8 @@ protocol Fragment: ResponseData {
   /// - Parameter fields: The GraphQL fields fetched for the fragment.
   init(fields: Fields) // TODO: add typecase fields?
 }
+
+// MARK: - HasFragment
 
 /// A protocol that a `ResponseData` object that contains fragments should conform to.
 protocol HasFragments: ResponseData {
