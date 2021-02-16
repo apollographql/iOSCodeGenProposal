@@ -12,13 +12,16 @@ import Foundation
 @dynamicMemberLookup
 protocol ResponseData: AnyObject {
 
-  /// The type that represents the GraphQL fields fetched and stored directly on this object.
+  /// A type representing the GraphQL fields fetched and stored directly on this object.
   associatedtype Fields
+
+  /// A type representing the fields for all `TypeCase`s that the object may be.
+  associatedtype TypeCaseFields = Void
 
   /// The GraphQL fields fetched and stored directly on this object.
   var fields: Fields { get }
 
-  /// A subsrcipt used by `@dynamicMemberLookup` to access the `Fields` on the data object directly.
+  /// A subscript used by `@dynamicMemberLookup` to access the `Field`s on the data object directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
 }
 
@@ -32,33 +35,65 @@ protocol ResponseData: AnyObject {
 ///
 /// The fields from the parent object are also accessible on the child type case.
 protocol TypeCase: ResponseData {
+
   /// The type of the parent response data object that the type case is a more specific type of.
   associatedtype Parent: ResponseData
 
   /// Designated initializer for a `TypeCase`.
-  /// A `TypeCase` can always be initialized with an instance of its parent data
-  /// and the fields for the `TypeCase`.
   /// - Parameters:
   ///   - parent: The parent data object that the `TypeCase` is a more specific type for.
-  ///   - fields: The fields for the specific `TypeCase`
-  init(parent: Parent, fields: Fields)
+  ///   - fields: The fields for the specific `TypeCase`.
+  ///   - typeCaseFields: The fields for any nested `TypeCases` that the object might be.
+  init(parent: Parent, fields: Fields, typeCaseFields: TypeCaseFields)
 
+  /// The parent response data object that the type case is a more specific type of.
+  /// The fields from the parent object are also accessible on the child type case.
   var parent: Parent { get }
 
+  /// A subscript used by `@dynamicMemberLookup` to access the parent data object's `Field`s directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T { get }
 }
 
-protocol FragmentTypeCase: TypeCase, HasFragments where Fragments: ToFragments<Parent, Fields> {
+/// A protocol representing a `TypeCase` that is included as a fragment.
+///
+/// Each fragment defined has a generic class generated that conforms to `FragmentTypeCase`.
+/// Other response data objects can subclass that generated class to include the reusable fragment.
+/// Like other `TypeCase`s, the fields from the parent object are also accessible on the
+/// child type case.
+protocol FragmentTypeCase: TypeCase, HasFragments {
+
+  /// The type of the fragment that the `FragmentTypeCase` represents
   associatedtype FragmentType: Fragment
+
+  /// A type representing the GraphQL fields for the fragment. These will be stored
+  /// on the fragment directly.
   associatedtype Fields = FragmentType.Fields
 }
 
-protocol HasFragments {
-  associatedtype Fragments
+/// A protocol representing a fragment that a `ResponseData` object may be converted to.
+///
+/// Any `ResponseData` object that conforms to `HasFragments` can be converted to
+/// any `Fragment`s included on that object using its `fragments` property.
+protocol Fragment: ResponseData {
 
-  var fragments: Fragments { get }
+  /// Designated initializer for a `Fragment`
+  /// - Parameter fields: The GraphQL fields fetched for the fragment.
+  init(fields: Fields) // TODO: add typecase fields?
 }
 
-protocol Fragment: ResponseData {
-  init(fields: Fields)
+/// A protocol that a `ResponseData` object that contains fragments should conform to.
+protocol HasFragments: ResponseData {
+
+  /// If applicable, the type of the parent response data object. Defaults to `Void`.
+  /// This will be the `Parent` of any `TypeCase` that also conforms to `HasFragments`.
+  associatedtype Parent = Void
+
+  /// A type representing all of the fragments contained on the response data object.
+  ///
+  /// This type should always be a generic `ToFragments` object.
+  associatedtype Fragments = ToFragments<Parent, Fields>
+
+  /// A `ToFragments` object that contains accessors for all of the fragments
+  /// the object can be converted to.
+  var fragments: Fragments { get }
 }

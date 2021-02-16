@@ -17,6 +17,7 @@
 		DE60EE3325BF973B00E80299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE60EE0725BF973B00E80299 /* Assets.xcassets */; };
 		DE79A55325DC4C280043A00A /* FieldJoiner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE79A55225DC4C280043A00A /* FieldJoiner.swift */; };
 		DE79A55E25DC4F880043A00A /* ResponseDataProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE79A55D25DC4F880043A00A /* ResponseDataProtocols.swift */; };
+		DE79A56C25DC7C9B0043A00A /* ToFragments.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE79A56B25DC7C9B0043A00A /* ToFragments.swift */; };
 		DEAA585825C8B52F00545460 /* AsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAA585725C8B52F00545460 /* AsType.swift */; };
 		DEED64EB25C0BE2F0068DD7D /* CodegenProposalFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = DEED64E925C0BE2F0068DD7D /* CodegenProposalFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DEED64EE25C0BE2F0068DD7D /* CodegenProposalFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEED64E725C0BE2F0068DD7D /* CodegenProposalFramework.framework */; };
@@ -80,6 +81,7 @@
 		DE60EE5425BF977B00E80299 /* AllAnimalsQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllAnimalsQuery.swift; sourceTree = "<group>"; };
 		DE79A55225DC4C280043A00A /* FieldJoiner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldJoiner.swift; sourceTree = "<group>"; };
 		DE79A55D25DC4F880043A00A /* ResponseDataProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseDataProtocols.swift; sourceTree = "<group>"; };
+		DE79A56B25DC7C9B0043A00A /* ToFragments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToFragments.swift; sourceTree = "<group>"; };
 		DEAA585725C8B52F00545460 /* AsType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsType.swift; sourceTree = "<group>"; };
 		DEED64DD25C0BDF20068DD7D /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DEED64E725C0BE2F0068DD7D /* CodegenProposalFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CodegenProposalFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -205,6 +207,7 @@
 				DEAA585725C8B52F00545460 /* AsType.swift */,
 				DE79A55225DC4C280043A00A /* FieldJoiner.swift */,
 				DE79A55D25DC4F880043A00A /* ResponseDataProtocols.swift */,
+				DE79A56B25DC7C9B0043A00A /* ToFragments.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -462,6 +465,7 @@
 			files = (
 				DE79A55E25DC4F880043A00A /* ResponseDataProtocols.swift in Sources */,
 				DEED64F825C0BE3E0068DD7D /* AllAnimalsQuery.swift in Sources */,
+				DE79A56C25DC7C9B0043A00A /* ToFragments.swift in Sources */,
 				DE79A55325DC4C280043A00A /* FieldJoiner.swift in Sources */,
 				DEAA585825C8B52F00545460 /* AsType.swift in Sources */,
 			);

@@ -42,23 +42,7 @@ import Foundation
 // }
 
 // TODO: Fragment with nested type case
-
-@dynamicMemberLookup
-class ToFragments<Parent, Fields> {
-  let parent: Parent
-  let fields: Fields
-
-  internal init(parent: Parent, fields: Fields) {
-    self.parent = parent
-    self.fields = fields
-  }
-}
-
-extension ToFragments where Parent: HasFragments {
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fragments, T>) -> T {
-    return parent.fragments[keyPath: keyPath]
-  }
-}
+// TODO: Figure out access control on everything
 
 // MARK: Fragments
 
