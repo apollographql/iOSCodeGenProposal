@@ -26,11 +26,11 @@ class FieldJoiner<T: ResponseData, U: ResponseData> {
     self.second = second
   }
 
-  subscript<Value>(dynamicMember keyPath: KeyPath<T.Props, Value>) -> Value {
-    first.props[keyPath: keyPath]
+  subscript<Value>(dynamicMember keyPath: KeyPath<T.Fields, Value>) -> Value {
+    first.fields[keyPath: keyPath]
   }
 
-  subscript<Value>(dynamicMember keyPath: KeyPath<U.Props, Value>) -> Value {
-    second.props[keyPath: keyPath]
+  subscript<Value>(dynamicMember keyPath: KeyPath<U.Fields, Value>) -> Value {
+    second.fields[keyPath: keyPath]
   }
 }

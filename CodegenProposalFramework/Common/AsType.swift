@@ -21,8 +21,8 @@ import Foundation
 
   static var `nil`: Self { Self.init() }
 
-  init(parent: T.Parent, props: T.Props) {
-    self.typeCase = LazyWeakTypeCase(parent: parent, props: props)
+  init(parent: T.Parent, fields: T.Fields) {
+    self.typeCase = LazyWeakTypeCase(parent: parent, fields: fields)
   }
 
   init() {
@@ -39,11 +39,11 @@ private final class LazyWeakTypeCase<T: TypeCase> {
   private weak var _value: T?
 
   private unowned let parent: T.Parent
-  fileprivate let props: T.Props
+  fileprivate let fields: T.Fields
 
-  init(parent: T.Parent, props: T.Props) {
+  init(parent: T.Parent, fields: T.Fields) {
     self.parent = parent
-    self.props = props
+    self.fields = fields
   }
 
   var value: T {
@@ -52,7 +52,7 @@ private final class LazyWeakTypeCase<T: TypeCase> {
         return value
       }
 
-      let value = T.init(parent: parent, props: props)
+      let value = T.init(parent: parent, fields: fields)
       self._value = value
       return value
     }

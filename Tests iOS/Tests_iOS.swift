@@ -21,7 +21,7 @@ class Tests_iOS: XCTestCase {
   func testSpecies() throws {
     let cat = Animal(__typename: "Cat",
                          species: "Cat",
-                         height: .init(props: .init(__typename: "Height", feet: 2, inches: 10, meters: 4)))
+                         height: .init(fields: .init(__typename: "Height", feet: 2, inches: 10, meters: 4)))
     XCTAssertEqual(cat.species, "Cat")
   }
 
@@ -29,12 +29,12 @@ class Tests_iOS: XCTestCase {
     let asWarmBloodedPet = Animal( // TODO: have to retain this for nested weak type case
       __typename: "Cat",
       species: "Cat",
-      height: .init(props: .init(__typename: "Height", feet: 2, inches: 7, meters: 10))
+      height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10))
     )
-    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(props: .init(meters: 10, yards: 3)))
+    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(fields: .init(meters: 10, yards: 3)))
     .parent
     .makeAsPet(humanName: "Tiger Lily", favoriteToy: "Shoelaces")
-    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(props: .init(meters: 10, yards: 3)))
+    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(fields: .init(meters: 10, yards: 3)))
 
     let subject = asWarmBloodedPet.parent.parent
 
@@ -55,12 +55,12 @@ class Tests_iOS: XCTestCase {
     let asWarmBloodedPet = Animal( // TODO: have to retain this for nested weak type case
       __typename: "Cat",
       species: "Cat",
-      height: .init(props: .init(__typename: "Height", feet: 2, inches: 7, meters: 10))
+      height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10))
     )
-    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(props: .init(meters: 10, yards: 3)))
+    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(fields: .init(meters: 10, yards: 3)))
     .parent
     .makeAsPet(humanName: "Tiger Lily", favoriteToy: "Shoelaces")
-    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(props: .init(meters: 10, yards: 3)))
+    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(fields: .init(meters: 10, yards: 3)))
 
     let subject = asWarmBloodedPet.parent.parent
 

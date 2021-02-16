@@ -41,50 +41,14 @@ import Foundation
 //   }
 // }
 
-// MARK: Protocols
-
 @dynamicMemberLookup
-protocol ResponseData: AnyObject {
-  associatedtype Props
-
-  var props: Props { get }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T { get }
-}
-
-protocol TypeCase: ResponseData {
-  associatedtype Parent: ResponseData
-
-  init(parent: Parent, props: Props)
-
-  var parent: Parent { get }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Props, T>) -> T { get }
-}
-
-protocol FragmentTypeCase: TypeCase, HasFragments where Fragments: ToFragments<Parent, Props> {
-  associatedtype FragmentType: Fragment
-  associatedtype Props = FragmentType.Props
-}
-
-protocol HasFragments {
-  associatedtype Fragments
-
-  var fragments: Fragments { get }
-}
-
-protocol Fragment: ResponseData {
-  init(props: Props)
-}
-
-@dynamicMemberLookup
-class ToFragments<Parent, Props> {
+class ToFragments<Parent, Fields> {
   let parent: Parent
-  let props: Props
+  let fields: Fields
 
-  internal init(parent: Parent, props: Props) {
+  internal init(parent: Parent, fields: Fields) {
     self.parent = parent
-    self.props = props
+    self.fields = fields
   }
 }
 
@@ -97,7 +61,7 @@ extension ToFragments where Parent: HasFragments {
 // MARK: Fragments
 
 final class PetDetails: Fragment {
-  final class Props {
+  final class Fields {
     let humanName: String
     let favoriteToy: String
 
@@ -107,44 +71,44 @@ final class PetDetails: Fragment {
     }
   }
 
-  let props: Props
+  let fields: Fields
 
-  init(props: Props) {
-    self.props = props
+  init(fields: Fields) {
+    self.fields = fields
   }
 
-  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-    return props[keyPath: keyPath]
+  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+    return fields[keyPath: keyPath]
   }
 }
 
 final class AsPetDetails<Parent: ResponseData>: FragmentTypeCase {
   typealias FragmentType = PetDetails
 
-  let props: Props
+  let fields: Fields
   let parent: Parent
-  private(set) lazy var fragments = Fragments(parent: parent, props: props)
+  private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
 
-  init(parent: Parent, props: Props) {
+  init(parent: Parent, fields: Fields) {
     self.parent = parent
-    self.props = props
+    self.fields = fields
   }
 
-  final class Fragments: ToFragments<Parent, Props> {
-    private(set) lazy var petDetails = PetDetails(props: self.props)
+  final class Fragments: ToFragments<Parent, Fields> {
+    private(set) lazy var petDetails = PetDetails(fields: self.fields)
   }
 
-  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-    return props[keyPath: keyPath]
+  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+    return fields[keyPath: keyPath]
   }
 
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Props, T>) -> T {
-    return parent.props[keyPath: keyPath]
+  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
+    return parent.fields[keyPath: keyPath]
   }
 }
 
 final class WarmBloodedDetails: Fragment {
-  final class Props {
+  final class Fields {
     let bodyTemperature: Int
     let height: Height
 
@@ -154,14 +118,14 @@ final class WarmBloodedDetails: Fragment {
     }
   }
 
-  let props: Props
+  let fields: Fields
 
-  init(props: Props) {
-    self.props = props
+  init(fields: Fields) {
+    self.fields = fields
   }
 
   final class Height: ResponseData {
-    final class Props {
+    final class Fields {
       let meters: Int
       let yards: Int
 
@@ -171,49 +135,49 @@ final class WarmBloodedDetails: Fragment {
       }
     }
 
-    let props: Props
+    let fields: Fields
 
-    init(props: Props) {
-      self.props = props
+    init(fields: Fields) {
+      self.fields = fields
     }
 
-    subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-      return props[keyPath: keyPath]
+    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+      return fields[keyPath: keyPath]
     }
   }
 
-  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-    return props[keyPath: keyPath]
+  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+    return fields[keyPath: keyPath]
   }
 }
 
 class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
   typealias FragmentType = WarmBloodedDetails
 
-  let props: Props
+  let fields: Fields
   let parent: Parent
-  private(set) lazy var fragments = Fragments(parent: parent, props: props)
+  private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
 
-  required init(parent: Parent, props: Props) {
+  required init(parent: Parent, fields: Fields) {
     self.parent = parent
-    self.props = props
+    self.fields = fields
   }
 
-  final class Fragments: ToFragments<Parent, Props> {
-    private(set) lazy var warmBloodedDetails = WarmBloodedDetails(props: self.props)
+  final class Fragments: ToFragments<Parent, Fields> {
+    private(set) lazy var warmBloodedDetails = WarmBloodedDetails(fields: self.fields)
   }
 
-  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-    return props[keyPath: keyPath]
+  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+    return fields[keyPath: keyPath]
   }
 
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Props, T>) -> T {
-    return parent.props[keyPath: keyPath]
+  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
+    return parent.fields[keyPath: keyPath]
   }
 }
 
 final class HeightInMeters: Fragment {
-  final class Props {
+  final class Fields {
     let height: Height
 
     init(height: Height) {
@@ -221,18 +185,18 @@ final class HeightInMeters: Fragment {
     }
   }
 
-  let props: Props
+  let fields: Fields
 
-  init(props: Props) {
-    self.props = props
+  init(fields: Fields) {
+    self.fields = fields
   }
 
   init(height: Height) {
-    self.props = Props(height: height)
+    self.fields = Fields(height: height)
   }
 
   final class Height: ResponseData {
-    final class Props {
+    final class Fields {
       let meters: Int
 
       init(meters: Int) {
@@ -240,56 +204,56 @@ final class HeightInMeters: Fragment {
       }
     }
 
-    let props: Props
+    let fields: Fields
 
-    init(props: Props) {
-      self.props = props
+    init(fields: Fields) {
+      self.fields = fields
     }
 
     init(meters: Int) {
-      self.props = Props(meters: meters)
+      self.fields = Fields(meters: meters)
     }
 
-    subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-      return props[keyPath: keyPath]
+    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+      return fields[keyPath: keyPath]
     }
   }
 
-  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-    return props[keyPath: keyPath]
+  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+    return fields[keyPath: keyPath]
   }
 }
 
 final class AsHeightInMeters<Parent: ResponseData>: FragmentTypeCase {
   typealias FragmentType = HeightInMeters
 
-  let props: Props
+  let fields: Fields
   let parent: Parent
-  private(set) lazy var fragments = Fragments(parent: parent, props: props)
+  private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
 
-  init(parent: Parent, props: Props) {
+  init(parent: Parent, fields: Fields) {
     self.parent = parent
-    self.props = props
+    self.fields = fields
   }
 
   @dynamicMemberLookup
-  final class Fragments: ToFragments<Parent, Props> {
-    private(set) lazy var heightInMeters = HeightInMeters(props: self.props)
+  final class Fragments: ToFragments<Parent, Fields> {
+    private(set) lazy var heightInMeters = HeightInMeters(fields: self.fields)
   }
 
-  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-    return props[keyPath: keyPath]
+  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+    return fields[keyPath: keyPath]
   }
 
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Props, T>) -> T {
-    return parent.props[keyPath: keyPath]
+  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
+    return parent.fields[keyPath: keyPath]
   }
 }
 
 // MARK: - Query Response Data Structs
 
 public final class Animal: ResponseData, HasFragments {
-  final class Props {
+  final class Fields {
     let __typename: String
     let species: String
     let height: Height
@@ -302,7 +266,7 @@ public final class Animal: ResponseData, HasFragments {
     }
   }
 
-  let props: Props
+  let fields: Fields
 
   @AsType var asPet: AsPet?
 
@@ -310,24 +274,24 @@ public final class Animal: ResponseData, HasFragments {
 
   private(set) var fragments: Fragments
 
-  final class Fragments: ToFragments<Void, Props> {
-    private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: props.height.meters))
+  final class Fragments: ToFragments<Void, Fields> {
+    private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: fields.height.meters))
   }
 
   init(__typename: String, species: String, height: Height) {
-    self.props = Props(__typename: __typename, species: species, height: height)
-    self.fragments = Fragments(parent: (), props: props)
+    self.fields = Fields(__typename: __typename, species: species, height: height)
+    self.fragments = Fragments(parent: (), fields: fields)
     self._asPet = .nil
     self._asWarmBlooded = .nil
   }
 
-  subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-    return props[keyPath: keyPath]
+  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+    return fields[keyPath: keyPath]
   }
 
   /// `Animal.Height`
   final class Height: ResponseData {
-    final class Props {
+    final class Fields {
       let __typename: String
       let feet: Int
       let inches: Int
@@ -344,14 +308,14 @@ public final class Animal: ResponseData, HasFragments {
       }
     }
 
-    let props: Props
+    let fields: Fields
 
-    init(props: Props) {
-      self.props = props
+    init(fields: Fields) {
+      self.fields = fields
     }
 
-    subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-      return props[keyPath: keyPath]
+    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+      return fields[keyPath: keyPath]
     }
   }
 
@@ -366,15 +330,15 @@ public final class Animal: ResponseData, HasFragments {
 
     let height: Height
 
-    required init(parent: Animal, props: AsWarmBloodedDetails<Animal>.Props) {
-      self.height = .init(first: parent.height, second: props.height)
-      super.init(parent: parent, props: props)
+    required init(parent: Animal, fields: AsWarmBloodedDetails<Animal>.Fields) {
+      self.height = .init(first: parent.height, second: fields.height)
+      super.init(parent: parent, fields: fields)
     }
   }
 
   /// `Animal.Predators`
 //  final class Predators {
-//    final class Props {
+//    final class Fields {
 //      var __typename: String // Animal
 //      var species: String
 //    }
@@ -396,7 +360,7 @@ public final class Animal: ResponseData, HasFragments {
   
   /// `Animal.AsPet`
   final class AsPet: TypeCase, HasFragments {
-    final class Props {
+    final class Fields {
       let humanName: String
       let favoriteToy: String
 
@@ -406,12 +370,12 @@ public final class Animal: ResponseData, HasFragments {
       }
     }
 
-    let props: Props
+    let fields: Fields
     let parent: Animal
-    private(set) lazy var fragments = Fragments(parent: parent, props: props)
+    private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
 
-    final class Fragments: ToFragments<Animal, Props> {
-      private(set) lazy var petDetails = PetDetails(props: .init(humanName: props.humanName, favoriteToy: props.favoriteToy))
+    final class Fragments: ToFragments<Animal, Fields> {
+      private(set) lazy var petDetails = PetDetails(fields: .init(humanName: fields.humanName, favoriteToy: fields.favoriteToy))
     }
 
     // Because the type case for `WarmBlooded` only includes the fragment, we can just use the fragment type case.
@@ -424,22 +388,22 @@ public final class Animal: ResponseData, HasFragments {
       favoriteToy: String,
       parent: Animal
     ) {
-      let props = Props(humanName: humanName, favoriteToy: favoriteToy)
-      self.init(parent: parent, props: props)
+      let fields = Fields(humanName: humanName, favoriteToy: favoriteToy)
+      self.init(parent: parent, fields: fields)
     }
 
-    init(parent: Animal, props: Props) {
+    init(parent: Animal, fields: Fields) {
       self.parent = parent
-      self.props = props
+      self.fields = fields
       self._asWarmBlooded = .nil
     }
 
-    subscript<T>(dynamicMember keyPath: KeyPath<Props, T>) -> T {
-      return props[keyPath: keyPath]
+    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+      return fields[keyPath: keyPath]
     }
 
-    subscript<T>(dynamicMember keyPath: KeyPath<Parent.Props, T>) -> T {
-      parent.props[keyPath: keyPath]
+    subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
+      parent.fields[keyPath: keyPath]
     }
 
     final class AsWarmBlooded: AsWarmBloodedDetails<Animal.AsPet> {
@@ -449,9 +413,9 @@ public final class Animal: ResponseData, HasFragments {
 
       let height: Height
 
-      required init(parent: Animal.AsPet, props: AsWarmBloodedDetails<Animal.AsPet>.Props) {
-        self.height = .init(first: parent.height, second: props.height)
-        super.init(parent: parent, props: props)
+      required init(parent: Animal.AsPet, fields: AsWarmBloodedDetails<Animal.AsPet>.Fields) {
+        self.height = .init(first: parent.height, second: fields.height)
+        super.init(parent: parent, fields: fields)
       }
     }
   }
@@ -463,9 +427,9 @@ public final class Animal: ResponseData, HasFragments {
 extension Animal {
 
   func makeAsPet(humanName: String, favoriteToy: String) -> AsPet {
-    let asPetProps = AsPet.Props(humanName: humanName,
+    let asPetFields = AsPet.Fields(humanName: humanName,
                                  favoriteToy: favoriteToy)
-    self._asPet = AsType(parent: self, props: asPetProps)
+    self._asPet = AsType(parent: self, fields: asPetFields)
     return self.asPet!
   }
 
@@ -473,11 +437,11 @@ extension Animal {
     bodyTemperature: Int,
     height: WarmBloodedDetails.Height
   ) -> AsWarmBloodedDetails<Animal> {
-    let asWarmBloodedProps = AsWarmBloodedDetails<Animal>.Props(
+    let asWarmBloodedFields = AsWarmBloodedDetails<Animal>.Fields(
       bodyTemperature: bodyTemperature,
       height: height
     )
-    self._asWarmBlooded = AsType(parent: self, props: asWarmBloodedProps)
+    self._asWarmBlooded = AsType(parent: self, fields: asWarmBloodedFields)
     return self.asWarmBlooded!
   }
 
@@ -489,11 +453,11 @@ extension Animal.AsPet {
     bodyTemperature: Int,
     height: WarmBloodedDetails.Height
   ) -> AsWarmBloodedDetails<Animal.AsPet> {
-    let asWarmBloodedProps = AsWarmBloodedDetails<Animal.AsPet>.Props(
+    let asWarmBloodedFields = AsWarmBloodedDetails<Animal.AsPet>.Fields(
       bodyTemperature: bodyTemperature,
       height: height
     )
-    self._asWarmBlooded = AsType(parent: self, props: asWarmBloodedProps)
+    self._asWarmBlooded = AsType(parent: self, fields: asWarmBloodedFields)
     return self.asWarmBlooded!
   }
 
