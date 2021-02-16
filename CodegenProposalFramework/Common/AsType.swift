@@ -42,7 +42,7 @@ import Foundation
 
 extension AsType where T.TypeCaseFields == Void {
   init(parent: T.Parent, fields: T.Fields?) {
-    self.init(parent: parent, fields: fields, typeCaseFields: nil)
+    self.init(parent: parent, fields: fields, typeCaseFields: ())
   }
 }
 
