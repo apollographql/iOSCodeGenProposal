@@ -18,19 +18,19 @@ import Foundation
 /// more than two objects.
 @dynamicMemberLookup
 class FieldJoiner<T: ResponseData, U: ResponseData> {
-  let first: T // TODO: Just hold on to fields?
-  let second: U
+  let first: T.Fields
+  let second: U.Fields
 
   init(first: T, second: U) {
-    self.first = first
-    self.second = second
+    self.first = first.fields
+    self.second = second.fields
   }
 
   subscript<Value>(dynamicMember keyPath: KeyPath<T.Fields, Value>) -> Value {
-    first.fields[keyPath: keyPath]
+    first[keyPath: keyPath]
   }
 
   subscript<Value>(dynamicMember keyPath: KeyPath<U.Fields, Value>) -> Value {
-    second.fields[keyPath: keyPath]
+    second[keyPath: keyPath]
   }
 }
