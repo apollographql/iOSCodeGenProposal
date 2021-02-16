@@ -25,6 +25,7 @@ import Foundation
 
 // TODO: Fragment with nested type case
 // TODO: Figure out access control on everything
+// TODO: Generate keypath subscripts for deep nested fields on parents (`subject.asPet?.asWarmBlooded?.species`) - needs code completion
 
 // MARK: - Query Response Data Structs
 
@@ -42,9 +43,17 @@ public final class Animal: ResponseData, HasFragments {
     }
   }
 
-  struct TypeCaseFields {
+  final class TypeCaseFields {
     let asPet: (AsPet.Fields, AsPet.TypeCaseFields)?
     let asWarmBlooded: AsWarmBlooded.Fields?
+
+    init(
+      asPet: (AsPet.Fields, AsPet.TypeCaseFields)? = nil,
+      asWarmBlooded: AsWarmBlooded.Fields? = nil
+    ) {
+      self.asPet = asPet
+      self.asWarmBlooded = asWarmBlooded
+    }
   }
 
   let fields: Fields
@@ -54,7 +63,7 @@ public final class Animal: ResponseData, HasFragments {
 
   @AsType var asWarmBlooded: AsWarmBlooded?
 
-  private(set) var fragments: Fragments
+  private(set) lazy var fragments = Fragments(parent: (), fields: fields)
 
   final class Fragments: ToFragments<Void, Fields> {
     private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: fields.height.meters))
@@ -70,7 +79,6 @@ public final class Animal: ResponseData, HasFragments {
     )
   ) {
     self.fields = Fields(__typename: __typename, species: species, height: height)
-    self.fragments = Fragments(parent: (), fields: fields)
     self.typeCaseFields = typeCaseFields
 
     self._asPet = .init(
@@ -95,10 +103,10 @@ public final class Animal: ResponseData, HasFragments {
       let __typename: String
       let feet: Int
       let inches: Int
-      // This field is merged in from `HeightInMeters` fragment.
-      // Because the fragment type identically matches the type it is queried on, we do
-      // not need an optional `TypeCase` and can merge the field up.
-      let meters: Int
+      let meters: Int // - NOTE:
+                      // This field is merged in from `HeightInMeters` fragment.
+                      // Because the fragment type identically matches the type it is queried on, we do
+                      // not need an optional `TypeCase` and can merge the field up.
 
       init(__typename: String, feet: Int, inches: Int, meters: Int) {
         self.__typename = __typename
@@ -119,7 +127,9 @@ public final class Animal: ResponseData, HasFragments {
     }
   }
 
+  // - NOTE:
   // Because the type case for `WarmBlooded` only includes the fragment, we can just inherit the fragment type case.
+  //
   // For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
   // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
   /// `Animal.AsWarmBlooded`
@@ -132,7 +142,7 @@ public final class Animal: ResponseData, HasFragments {
 
     required init(
       parent: Animal,
-      fields: AsWarmBloodedDetails<Animal>.Fields,
+      fields: Fields,
       typeCaseFields: Void = ()
     ) {
       self.height = .init(first: parent.height, second: fields.height)
@@ -174,20 +184,29 @@ public final class Animal: ResponseData, HasFragments {
       }
     }
 
-    struct TypeCaseFields { // TODO: Make this a class?
+    final class TypeCaseFields {
       let asWarmBlooded: AsWarmBlooded.Fields?
+
+      init(asWarmBlooded: AsWarmBlooded.Fields? = nil) {
+        self.asWarmBlooded = asWarmBlooded
+      }
     }
 
     let fields: Fields
     let parent: Animal
     private let typeCaseFields: TypeCaseFields
+
+    @AsType var asWarmBlooded: AsWarmBlooded?
+
     private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
 
     final class Fragments: ToFragments<Animal, Fields> {
-      private(set) lazy var petDetails = PetDetails(fields: .init(humanName: fields.humanName, favoriteToy: fields.favoriteToy))
+      private(set) lazy var petDetails = PetDetails(
+        fields: .init(
+          humanName: fields.humanName,
+          favoriteToy: fields.favoriteToy
+        ))
     }
-
-    @AsType var asWarmBlooded: AsWarmBlooded?
 
     convenience init(
       humanName: String = "",
@@ -227,7 +246,7 @@ public final class Animal: ResponseData, HasFragments {
 
       required init(
         parent: Animal.AsPet,
-        fields: AsWarmBloodedDetails<Animal.AsPet>.Fields,
+        fields: Fields,
         typeCaseFields: Void = ()
       ) {
         self.height = .init(first: parent.height, second: fields.height)

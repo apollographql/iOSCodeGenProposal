@@ -228,6 +228,14 @@
 			path = Fragments;
 			sourceTree = "<group>";
 		};
+		DE79A58825DC81390043A00A /* Queries */ = {
+			isa = PBXGroup;
+			children = (
+				DE60EE5425BF977B00E80299 /* AllAnimalsQuery.swift */,
+			);
+			path = Queries;
+			sourceTree = "<group>";
+		};
 		DEAA586925CA1B9800545460 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -238,9 +246,9 @@
 		DEED64E825C0BE2F0068DD7D /* CodegenProposalFramework */ = {
 			isa = PBXGroup;
 			children = (
+				DE79A58825DC81390043A00A /* Queries */,
 				DE79A57125DC7E130043A00A /* Fragments */,
 				DE79A55C25DC4F660043A00A /* Common */,
-				DE60EE5425BF977B00E80299 /* AllAnimalsQuery.swift */,
 				DEED64E925C0BE2F0068DD7D /* CodegenProposalFramework.h */,
 				DEED64EA25C0BE2F0068DD7D /* Info.plist */,
 			);
