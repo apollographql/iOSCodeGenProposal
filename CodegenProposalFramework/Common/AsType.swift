@@ -21,8 +21,13 @@ import Foundation
 
   static var `nil`: Self { Self.init() }
 
-  init(parent: T.Parent, fields: T.Fields) {
-    self.typeCase = LazyWeakTypeCase(parent: parent, fields: fields)
+  init(parent: T.Parent, fields: T.Fields?, typeCaseFields: T.TypeCaseFields?) {
+    guard let fields = fields, let typeCaseFields = typeCaseFields else {
+      self.typeCase = nil
+      return
+    }
+
+    self.typeCase = LazyWeakTypeCase(parent: parent, fields: fields, typeCaseFields: typeCaseFields)
   }
 
   init() {
@@ -35,15 +40,23 @@ import Foundation
   }
 }
 
+extension AsType where T.TypeCaseFields == Void {
+  init(parent: T.Parent, fields: T.Fields?) {
+    self.init(parent: parent, fields: fields, typeCaseFields: nil)
+  }
+}
+
 private final class LazyWeakTypeCase<T: TypeCase> {
   private weak var _value: T?
 
   private unowned let parent: T.Parent
   fileprivate let fields: T.Fields
+  fileprivate let typeCaseFields: T.TypeCaseFields
 
-  init(parent: T.Parent, fields: T.Fields) {
+  init(parent: T.Parent, fields: T.Fields, typeCaseFields: T.TypeCaseFields) {
     self.parent = parent
     self.fields = fields
+    self.typeCaseFields = typeCaseFields
   }
 
   var value: T {
@@ -52,7 +65,7 @@ private final class LazyWeakTypeCase<T: TypeCase> {
         return value
       }
 
-      let value = T.init(parent: parent, fields: fields)
+      let value = T.init(parent: parent, fields: fields, typeCaseFields: typeCaseFields)
       self._value = value
       return value
     }
