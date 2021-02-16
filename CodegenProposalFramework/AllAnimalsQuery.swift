@@ -1,5 +1,5 @@
 import Foundation
-// query {
+// query AllAnimals {
 //   allAnimals {
 //     height {
 //       feet
@@ -61,16 +61,6 @@ protocol TypeCase: ResponseData {
 
   subscript<T>(dynamicMember keyPath: KeyPath<Parent.Props, T>) -> T { get }
 }
-
-//extension TypeCase where Parent: TypeCase {
-//  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Props, T>) -> T {
-//    return parent.props[keyPath: keyPath]
-//  }
-//
-//  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Parent.Props, T>) -> T {
-//    return parent.parent.props[keyPath: keyPath]
-//  }
-//}
 
 protocol FragmentTypeCase: TypeCase, HasFragments where Fragments: ToFragments<Parent, Props> {
   associatedtype FragmentType: Fragment

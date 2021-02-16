@@ -15,13 +15,12 @@
 		DE60EE3125BF973B00E80299 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE0625BF973A00E80299 /* ContentView.swift */; };
 		DE60EE3225BF973B00E80299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE60EE0725BF973B00E80299 /* Assets.xcassets */; };
 		DE60EE3325BF973B00E80299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE60EE0725BF973B00E80299 /* Assets.xcassets */; };
-		DEAA585825C8B52F00545460 /* LazyWeakProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAA585725C8B52F00545460 /* LazyWeakProperty.swift */; };
+		DE79A55325DC4C280043A00A /* FieldJoiner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE79A55225DC4C280043A00A /* FieldJoiner.swift */; };
+		DEAA585825C8B52F00545460 /* AsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAA585725C8B52F00545460 /* AsType.swift */; };
 		DEED64EB25C0BE2F0068DD7D /* CodegenProposalFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = DEED64E925C0BE2F0068DD7D /* CodegenProposalFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DEED64EE25C0BE2F0068DD7D /* CodegenProposalFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEED64E725C0BE2F0068DD7D /* CodegenProposalFramework.framework */; };
 		DEED64EF25C0BE2F0068DD7D /* CodegenProposalFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DEED64E725C0BE2F0068DD7D /* CodegenProposalFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		DEED64F825C0BE3E0068DD7D /* AnimalsCodegen1.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE5425BF977B00E80299 /* AnimalsCodegen1.swift */; };
-		DEED64F925C0BE3E0068DD7D /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE4625BF976F00E80299 /* Reference.swift */; };
-		DEED64FA25C0BE3E0068DD7D /* HasParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE4D25BF977700E80299 /* HasParent.swift */; };
+		DEED64F825C0BE3E0068DD7D /* AllAnimalsQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60EE5425BF977B00E80299 /* AllAnimalsQuery.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,10 +76,9 @@
 		DE60EE2725BF973B00E80299 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE60EE2B25BF973B00E80299 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		DE60EE2D25BF973B00E80299 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DE60EE4625BF976F00E80299 /* Reference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reference.swift; sourceTree = "<group>"; };
-		DE60EE4D25BF977700E80299 /* HasParent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HasParent.swift; sourceTree = "<group>"; };
-		DE60EE5425BF977B00E80299 /* AnimalsCodegen1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimalsCodegen1.swift; sourceTree = "<group>"; };
-		DEAA585725C8B52F00545460 /* LazyWeakProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyWeakProperty.swift; sourceTree = "<group>"; };
+		DE60EE5425BF977B00E80299 /* AllAnimalsQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllAnimalsQuery.swift; sourceTree = "<group>"; };
+		DE79A55225DC4C280043A00A /* FieldJoiner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldJoiner.swift; sourceTree = "<group>"; };
+		DEAA585725C8B52F00545460 /* AsType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsType.swift; sourceTree = "<group>"; };
 		DEED64DD25C0BDF20068DD7D /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DEED64E725C0BE2F0068DD7D /* CodegenProposalFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CodegenProposalFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEED64E925C0BE2F0068DD7D /* CodegenProposalFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CodegenProposalFramework.h; sourceTree = "<group>"; };
@@ -209,10 +207,9 @@
 		DEED64E825C0BE2F0068DD7D /* CodegenProposalFramework */ = {
 			isa = PBXGroup;
 			children = (
-				DEAA585725C8B52F00545460 /* LazyWeakProperty.swift */,
-				DE60EE5425BF977B00E80299 /* AnimalsCodegen1.swift */,
-				DE60EE4625BF976F00E80299 /* Reference.swift */,
-				DE60EE4D25BF977700E80299 /* HasParent.swift */,
+				DEAA585725C8B52F00545460 /* AsType.swift */,
+				DE79A55225DC4C280043A00A /* FieldJoiner.swift */,
+				DE60EE5425BF977B00E80299 /* AllAnimalsQuery.swift */,
 				DEED64E925C0BE2F0068DD7D /* CodegenProposalFramework.h */,
 				DEED64EA25C0BE2F0068DD7D /* Info.plist */,
 			);
@@ -452,10 +449,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEED64F825C0BE3E0068DD7D /* AnimalsCodegen1.swift in Sources */,
-				DEED64FA25C0BE3E0068DD7D /* HasParent.swift in Sources */,
-				DEAA585825C8B52F00545460 /* LazyWeakProperty.swift in Sources */,
-				DEED64F925C0BE3E0068DD7D /* Reference.swift in Sources */,
+				DEED64F825C0BE3E0068DD7D /* AllAnimalsQuery.swift in Sources */,
+				DE79A55325DC4C280043A00A /* FieldJoiner.swift in Sources */,
+				DEAA585825C8B52F00545460 /* AsType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
