@@ -18,7 +18,7 @@ import Foundation
 /// more than two objects.
 @dynamicMemberLookup
 class FieldJoiner<T: ResponseData, U: ResponseData> {
-  let first: T
+  let first: T // TODO: Just hold on to fields?
   let second: U
 
   init(first: T, second: U) {

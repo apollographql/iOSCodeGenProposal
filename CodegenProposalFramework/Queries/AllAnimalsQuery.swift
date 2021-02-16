@@ -34,12 +34,13 @@ public final class Animal: ResponseData, HasFragments {
     let __typename: String
     let species: String
     let height: Height
-//    let predators: [Predators] = [] // TODO
+    let predators: [Predators]
 
-    init(__typename: String, species: String, height: Animal.Height) {
+    init(__typename: String, species: String, height: Animal.Height, predators: [Predators]) {
       self.__typename = __typename
       self.species = species
       self.height = height
+      self.predators = predators
     }
   }
 
@@ -74,11 +75,17 @@ public final class Animal: ResponseData, HasFragments {
     __typename: String,
     species: String,
     height: Height,
+    predators: [Predators],
     typeCaseFields: TypeCaseFields = .init(
       asPet: nil, asWarmBlooded: nil
     )
   ) {
-    self.fields = Fields(__typename: __typename, species: species, height: height)
+    self.fields = Fields(
+      __typename: __typename,
+      species: species,
+      height: height,
+      predators: predators
+    )
     self.typeCaseFields = typeCaseFields
 
     self._asPet = .init(
@@ -107,6 +114,7 @@ public final class Animal: ResponseData, HasFragments {
                       // This field is merged in from `HeightInMeters` fragment.
                       // Because the fragment type identically matches the type it is queried on, we do
                       // not need an optional `TypeCase` and can merge the field up.
+                      // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
 
       init(__typename: String, feet: Int, inches: Int, meters: Int) {
         self.__typename = __typename
@@ -151,26 +159,97 @@ public final class Animal: ResponseData, HasFragments {
   }
 
   /// `Animal.Predators`
-//  final class Predators {
-//    final class Fields {
-//      var __typename: String // Animal
-//      var species: String
-//    }
-//
-//    var asWarmBlooded: AsWarmBlooded?
-//
-//    /// `AllAnimals.Predators.AsWarmBlooded`
-//    @dynamicMemberLookup
-//    struct AsWarmBlooded: WarmBloodedDetails, HasParent {
-//      var bodyTemperature: Int
-//
-//      internal let parent: Reference<AllAnimals.Predators>
-//
-//      subscript<T>(dynamicMember keyPath: KeyPath<Self.Parent, T>) -> T {
-//        parent.value[keyPath: keyPath]
-//      }
-//    }
-//  }
+  final class Predators: ResponseData {
+    final class Fields {
+      let __typename: String
+      let species: String
+
+      init(__typename: String, species: String) {
+        self.__typename = __typename
+        self.species = species
+      }
+    }
+
+    let fields: Fields
+    private let typeCaseFields: TypeCaseFields
+
+    final class TypeCaseFields {
+      let asWarmBlooded: AsWarmBlooded.Fields?
+
+      init(asWarmBlooded: AsWarmBlooded.Fields? = nil) {
+        self.asWarmBlooded = asWarmBlooded
+      }
+    }
+
+    @AsType var asWarmBlooded: AsWarmBlooded?
+
+    init(
+      __typename: String,
+      species: String,
+      typeCaseFields: TypeCaseFields = .init(asWarmBlooded: nil)
+    ) {
+      self.fields = Fields(
+        __typename: __typename,
+        species: species
+      )
+      self.typeCaseFields = typeCaseFields
+
+      self._asWarmBlooded = .init(parent: self, fields: typeCaseFields.asWarmBlooded)
+    }
+
+    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+      fields[keyPath: keyPath]
+    }
+
+    /// `AllAnimals.Predators.AsWarmBlooded`
+    final class AsWarmBlooded: TypeCase, HasFragments {
+      final class Fields {
+        let bodyTemperature: Int
+        let height: WarmBloodedDetails.Height // - NOTE:
+                                              // These 2 fields are merged in from `WarmBloodedDetails` fragment.
+                                              // Because the fragment type identically matches the type it is queried on, we do
+                                              // not need an optional `TypeCase` and can merge the fields up.
+                                              // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
+        let hasFur: Bool
+
+        init(
+          bodyTemperature: Int,
+          height: WarmBloodedDetails.Height,
+          hasFur: Bool
+        ) {
+          self.bodyTemperature = bodyTemperature
+          self.height = height
+          self.hasFur = hasFur
+        }
+      }
+
+      let fields: Fields
+      let parent: Animal.Predators
+
+      private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
+
+      init(parent: Animal.Predators, fields: Fields, typeCaseFields: Void = ()) {
+        self.parent = parent
+        self.fields = fields
+      }
+
+      final class Fragments: ToFragments<Animal.Predators, Fields> {
+        private(set) lazy var warmBloodedDetails = WarmBloodedDetails(
+          fields: .init(
+            bodyTemperature: fields.bodyTemperature,
+            height: fields.height
+          ))
+      }
+
+      subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+        fields[keyPath: keyPath]
+      }
+
+      subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
+        parent.fields[keyPath: keyPath]
+      }
+    }
+  }
   
   /// `Animal.AsPet`
   final class AsPet: TypeCase, HasFragments {
