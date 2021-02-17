@@ -25,7 +25,6 @@ import Foundation
 
 // TODO: Fragment with nested type case
 // TODO: Figure out access control on everything
-// TODO: Generate keypath subscripts for deep nested fields on parents (`subject.asPet?.asWarmBlooded?.species`) - needs code completion
 
 // MARK: - Query Response Data Structs
 
@@ -312,7 +311,7 @@ public final class Animal: ResponseData, HasFragments {
       return fields[keyPath: keyPath]
     }
 
-    subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
+    subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
       parent.fields[keyPath: keyPath]
     }
 
@@ -330,6 +329,10 @@ public final class Animal: ResponseData, HasFragments {
       ) {
         self.height = .init(first: parent.height, second: fields.height)
         super.init(parent: parent, fields: fields)
+      }
+
+      subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
+        parent.parent.fields[keyPath: keyPath]
       }
     }
   }
@@ -354,7 +357,7 @@ extension Animal {
   func makeAsWarmBlooded(
     bodyTemperature: Int,
     height: WarmBloodedDetails.Height
-  ) -> AsWarmBloodedDetails<Animal> {
+  ) -> Animal.AsWarmBlooded {
     let asWarmBloodedFields = AsWarmBloodedDetails<Animal>.Fields(
       bodyTemperature: bodyTemperature,
       height: height
@@ -370,7 +373,7 @@ extension Animal.AsPet {
   func makeAsWarmBlooded(
     bodyTemperature: Int,
     height: WarmBloodedDetails.Height
-  ) -> AsWarmBloodedDetails<Animal.AsPet> {
+  ) -> Animal.AsPet.AsWarmBlooded {
     let asWarmBloodedFields = AsWarmBloodedDetails<Animal.AsPet>.Fields(
       bodyTemperature: bodyTemperature,
       height: height
