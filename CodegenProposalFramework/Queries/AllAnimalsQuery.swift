@@ -43,7 +43,7 @@ public final class Animal: ResponseData, HasFragments {
     }
   }
 
-  final class TypeCaseFields {
+  final class TypeCaseFields: TypeCaseFieldFactory {
     let asPet: (AsPet.Fields, AsPet.TypeCaseFields)?
     let asWarmBlooded: AsWarmBlooded.Fields?
 
@@ -52,7 +52,21 @@ public final class Animal: ResponseData, HasFragments {
       asWarmBlooded: AsWarmBlooded.Fields? = nil
     ) {
       self.asPet = asPet
-      self.asWarmBlooded = asWarmBlooded
+      self.asWarmBlooded = asWarmBlooded      
+    }
+
+    func typeCaseFields<T: TypeCase>(for typeCase: T.Type) -> (T.Fields, T.TypeCaseFields)? {
+      func getTypeCase() -> Any? {
+        switch T.self {
+        case is AsPet.Type:
+          return typeCaseFields.asPet
+        case is AsWarmBlooded.Type:
+          return (typeCaseFields.asWarmBlooded, ())
+        default:
+          return nil
+        }
+      }
+      return getTypeCase() as? (T.Fields, T.TypeCaseFields)
     }
   }
 

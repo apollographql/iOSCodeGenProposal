@@ -22,6 +22,8 @@ import Foundation
   static var `nil`: Self { Self.init() }
 
   init(parent: T.Parent, fields: T.Fields?, typeCaseFields: T.TypeCaseFields?) {
+    // TODO: Can we reference the TypeCaseFields on the Parent, so we don't have to pass
+    // them into the initializer as an additional parameter?
     guard let fields = fields, let typeCaseFields = typeCaseFields else {
       self.typeCase = nil
       return
@@ -40,9 +42,9 @@ import Foundation
   }
 }
 
-extension AsType where T.TypeCaseFields == Void {
+extension AsType where T.TypeCaseFields == NoTypeCases {
   init(parent: T.Parent, fields: T.Fields?) {
-    self.init(parent: parent, fields: fields, typeCaseFields: ())
+    self.init(parent: parent, fields: fields, typeCaseFields: NoTypeCases.instance)
   }
 }
 

@@ -18,13 +18,39 @@ protocol ResponseData: AnyObject {
   associatedtype Fields
 
   /// A type representing the fields for all `TypeCase`s that the object may be.
-  associatedtype TypeCaseFields = Void
+  associatedtype TypeCaseFields: TypeCaseFieldFactory = NoTypeCases
 
   /// The GraphQL fields fetched and stored directly on this object.
   var fields: Fields { get }
 
+  var typeCaseFields: TypeCaseFields { get }
+
   /// A subscript used by `@dynamicMemberLookup` to access the `Field`s on the data object directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
+}
+
+extension ResponseData where TypeCaseFields == NoTypeCases {
+  var typeCaseFields: NoTypeCases { NoTypeCases.instance }
+}
+
+extension ResponseData {
+  func typeCaseFields<T: TypeCase>(for type: T.Type) -> (T.Fields, T.TypeCaseFields)? {
+    typeCaseFields.typeCaseFields(for: type)
+  }
+}
+
+protocol TypeCaseFieldFactory {  
+  func typeCaseFields<T: TypeCase>(for: T.Type) -> (T.Fields, T.TypeCaseFields)?
+}
+
+struct NoTypeCases: TypeCaseFieldFactory {
+  static let instance = NoTypeCases()
+
+  private init() {}
+
+  func typeCaseFields<T: TypeCase>(for: T.Type) -> (T.Fields, T.TypeCaseFields)? {
+    return nil
+  }
 }
 
 // MARK: - TypeCase
@@ -58,13 +84,13 @@ protocol TypeCase: ResponseData {
   subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T { get }
 }
 
-extension TypeCase where TypeCaseFields == Void {
+extension TypeCase where TypeCaseFields == NoTypeCases {
   /// Designated initializer for a `TypeCase`.
   /// - Parameters:
   ///   - parent: The parent data object that the `TypeCase` is a more specific type for.
   ///   - fields: The fields for the specific `TypeCase`.
   init(parent: Parent, fields: Fields) {
-    self.init(parent: parent, fields: fields, typeCaseFields: ())
+    self.init(parent: parent, fields: fields, typeCaseFields: NoTypeCases.instance)
   }
 }
 
