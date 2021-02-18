@@ -21,7 +21,7 @@ protocol ResponseObject: AnyObject { // TODO: Make base class?
   associatedtype TypeCases = Void
 
   /// A typealias for the `FieldData` of the object. This stores the `Fields` and `TypeCaseFields`.
-  typealias ResponseData = FieldData<Fields, TypeCases>
+  typealias ResponseData = FieldData<Fields, TypeCases> // TODO: Remove this?
 
   /// The GraphQL fields fetched and stored directly on this object.
   var data: ResponseData { get }

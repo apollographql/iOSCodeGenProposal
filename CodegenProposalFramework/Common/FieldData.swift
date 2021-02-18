@@ -24,7 +24,3 @@ extension FieldData where TypeCaseFields == Void {
   }
 }
 
-
-class TypeCasesBase<T> {
-  let parent: Unwrapped<T> = .init()
-}

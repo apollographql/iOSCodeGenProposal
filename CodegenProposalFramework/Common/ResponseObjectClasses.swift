@@ -7,18 +7,28 @@
 
 import Foundation
 
-class BaseResponseObject<Fields, TypeCaseFields>: ResponseObject {
+class TypeCasesBase<T> {
+  let parent: Unwrapped<T> = .init()
+}
 
-//  typealias ResponseData = FieldData<Fields, TypeCaseFields>
+@dynamicMemberLookup
+class BaseResponseObject<Fields, TypeCases>: ResponseObject {
 
-  final let data: ResponseData
+  final let data: FieldData<Fields, TypeCases>
 
-  init(data: ResponseData) {
+  init(data: FieldData<Fields, TypeCases>) {
     self.data = data
+    if let typeCases = self.data.typeCaseFields as? TypeCasesBase<Self> {
+      typeCases.parent.value = (self as! Self)
+    }
   }
 
   final subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
     return data.fields[keyPath: keyPath]
+  }
+
+  final subscript<T>(dynamicMember keyPath: KeyPath<TypeCases, T>) -> T {
+    return data.typeCaseFields[keyPath: keyPath]
   }
 }
 

@@ -28,7 +28,7 @@ import Foundation
 
 // MARK: - Query Response Data Structs
 
-final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCaseFields>, RootResponseObject, HasFragments {
+final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCases>, RootResponseObject, HasFragments {
   final class Fields {
     let __typename: String
     let species: String
@@ -61,10 +61,9 @@ final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCaseFields>, Ro
     private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: data.fields.height.meters))
   }
 
-  let data: FieldData<Fields, TypeCases>
   private(set) lazy var fragments = Fragments(parent: (), data: data)
 
-  // TODO: spread type case fields into initializers
+  // TODO: spread type case fields into initializers?
   convenience init(
     __typename: String,
     species: String,
@@ -86,19 +85,6 @@ final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCaseFields>, Ro
       ))
 
     self.init(data: data)
-  }
-
-  init(data: ResponseData) {
-    self.data = data
-    self.data.typeCaseFields.parent.value = self
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return data.fields[keyPath: keyPath]
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<TypeCases, T>) -> T {
-    return data.typeCaseFields[keyPath: keyPath]
   }
 
   /// `Animal.Height`
@@ -137,7 +123,7 @@ final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCaseFields>, Ro
 
     required init(
       parent: Animal,
-      data: ResponseData
+      data: FieldData<WarmBloodedDetails.Fields, Void>
     ) {
       self.height = .init(first: parent.height, second: data.fields.height)
       super.init(parent: parent, data: data)
@@ -218,7 +204,7 @@ final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCaseFields>, Ro
 
       private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
-      init(parent: Animal.Predators, data: ResponseData) {
+      init(parent: Animal.Predators, data: FieldData<Fields, Void>) {
         self.parent = parent
         self.data = data
       }
