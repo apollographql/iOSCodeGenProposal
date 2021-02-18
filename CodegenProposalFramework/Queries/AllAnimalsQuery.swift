@@ -28,7 +28,7 @@ import Foundation
 
 // MARK: - Query Response Data Structs
 
-public final class Animal: RootResponseObject, HasFragments {
+final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCaseFields>, RootResponseObject, HasFragments {
   final class Fields {
     let __typename: String
     let species: String
@@ -57,13 +57,12 @@ public final class Animal: RootResponseObject, HasFragments {
     }
   }
 
-  let data: FieldData<Fields, TypeCases>
-
-  private(set) lazy var fragments = Fragments(parent: (), data: data)
-
   final class Fragments: ToFragments<Void, ResponseData> {
     private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: data.fields.height.meters))
   }
+
+  let data: FieldData<Fields, TypeCases>
+  private(set) lazy var fragments = Fragments(parent: (), data: data)
 
   // TODO: spread type case fields into initializers
   convenience init(
@@ -103,16 +102,16 @@ public final class Animal: RootResponseObject, HasFragments {
   }
 
   /// `Animal.Height`
-  final class Height: RootResponseObject {
+  final class Height: BaseResponseObject<Height.Fields, Void>, RootResponseObject {
     final class Fields {
       let __typename: String
       let feet: Int
       let inches: Int
       let meters: Int // - NOTE:
-                      // This field is merged in from `HeightInMeters` fragment.
-                      // Because the fragment type identically matches the type it is queried on, we do
-                      // not need an optional `TypeCase` and can merge the field up.
-                      // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
+      // This field is merged in from `HeightInMeters` fragment.
+      // Because the fragment type identically matches the type it is queried on, we do
+      // not need an optional `TypeCase` and can merge the field up.
+      // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
 
       init(__typename: String, feet: Int, inches: Int, meters: Int) {
         self.__typename = __typename
@@ -120,16 +119,6 @@ public final class Animal: RootResponseObject, HasFragments {
         self.inches = inches
         self.meters = meters
       }
-    }
-
-    let data: FieldData<Fields, Void>
-
-    init(data: ResponseData) {
-      self.data = data
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      return data.fields[keyPath: keyPath]
     }
   }
 
@@ -207,10 +196,10 @@ public final class Animal: RootResponseObject, HasFragments {
       final class Fields {
         let bodyTemperature: Int
         let height: WarmBloodedDetails.Height // - NOTE:
-                                              // These 2 fields are merged in from `WarmBloodedDetails` fragment.
-                                              // Because the fragment type identically matches the type it is queried on, we do
-                                              // not need an optional `TypeCase` and can merge the fields up.
-                                              // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
+        // These 2 fields are merged in from `WarmBloodedDetails` fragment.
+        // Because the fragment type identically matches the type it is queried on, we do
+        // not need an optional `TypeCase` and can merge the fields up.
+        // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
         let hasFur: Bool
 
         init(
