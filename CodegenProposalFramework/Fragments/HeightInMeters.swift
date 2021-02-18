@@ -25,7 +25,7 @@ final class HeightInMeters: Fragment {
     }
   }
 
-  let data: FieldData
+  let data: ResponseDataFields<Fields, Void>
 
   init(data: FieldData) {
     self.data = data
@@ -44,7 +44,7 @@ final class HeightInMeters: Fragment {
       }
     }
 
-    let data: FieldData
+    let data: ResponseDataFields<Fields, Void>
 
     init(data: FieldData) {
       self.data = data

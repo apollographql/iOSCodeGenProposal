@@ -28,7 +28,7 @@ import Foundation
 
 // MARK: - Query Response Data Structs
 
-public final class Animal: ResponseData, HasFragments {
+public final class Animal: RootResponseObject, HasFragments {
   final class Fields {
     let __typename: String
     let species: String
@@ -44,32 +44,32 @@ public final class Animal: ResponseData, HasFragments {
   }
 
   final class TypeCaseFields {
-    let asPet: AsPet.TypeCaseParams?
-    let asWarmBlooded: AsWarmBlooded.TypeCaseParams?
+    let asPet: AsPet.FieldData?
+    let asWarmBlooded: AsWarmBlooded.FieldData?
 
     init(
-      asPet: AsPet.TypeCaseParams? = nil,
-      asWarmBlooded: AsWarmBlooded.TypeCaseParams? = nil
+      asPet: AsPet.FieldData? = nil,
+      asWarmBlooded: AsWarmBlooded.FieldData? = nil
     ) {
       self.asPet = asPet
       self.asWarmBlooded = asWarmBlooded
     }
   }
 
-  let data: ResponseDataFields<Animal>
+  let data: FieldData
 
   @AsType var asPet: AsPet?
 
   @AsType var asWarmBlooded: AsWarmBlooded?
 
-  private(set) lazy var fragments = Fragments(parent: (), fields: fields)
+  private(set) lazy var fragments = Fragments(parent: (), data: data)
 
-  final class Fragments: ToFragments<Void, Fields> {
-    private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: fields.height.meters))
+  final class Fragments: ToFragments<Void, FieldData> {
+    private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: data.fields.height.meters))
   }
 
   // TODO: spread type case fields into initializers
-  init(
+  convenience init(
     __typename: String,
     species: String,
     height: Height,
@@ -78,7 +78,7 @@ public final class Animal: ResponseData, HasFragments {
       asPet: nil, asWarmBlooded: nil
     )
   ) {
-    self.data = ResponseDataFields(
+    let data = ResponseDataFields(
       fields: Fields(
         __typename: __typename,
         species: species,
@@ -88,17 +88,21 @@ public final class Animal: ResponseData, HasFragments {
       typeCaseFields: typeCaseFields
     )
 
-    self._asPet = .init(parent: self, typeCaseFields: \Self.typeCaseFields.asPet)
+    self.init(data: data)
+  }
 
-    self._asWarmBlooded = .init(parent: self, typeCaseFields: \Self.typeCaseFields.asWarmBlooded)
+  init(data: FieldData) {
+    self.data = data
+    self._asPet = .init(parent: self, dataPath: \Self.data.typeCaseFields.asPet)
+    self._asWarmBlooded = .init(parent: self, dataPath: \Self.data.typeCaseFields.asWarmBlooded)
   }
 
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
+    return data.fields[keyPath: keyPath]
   }
 
   /// `Animal.Height`
-  final class Height: ResponseData {
+  final class Height: RootResponseObject {
     final class Fields {
       let __typename: String
       let feet: Int
@@ -117,14 +121,14 @@ public final class Animal: ResponseData, HasFragments {
       }
     }
 
-    let fields: Fields
+    let data: ResponseDataFields<Fields, Void>
 
-    init(fields: Fields) {
-      self.fields = fields
+    init(data: FieldData) {
+      self.data = data
     }
 
     subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      return fields[keyPath: keyPath]
+      return data.fields[keyPath: keyPath]
     }
   }
 
@@ -143,11 +147,10 @@ public final class Animal: ResponseData, HasFragments {
 
     required init(
       parent: Animal,
-      fields: Fields,
-      typeCaseFields: Void = ()
+      data: FieldData
     ) {
-      self.height = .init(first: parent.height, second: fields.height)
-      super.init(parent: parent, fields: fields)
+      self.height = .init(first: parent.height, second: data.fields.height)
+      super.init(parent: parent, data: data)
     }
   }
 
@@ -163,16 +166,15 @@ public final class Animal: ResponseData, HasFragments {
       }
     }
 
-    let fields: Fields
-    private let typeCaseFields: TypeCaseFields
-
     final class TypeCaseFields {
-      let asWarmBlooded: AsWarmBlooded.TypeCaseParams?
+      let asWarmBlooded: AsWarmBlooded.FieldData?
 
-      init(asWarmBlooded: AsWarmBlooded.TypeCaseParams? = nil) {
+      init(asWarmBlooded: AsWarmBlooded.FieldData? = nil) {
         self.asWarmBlooded = asWarmBlooded
       }
     }
+
+    let data: FieldData
 
     @AsType var asWarmBlooded: AsWarmBlooded?
 
@@ -181,17 +183,19 @@ public final class Animal: ResponseData, HasFragments {
       species: String,
       typeCaseFields: TypeCaseFields = .init(asWarmBlooded: nil)
     ) {
-      self.fields = Fields(
-        __typename: __typename,
-        species: species
+      self.data = .init(
+        fields: Fields(
+          __typename: __typename,
+          species: species
+        ),
+        typeCaseFields: typeCaseFields
       )
-      self.typeCaseFields = typeCaseFields
 
-      self._asWarmBlooded = .init(parent: self, typeCaseFields: \Self.typeCaseFields.asWarmBlooded)
+      self._asWarmBlooded = .init(parent: self, dataPath: \Self.data.typeCaseFields.asWarmBlooded)
     }
 
     subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      fields[keyPath: keyPath]
+      data.fields[keyPath: keyPath]
     }
 
     /// `AllAnimals.Predators.AsWarmBlooded`
@@ -216,30 +220,31 @@ public final class Animal: ResponseData, HasFragments {
         }
       }
 
-      let fields: Fields
+      let data: ResponseDataFields<Fields, Void>
       let parent: Animal.Predators
 
-      private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
+      private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
-      init(parent: Animal.Predators, fields: Fields, typeCaseFields: Void = ()) {
+      init(parent: Animal.Predators, data: FieldData) {
         self.parent = parent
-        self.fields = fields
+        self.data = data
       }
 
-      final class Fragments: ToFragments<Animal.Predators, Fields> {
+      final class Fragments: ToFragments<Animal.Predators, FieldData> {
         private(set) lazy var warmBloodedDetails = WarmBloodedDetails(
-          fields: .init(
-            bodyTemperature: fields.bodyTemperature,
-            height: fields.height
-          ))
+          data: .init(
+            fields: .init(
+              bodyTemperature: data.fields.bodyTemperature,
+              height: data.fields.height
+            )))
       }
 
       subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-        fields[keyPath: keyPath]
+        data.fields[keyPath: keyPath]
       }
 
       subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
-        parent.fields[keyPath: keyPath]
+        parent.data.fields[keyPath: keyPath]
       }
     }
   }
@@ -257,27 +262,27 @@ public final class Animal: ResponseData, HasFragments {
     }
 
     final class TypeCaseFields {
-      let asWarmBlooded: AsWarmBlooded.TypeCaseParams?
+      let asWarmBlooded: AsWarmBlooded.FieldData?
 
-      init(asWarmBlooded: AsWarmBlooded.TypeCaseParams? = nil) {
+      init(asWarmBlooded: AsWarmBlooded.FieldData? = nil) {
         self.asWarmBlooded = asWarmBlooded
       }
     }
 
-    let fields: Fields
+    let data: FieldData
     let parent: Animal
-    private let typeCaseFields: TypeCaseFields
 
     @AsType var asWarmBlooded: AsWarmBlooded?
 
-    private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
+    private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
-    final class Fragments: ToFragments<Animal, Fields> {
+    final class Fragments: ToFragments<Animal, FieldData> {
       private(set) lazy var petDetails = PetDetails(
-        fields: .init(
-          humanName: fields.humanName,
-          favoriteToy: fields.favoriteToy
-        ))
+        data: .init(
+          fields: .init(
+            humanName: data.fields.humanName,
+            favoriteToy: data.fields.favoriteToy
+          )))
     }
 
     convenience init(
@@ -286,27 +291,22 @@ public final class Animal: ResponseData, HasFragments {
       parent: Animal
     ) {
       let fields = Fields(humanName: humanName, favoriteToy: favoriteToy)
-      self.init(parent: parent, fields: fields)
+      self.init(parent: parent, data: .init(fields: fields, typeCaseFields: .init())) // TODO: Type Case Fields
     }
 
-    init(
-      parent: Animal,
-      fields: Fields,
-      typeCaseFields: TypeCaseFields = .init(asWarmBlooded: nil)
-    ) {
+    init(parent: Animal, data: FieldData) {
       self.parent = parent
-      self.fields = fields
-      self.typeCaseFields = typeCaseFields
+      self.data = data
 
-      self._asWarmBlooded = .init(parent: self, typeCaseFields: \Self.typeCaseFields.asWarmBlooded)
+      self._asWarmBlooded = .init(parent: self, dataPath: \Self.data.typeCaseFields.asWarmBlooded)
     }
 
     subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      return fields[keyPath: keyPath]
+      return data.fields[keyPath: keyPath]
     }
 
     subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
-      parent.fields[keyPath: keyPath]
+      parent.data.fields[keyPath: keyPath]
     }
 
     final class AsWarmBlooded: AsWarmBloodedDetails<Animal.AsPet> {
@@ -316,17 +316,13 @@ public final class Animal: ResponseData, HasFragments {
 
       let height: Height
 
-      required init(
-        parent: Animal.AsPet,
-        fields: Fields,
-        typeCaseFields: Void = ()
-      ) {
-        self.height = .init(first: parent.height, second: fields.height)
-        super.init(parent: parent, fields: fields)
+      required init(parent: Animal.AsPet, data: FieldData) {
+        self.height = .init(first: parent.height, second: data.fields.height)
+        super.init(parent: parent, data: data)
       }
 
       subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
-        parent.parent.fields[keyPath: keyPath]
+        parent.parent.data.fields[keyPath: keyPath]
       }
     }
   }
@@ -334,7 +330,7 @@ public final class Animal: ResponseData, HasFragments {
 
 // MARK: - Extensions for creating mock objects
 // I am NOT at all happy with this part yet.
-//
+
 extension Animal {
 
   func makeAsPet(humanName: String, favoriteToy: String) -> AsPet {
@@ -342,9 +338,10 @@ extension Animal {
                                  favoriteToy: favoriteToy)
     self._asPet = AsType(
       parent: self,
-      fields: asPetFields,
-      typeCaseFields: .init(asWarmBlooded: nil)
-    )
+      data: .init(
+        fields: asPetFields,
+        typeCaseFields: .init(asWarmBlooded: nil)
+      ))
     return self.asPet!
   }
 
@@ -356,7 +353,10 @@ extension Animal {
       bodyTemperature: bodyTemperature,
       height: height
     )
-    self._asWarmBlooded = AsType(parent: self, fields: asWarmBloodedFields)
+    self._asWarmBlooded = AsType(
+      parent: self,
+      data: .init(fields: asWarmBloodedFields)
+    )
     return self.asWarmBlooded!
   }
 
@@ -372,7 +372,10 @@ extension Animal.AsPet {
       bodyTemperature: bodyTemperature,
       height: height
     )
-    self._asWarmBlooded = AsType(parent: self, fields: asWarmBloodedFields)
+    self._asWarmBlooded = AsType(
+      parent: self,
+      data: .init(fields: asWarmBloodedFields)
+    )
     return self.asWarmBlooded!
   }
 

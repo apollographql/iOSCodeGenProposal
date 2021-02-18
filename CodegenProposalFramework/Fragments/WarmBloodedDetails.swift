@@ -29,13 +29,13 @@ final class WarmBloodedDetails: Fragment {
     }
   }
 
-  let data: FieldData
+  let data: ResponseDataFields<Fields, Void>
 
   init(data: FieldData) {
     self.data = data
   }
 
-  final class Height: ResponseData {
+  final class Height: RootResponseObject {
     final class Fields {
       let meters: Int
       let yards: Int

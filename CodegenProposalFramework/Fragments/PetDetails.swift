@@ -26,14 +26,14 @@ final class PetDetails: Fragment {
     }
   }
 
-  let fields: Fields
+  let data: ResponseDataFields<Fields, Void>
 
-  init(fields: Fields) {
-    self.fields = fields
+  init(data: FieldData) {
+    self.data = data
   }
 
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
+    return data.fields[keyPath: keyPath]
   }
 }
 
@@ -48,24 +48,24 @@ final class PetDetails: Fragment {
 class AsPetDetails<Parent: ResponseData>: FragmentTypeCase {
   typealias FragmentType = PetDetails
 
-  let fields: Fields
+  let data: FieldData
   let parent: Parent
-  private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
+  private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
-  required init(parent: Parent, fields: Fields, typeCaseFields: Void = ()) {
+  required init(parent: Parent, data: FieldData) {
     self.parent = parent
-    self.fields = fields
+    self.data = data
   }
 
-  final class Fragments: ToFragments<Parent, Fields> {
-    private(set) lazy var petDetails = PetDetails(fields: self.fields)
+  final class Fragments: ToFragments<Parent, FieldData> {
+    private(set) lazy var petDetails = PetDetails(data: self.data)
   }
 
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
+    return data.fields[keyPath: keyPath]
   }
 
   subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
-    return parent.fields[keyPath: keyPath]
+    return parent.data.fields[keyPath: keyPath]
   }
 }

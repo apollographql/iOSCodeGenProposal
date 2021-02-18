@@ -36,6 +36,12 @@ protocol RootResponseObject: ResponseData {
   init(data: FieldData)
 }
 
+extension RootResponseObject where TypeCaseFields == Void {
+  init(fields: Fields) {
+    self.init(data: .init(fields: fields))
+  }
+}
+
 // MARK: - TypeCase
 
 /// A protocol representing a type case response data object.
@@ -48,9 +54,6 @@ protocol RootResponseObject: ResponseData {
 ///
 /// The fields from the parent object are also accessible on the child type case.
 protocol TypeCase: ResponseData {
-
-  /// The parameters needed to initialize the fields for the `TypeCase`.
-  typealias TypeCaseParams = (Fields, TypeCaseFields) // TODO!!!
 
   /// The type of the parent response data object that the type case is a more specific type of.
   associatedtype Parent: ResponseData
