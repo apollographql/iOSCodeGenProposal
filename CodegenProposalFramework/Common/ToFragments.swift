@@ -15,13 +15,13 @@ import Foundation
 ///
 /// If the object has a parent, fragments from the parent will also be accessible.
 @dynamicMemberLookup
-class ToFragments<Parent, Fields> {
+class ToFragments<Parent, FieldData> {
   let parent: Parent
-  let fields: Fields
+  let data: FieldData
 
-  internal init(parent: Parent, fields: Fields) {
+  required internal init(parent: Parent, data: FieldData) {
     self.parent = parent
-    self.fields = fields
+    self.data = data
   }
 }
 

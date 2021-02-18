@@ -25,14 +25,14 @@ final class HeightInMeters: Fragment {
     }
   }
 
-  let fields: Fields
+  let data: FieldData
 
-  init(fields: Fields) {
-    self.fields = fields
+  init(data: FieldData) {
+    self.data = data
   }
 
   init(height: Height) {
-    self.fields = Fields(height: height)
+    self.data = .init(fields: Fields(height: height))
   }
 
   final class Height: ResponseData {
@@ -44,23 +44,23 @@ final class HeightInMeters: Fragment {
       }
     }
 
-    let fields: Fields
+    let data: FieldData
 
-    init(fields: Fields) {
-      self.fields = fields
+    init(data: FieldData) {
+      self.data = data
     }
 
     init(meters: Int) {
-      self.fields = Fields(meters: meters)
+      self.data = .init(fields: Fields(meters: meters))
     }
 
     subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      return fields[keyPath: keyPath]
+      return data.fields[keyPath: keyPath]
     }
   }
 
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
+    return data.fields[keyPath: keyPath]
   }
 }
 
@@ -76,24 +76,24 @@ final class HeightInMeters: Fragment {
 class AsHeightInMeters<Parent: ResponseData>: FragmentTypeCase {
   typealias FragmentType = HeightInMeters
 
-  let fields: Fields
+  let data: FieldData
   let parent: Parent
-  private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
+  private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
-  required init(parent: Parent, fields: Fields, typeCaseFields: Void = ()) {
+  required init(parent: Parent, data: FieldData) {
     self.parent = parent
-    self.fields = fields
+    self.data = data
   }
   
-  final class Fragments: ToFragments<Parent, Fields> {
-    private(set) lazy var heightInMeters = HeightInMeters(fields: self.fields)
+  final class Fragments: ToFragments<Parent, FieldData> {
+    private(set) lazy var heightInMeters = HeightInMeters(data: self.data)
   }
 
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
+    return data.fields[keyPath: keyPath]
   }
 
   subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
-    return parent.fields[keyPath: keyPath]
+    return parent.data.fields[keyPath: keyPath]
   }
 }

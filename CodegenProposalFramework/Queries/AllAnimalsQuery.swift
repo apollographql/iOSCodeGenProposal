@@ -44,20 +44,19 @@ public final class Animal: ResponseData, HasFragments {
   }
 
   final class TypeCaseFields {
-    let asPet: (AsPet.Fields, AsPet.TypeCaseFields)?
-    let asWarmBlooded: AsWarmBlooded.Fields?
+    let asPet: AsPet.TypeCaseParams?
+    let asWarmBlooded: AsWarmBlooded.TypeCaseParams?
 
     init(
-      asPet: (AsPet.Fields, AsPet.TypeCaseFields)? = nil,
-      asWarmBlooded: AsWarmBlooded.Fields? = nil
+      asPet: AsPet.TypeCaseParams? = nil,
+      asWarmBlooded: AsWarmBlooded.TypeCaseParams? = nil
     ) {
       self.asPet = asPet
       self.asWarmBlooded = asWarmBlooded
     }
   }
 
-  let fields: Fields
-  private let typeCaseFields: TypeCaseFields
+  let data: ResponseDataFields<Animal>
 
   @AsType var asPet: AsPet?
 
@@ -79,13 +78,15 @@ public final class Animal: ResponseData, HasFragments {
       asPet: nil, asWarmBlooded: nil
     )
   ) {
-    self.fields = Fields(
-      __typename: __typename,
-      species: species,
-      height: height,
-      predators: predators
+    self.data = ResponseDataFields(
+      fields: Fields(
+        __typename: __typename,
+        species: species,
+        height: height,
+        predators: predators
+      ),
+      typeCaseFields: typeCaseFields
     )
-    self.typeCaseFields = typeCaseFields
 
     self._asPet = .init(parent: self, typeCaseFields: \Self.typeCaseFields.asPet)
 
@@ -166,9 +167,9 @@ public final class Animal: ResponseData, HasFragments {
     private let typeCaseFields: TypeCaseFields
 
     final class TypeCaseFields {
-      let asWarmBlooded: AsWarmBlooded.Fields?
+      let asWarmBlooded: AsWarmBlooded.TypeCaseParams?
 
-      init(asWarmBlooded: AsWarmBlooded.Fields? = nil) {
+      init(asWarmBlooded: AsWarmBlooded.TypeCaseParams? = nil) {
         self.asWarmBlooded = asWarmBlooded
       }
     }
@@ -256,9 +257,9 @@ public final class Animal: ResponseData, HasFragments {
     }
 
     final class TypeCaseFields {
-      let asWarmBlooded: AsWarmBlooded.Fields?
+      let asWarmBlooded: AsWarmBlooded.TypeCaseParams?
 
-      init(asWarmBlooded: AsWarmBlooded.Fields? = nil) {
+      init(asWarmBlooded: AsWarmBlooded.TypeCaseParams? = nil) {
         self.asWarmBlooded = asWarmBlooded
       }
     }

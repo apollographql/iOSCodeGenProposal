@@ -22,8 +22,8 @@ class FieldJoiner<T: ResponseData, U: ResponseData> {
   let second: U.Fields
 
   init(first: T, second: U) {
-    self.first = first.fields
-    self.second = second.fields
+    self.first = first.data.fields
+    self.second = second.data.fields
   }
 
   subscript<Value>(dynamicMember keyPath: KeyPath<T.Fields, Value>) -> Value {

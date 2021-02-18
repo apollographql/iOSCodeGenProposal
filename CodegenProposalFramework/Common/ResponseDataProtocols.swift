@@ -12,7 +12,7 @@ import Foundation
 /// A protocol representing any data object that is part of the response
 /// data for a `GraphQLOperation`.
 @dynamicMemberLookup
-protocol ResponseData: AnyObject {
+protocol ResponseData: AnyObject { // TODO: Make base class? TODO: Rename to ResponseObject
 
   /// A type representing the GraphQL fields fetched and stored directly on this object.
   associatedtype Fields
@@ -20,11 +20,20 @@ protocol ResponseData: AnyObject {
   /// A type representing the fields for all `TypeCase`s that the object may be.
   associatedtype TypeCaseFields = Void
 
+  typealias FieldData = ResponseDataFields<Fields, TypeCaseFields>
+
   /// The GraphQL fields fetched and stored directly on this object.
-  var fields: Fields { get }
+  var data: FieldData { get }
 
   /// A subscript used by `@dynamicMemberLookup` to access the `Field`s on the data object directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
+}
+
+// TODO: Docs
+protocol RootResponseObject: ResponseData {
+  /// Designated initializer for a `RootResponseObject`
+  /// - Parameter data: The GraphQL fields fetched and stored directly on this object.
+  init(data: FieldData)
 }
 
 // MARK: - TypeCase
@@ -41,7 +50,7 @@ protocol ResponseData: AnyObject {
 protocol TypeCase: ResponseData {
 
   /// The parameters needed to initialize the fields for the `TypeCase`.
-  typealias TypeCaseParams = (Fields, TypeCaseFields)
+  typealias TypeCaseParams = (Fields, TypeCaseFields) // TODO!!!
 
   /// The type of the parent response data object that the type case is a more specific type of.
   associatedtype Parent: ResponseData
@@ -51,7 +60,7 @@ protocol TypeCase: ResponseData {
   ///   - parent: The parent data object that the `TypeCase` is a more specific type for.
   ///   - fields: The fields for the specific `TypeCase`.
   ///   - typeCaseFields: The fields for any nested `TypeCases` that the object might be.
-  init(parent: Parent, fields: Fields, typeCaseFields: TypeCaseFields)
+  init(parent: Parent, data: FieldData) // TODO: fix docs
 
   /// The parent response data object that the type case is a more specific type of.
   /// The fields from the parent object are also accessible on the child type case.
@@ -67,7 +76,18 @@ extension TypeCase where TypeCaseFields == Void {
   ///   - parent: The parent data object that the `TypeCase` is a more specific type for.
   ///   - fields: The fields for the specific `TypeCase`.
   init(parent: Parent, fields: Fields) {
-    self.init(parent: parent, fields: fields, typeCaseFields: ())
+    self.init(parent: parent, data: .init(fields: fields))
+  }
+}
+
+struct ResponseDataFields<Fields, TypeCaseFields> { // TODO: Rename to ResponseData
+  let fields: Fields
+  let typeCaseFields: TypeCaseFields
+}
+
+extension ResponseDataFields where TypeCaseFields == Void {
+  init(fields: Fields) {
+    self.init(fields: fields, typeCaseFields: ())
   }
 }
 
@@ -85,8 +105,15 @@ protocol FragmentTypeCase: TypeCase, HasFragments {
   associatedtype FragmentType: Fragment
 
   /// A type representing the GraphQL fields for the fragment. These will be stored
-  /// on the fragment directly.
+  /// on the fragment directly. // TODO: Docs
+
   associatedtype Fields = FragmentType.Fields
+  associatedtype TypeCaseFields = FragmentType.Fields
+}
+
+extension FragmentTypeCase {
+  typealias Fields = FragmentType.Fields
+  typealias TypeCaseFields = FragmentType.TypeCaseFields
 }
 
 // MARK: - Fragment
@@ -95,12 +122,7 @@ protocol FragmentTypeCase: TypeCase, HasFragments {
 ///
 /// Any `ResponseData` object that conforms to `HasFragments` can be converted to
 /// any `Fragment`s included on that object using its `fragments` property.
-protocol Fragment: ResponseData {
-
-  /// Designated initializer for a `Fragment`
-  /// - Parameter fields: The GraphQL fields fetched for the fragment.
-  init(fields: Fields) // TODO: add typecase fields?
-}
+protocol Fragment: RootResponseObject { }
 
 // MARK: - HasFragment
 
@@ -114,7 +136,7 @@ protocol HasFragments: ResponseData {
   /// A type representing all of the fragments contained on the response data object.
   ///
   /// This type should always be a generic `ToFragments` object.
-  associatedtype Fragments = ToFragments<Parent, Fields>
+  associatedtype Fragments = ToFragments<Parent, FieldData>
 
   /// A `ToFragments` object that contains accessors for all of the fragments
   /// the object can be converted to.
