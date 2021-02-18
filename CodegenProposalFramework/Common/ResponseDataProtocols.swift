@@ -23,13 +23,9 @@ protocol ResponseData: AnyObject {
   /// The GraphQL fields fetched and stored directly on this object.
   var fields: Fields { get }
 
-//  var typeCaseFields: TypeCaseFields { get }
-
   /// A subscript used by `@dynamicMemberLookup` to access the `Field`s on the data object directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
 }
-
-typealias TypeCaseParams<T: TypeCase> = (T.Fields, T.TypeCaseFields)
 
 // MARK: - TypeCase
 
@@ -43,6 +39,9 @@ typealias TypeCaseParams<T: TypeCase> = (T.Fields, T.TypeCaseFields)
 ///
 /// The fields from the parent object are also accessible on the child type case.
 protocol TypeCase: ResponseData {
+
+  /// The parameters needed to initialize the fields for the `TypeCase`.
+  typealias TypeCaseParams = (Fields, TypeCaseFields)
 
   /// The type of the parent response data object that the type case is a more specific type of.
   associatedtype Parent: ResponseData

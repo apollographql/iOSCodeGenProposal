@@ -21,7 +21,7 @@ import Foundation
 
   static var `nil`: Self { Self.init() }
 
-  init(parent: T.Parent, typeCaseFields: KeyPath<T.Parent, TypeCaseParams<T>?>) {
+  init(parent: T.Parent, typeCaseFields: KeyPath<T.Parent, T.TypeCaseParams?>) {
     guard let (fields, typeCaseFields) = parent[keyPath: typeCaseFields] else {
       self.init()
       return
