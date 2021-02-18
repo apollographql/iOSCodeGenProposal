@@ -7,12 +7,12 @@
 
 import Foundation
 
-// MARK: - ResponseData
+// MARK: - ResponseObject
 
 /// A protocol representing any data object that is part of the response
 /// data for a `GraphQLOperation`.
 @dynamicMemberLookup
-protocol ResponseData: AnyObject { // TODO: Make base class? TODO: Rename to ResponseObject
+protocol ResponseObject: AnyObject { // TODO: Make base class?
 
   /// A type representing the GraphQL fields fetched and stored directly on this object.
   associatedtype Fields
@@ -20,20 +20,23 @@ protocol ResponseData: AnyObject { // TODO: Make base class? TODO: Rename to Res
   /// A type representing the fields for all `TypeCase`s that the object may be.
   associatedtype TypeCaseFields = Void
 
-  typealias FieldData = ResponseDataFields<Fields, TypeCaseFields>
+  /// A typealias for the `FieldData` of the object. This stores the `Fields` and `TypeCaseFields`.
+  typealias ResponseData = FieldData<Fields, TypeCaseFields>
 
   /// The GraphQL fields fetched and stored directly on this object.
-  var data: FieldData { get }
+  var data: ResponseData { get }
 
   /// A subscript used by `@dynamicMemberLookup` to access the `Field`s on the data object directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
 }
 
-// TODO: Docs
-protocol RootResponseObject: ResponseData {
+// MARK: - RootResponseObject
+/// A protocol representing a `ResponseObject` that is the root of its entity.
+/// That is, it has no parent.
+protocol RootResponseObject: ResponseObject {
   /// Designated initializer for a `RootResponseObject`
   /// - Parameter data: The GraphQL fields fetched and stored directly on this object.
-  init(data: FieldData)
+  init(data: ResponseData)
 }
 
 extension RootResponseObject where TypeCaseFields == Void {
@@ -45,7 +48,7 @@ extension RootResponseObject where TypeCaseFields == Void {
 // MARK: - TypeCase
 
 /// A protocol representing a type case response data object.
-/// A type case is a more specific type, that a `ResponseData` object may also be, such as an
+/// A type case is a more specific type, that a `ResponseObject` may also be, such as an
 /// interface or a type in a union.
 ///
 /// A `TypeCase` can typically be accessed using an `@AsType` wrapped property on the parent object.
@@ -53,23 +56,22 @@ extension RootResponseObject where TypeCaseFields == Void {
 /// matches the type case.
 ///
 /// The fields from the parent object are also accessible on the child type case.
-protocol TypeCase: ResponseData {
+protocol TypeCase: ResponseObject {
 
   /// The type of the parent response data object that the type case is a more specific type of.
-  associatedtype Parent: ResponseData
+  associatedtype Parent: ResponseObject
 
   /// Designated initializer for a `TypeCase`.
   /// - Parameters:
   ///   - parent: The parent data object that the `TypeCase` is a more specific type for.
-  ///   - fields: The fields for the specific `TypeCase`.
-  ///   - typeCaseFields: The fields for any nested `TypeCases` that the object might be.
-  init(parent: Parent, data: FieldData) // TODO: fix docs
+  ///   - data: The data for the fields on the `TypeCase`, including fields for any child `TypeCase`s.
+  init(parent: Parent, data: ResponseData) // TODO: fix docs
 
-  /// The parent response data object that the type case is a more specific type of.
+  /// The parent `ResponseObject` that the type case is a more specific type of.
   /// The fields from the parent object are also accessible on the child type case.
   var parent: Parent { get }
 
-  /// A subscript used by `@dynamicMemberLookup` to access the parent data object's `Field`s directly.
+  /// A subscript used by `@dynamicMemberLookup` to access the parent `ResponseObject`'s `Field`s directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T { get }
 }
 
@@ -80,17 +82,6 @@ extension TypeCase where TypeCaseFields == Void {
   ///   - fields: The fields for the specific `TypeCase`.
   init(parent: Parent, fields: Fields) {
     self.init(parent: parent, data: .init(fields: fields))
-  }
-}
-
-struct ResponseDataFields<Fields, TypeCaseFields> { // TODO: Rename to ResponseData
-  let fields: Fields
-  let typeCaseFields: TypeCaseFields
-}
-
-extension ResponseDataFields where TypeCaseFields == Void {
-  init(fields: Fields) {
-    self.init(fields: fields, typeCaseFields: ())
   }
 }
 
@@ -121,16 +112,16 @@ extension FragmentTypeCase {
 
 // MARK: - Fragment
 
-/// A protocol representing a fragment that a `ResponseData` object may be converted to.
+/// A protocol representing a fragment that a `ResponseObject` object may be converted to.
 ///
-/// Any `ResponseData` object that conforms to `HasFragments` can be converted to
+/// Any `ResponseObject` object that conforms to `HasFragments` can be converted to
 /// any `Fragment`s included on that object using its `fragments` property.
 protocol Fragment: RootResponseObject { }
 
 // MARK: - HasFragment
 
-/// A protocol that a `ResponseData` object that contains fragments should conform to.
-protocol HasFragments: ResponseData {
+/// A protocol that a `ResponseObject` object that contains fragments should conform to.
+protocol HasFragments: ResponseObject {
 
   /// If applicable, the type of the parent response data object. Defaults to `Void`.
   /// This will be the `Parent` of any `TypeCase` that also conforms to `HasFragments`.
@@ -139,7 +130,7 @@ protocol HasFragments: ResponseData {
   /// A type representing all of the fragments contained on the response data object.
   ///
   /// This type should always be a generic `ToFragments` object.
-  associatedtype Fragments = ToFragments<Parent, FieldData>
+  associatedtype Fragments = ToFragments<Parent, ResponseData>
 
   /// A `ToFragments` object that contains accessors for all of the fragments
   /// the object can be converted to.

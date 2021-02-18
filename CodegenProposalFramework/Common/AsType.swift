@@ -7,10 +7,10 @@
 
 import Foundation
 
-/// A property wrapper for a `TypeCase` on a `ResponseData` object.
+/// A property wrapper for a `TypeCase` on a `ResponseObject`.
 ///
 /// `AsType` uses a lazy and weak wrapper that can create a `TypeCase` data object
-/// given the fields for the `TypeCase` and the parent `ResponseData` object.
+/// given the fields for the `TypeCase` and the parent `ResponseObject`.
 ///
 /// To ensure a retain cycle is not created, this uses an an unowned reference to
 /// the `parent` and lazily creates the child `TypeCase` object, which is retained weakly.
@@ -21,7 +21,7 @@ import Foundation
 
   static var `nil`: Self { Self.init() }
 
-  init(parent: T.Parent, dataPath: KeyPath<T.Parent, T.FieldData?>) {
+  init(parent: T.Parent, dataPath: KeyPath<T.Parent, T.ResponseData?>) {
     guard let data = parent[keyPath: dataPath] else {
       self.init()
       return
@@ -30,7 +30,7 @@ import Foundation
     self.init(parent: parent, data: data)
   }
 
-  init(parent: T.Parent, data: T.FieldData?) {
+  init(parent: T.Parent, data: T.ResponseData?) {
     guard let data = data else {
       self.typeCase = nil
       return
@@ -49,23 +49,13 @@ import Foundation
   }
 }
 
-//extension AsType where T.TypeCaseFields == Void {
-//  init(parent: T.Parent, typeCaseFields: KeyPath<T.Parent, T.Fields?>) {
-//    self.init(parent: parent, fields: parent[keyPath: typeCaseFields], typeCaseFields: ())
-//  }
-//
-//  init(parent: T.Parent, fields: T.Fields?) {
-//    self.init(parent: parent, fields: fields, typeCaseFields: ())
-//  }
-//}
-
 private final class LazyWeakTypeCase<T: TypeCase> {
   private weak var _value: T?
 
   private unowned let parent: T.Parent
-  fileprivate let data: T.FieldData
+  fileprivate let data: T.ResponseData
 
-  init(parent: T.Parent, data: T.FieldData) {
+  init(parent: T.Parent, data: T.ResponseData) {
     self.parent = parent
     self.data = data
   }

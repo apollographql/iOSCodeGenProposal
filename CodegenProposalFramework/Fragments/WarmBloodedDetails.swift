@@ -29,9 +29,9 @@ final class WarmBloodedDetails: Fragment {
     }
   }
 
-  let data: ResponseDataFields<Fields, Void>
+  let data: FieldData<Fields, Void>
 
-  init(data: FieldData) {
+  init(data: ResponseData) {
     self.data = data
   }
 
@@ -46,9 +46,9 @@ final class WarmBloodedDetails: Fragment {
       }
     }
 
-    let data: FieldData
+    let data: FieldData<Fields, Void>
 
-    init(data: FieldData) {
+    init(data: ResponseData) {
       self.data = data
     }
 
@@ -73,19 +73,19 @@ final class WarmBloodedDetails: Fragment {
 ///   }
 /// }
 /// ```
-class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
+class AsWarmBloodedDetails<Parent: ResponseObject>: FragmentTypeCase {
   typealias FragmentType = WarmBloodedDetails  
 
-  let data: FieldData
+  let data: FieldData<WarmBloodedDetails.Fields, Void>
   let parent: Parent
   private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
-  required init(parent: Parent, data: FieldData) {
+  required init(parent: Parent, data: ResponseData) {
     self.parent = parent
     self.data = data
   }
 
-  final class Fragments: ToFragments<Parent, FieldData> {
+  final class Fragments: ToFragments<Parent, ResponseData> {
     private(set) lazy var warmBloodedDetails = WarmBloodedDetails(data: self.data)
   }
 

@@ -44,19 +44,19 @@ public final class Animal: RootResponseObject, HasFragments {
   }
 
   final class TypeCaseFields {
-    let asPet: AsPet.FieldData?
-    let asWarmBlooded: AsWarmBlooded.FieldData?
+    let asPet: AsPet.ResponseData?
+    let asWarmBlooded: AsWarmBlooded.ResponseData?
 
     init(
-      asPet: AsPet.FieldData? = nil,
-      asWarmBlooded: AsWarmBlooded.FieldData? = nil
+      asPet: AsPet.ResponseData? = nil,
+      asWarmBlooded: AsWarmBlooded.ResponseData? = nil
     ) {
       self.asPet = asPet
       self.asWarmBlooded = asWarmBlooded
     }
   }
 
-  let data: FieldData
+  let data: FieldData<Fields, TypeCaseFields>
 
   @AsType var asPet: AsPet?
 
@@ -64,7 +64,7 @@ public final class Animal: RootResponseObject, HasFragments {
 
   private(set) lazy var fragments = Fragments(parent: (), data: data)
 
-  final class Fragments: ToFragments<Void, FieldData> {
+  final class Fragments: ToFragments<Void, ResponseData> {
     private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: data.fields.height.meters))
   }
 
@@ -78,7 +78,7 @@ public final class Animal: RootResponseObject, HasFragments {
       asPet: nil, asWarmBlooded: nil
     )
   ) {
-    let data = ResponseDataFields(
+    let data = FieldData(
       fields: Fields(
         __typename: __typename,
         species: species,
@@ -91,7 +91,7 @@ public final class Animal: RootResponseObject, HasFragments {
     self.init(data: data)
   }
 
-  init(data: FieldData) {
+  init(data: ResponseData) {
     self.data = data
     self._asPet = .init(parent: self, dataPath: \Self.data.typeCaseFields.asPet)
     self._asWarmBlooded = .init(parent: self, dataPath: \Self.data.typeCaseFields.asWarmBlooded)
@@ -121,9 +121,9 @@ public final class Animal: RootResponseObject, HasFragments {
       }
     }
 
-    let data: ResponseDataFields<Fields, Void>
+    let data: FieldData<Fields, Void>
 
-    init(data: FieldData) {
+    init(data: ResponseData) {
       self.data = data
     }
 
@@ -147,7 +147,7 @@ public final class Animal: RootResponseObject, HasFragments {
 
     required init(
       parent: Animal,
-      data: FieldData
+      data: ResponseData
     ) {
       self.height = .init(first: parent.height, second: data.fields.height)
       super.init(parent: parent, data: data)
@@ -155,7 +155,7 @@ public final class Animal: RootResponseObject, HasFragments {
   }
 
   /// `Animal.Predators`
-  final class Predators: ResponseData {
+  final class Predators: ResponseObject {
     final class Fields {
       let __typename: String
       let species: String
@@ -167,14 +167,14 @@ public final class Animal: RootResponseObject, HasFragments {
     }
 
     final class TypeCaseFields {
-      let asWarmBlooded: AsWarmBlooded.FieldData?
+      let asWarmBlooded: AsWarmBlooded.ResponseData?
 
-      init(asWarmBlooded: AsWarmBlooded.FieldData? = nil) {
+      init(asWarmBlooded: AsWarmBlooded.ResponseData? = nil) {
         self.asWarmBlooded = asWarmBlooded
       }
     }
 
-    let data: FieldData
+    let data: FieldData<Fields, TypeCaseFields>
 
     @AsType var asWarmBlooded: AsWarmBlooded?
 
@@ -220,17 +220,17 @@ public final class Animal: RootResponseObject, HasFragments {
         }
       }
 
-      let data: ResponseDataFields<Fields, Void>
+      let data: FieldData<Fields, Void>
       let parent: Animal.Predators
 
       private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
-      init(parent: Animal.Predators, data: FieldData) {
+      init(parent: Animal.Predators, data: ResponseData) {
         self.parent = parent
         self.data = data
       }
 
-      final class Fragments: ToFragments<Animal.Predators, FieldData> {
+      final class Fragments: ToFragments<Animal.Predators, ResponseData> {
         private(set) lazy var warmBloodedDetails = WarmBloodedDetails(
           data: .init(
             fields: .init(
@@ -262,21 +262,21 @@ public final class Animal: RootResponseObject, HasFragments {
     }
 
     final class TypeCaseFields {
-      let asWarmBlooded: AsWarmBlooded.FieldData?
+      let asWarmBlooded: AsWarmBlooded.ResponseData?
 
-      init(asWarmBlooded: AsWarmBlooded.FieldData? = nil) {
+      init(asWarmBlooded: AsWarmBlooded.ResponseData? = nil) {
         self.asWarmBlooded = asWarmBlooded
       }
     }
 
-    let data: FieldData
+    let data: FieldData<Fields, TypeCaseFields>
     let parent: Animal
 
     @AsType var asWarmBlooded: AsWarmBlooded?
 
     private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
-    final class Fragments: ToFragments<Animal, FieldData> {
+    final class Fragments: ToFragments<Animal, ResponseData> {
       private(set) lazy var petDetails = PetDetails(
         data: .init(
           fields: .init(
@@ -294,7 +294,7 @@ public final class Animal: RootResponseObject, HasFragments {
       self.init(parent: parent, data: .init(fields: fields, typeCaseFields: .init())) // TODO: Type Case Fields
     }
 
-    init(parent: Animal, data: FieldData) {
+    init(parent: Animal, data: ResponseData) {
       self.parent = parent
       self.data = data
 
@@ -316,7 +316,7 @@ public final class Animal: RootResponseObject, HasFragments {
 
       let height: Height
 
-      required init(parent: Animal.AsPet, data: FieldData) {
+      required init(parent: Animal.AsPet, data: ResponseData) {
         self.height = .init(first: parent.height, second: data.fields.height)
         super.init(parent: parent, data: data)
       }

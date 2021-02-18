@@ -25,9 +25,9 @@ final class HeightInMeters: Fragment {
     }
   }
 
-  let data: ResponseDataFields<Fields, Void>
+  let data: FieldData<Fields, Void>
 
-  init(data: FieldData) {
+  init(data: ResponseData) {
     self.data = data
   }
 
@@ -35,7 +35,7 @@ final class HeightInMeters: Fragment {
     self.data = .init(fields: Fields(height: height))
   }
 
-  final class Height: ResponseData {
+  final class Height: ResponseObject {
     final class Fields {
       let meters: Int
 
@@ -44,9 +44,9 @@ final class HeightInMeters: Fragment {
       }
     }
 
-    let data: ResponseDataFields<Fields, Void>
+    let data: FieldData<Fields, Void>
 
-    init(data: FieldData) {
+    init(data: ResponseData) {
       self.data = data
     }
 
@@ -73,19 +73,19 @@ final class HeightInMeters: Fragment {
 ///   }
 /// }
 /// ```
-class AsHeightInMeters<Parent: ResponseData>: FragmentTypeCase {
+class AsHeightInMeters<Parent: ResponseObject>: FragmentTypeCase {
   typealias FragmentType = HeightInMeters
 
-  let data: FieldData
+  let data: FieldData<HeightInMeters.Fields, Void>
   let parent: Parent
   private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
-  required init(parent: Parent, data: FieldData) {
+  required init(parent: Parent, data: ResponseData) {
     self.parent = parent
     self.data = data
   }
   
-  final class Fragments: ToFragments<Parent, FieldData> {
+  final class Fragments: ToFragments<Parent, ResponseData> {
     private(set) lazy var heightInMeters = HeightInMeters(data: self.data)
   }
 
