@@ -87,15 +87,9 @@ public final class Animal: ResponseData, HasFragments {
     )
     self.typeCaseFields = typeCaseFields
 
-    self._asPet = .init(
-      parent: self,
-      typeCaseFields: \Self.typeCaseFields.asPet
-    )
+    self._asPet = .init(parent: self, typeCaseFields: \Self.typeCaseFields.asPet)
 
-    self._asWarmBlooded = .init(
-      parent: self,
-      typeCaseFields: \Self.typeCaseFields.asWarmBlooded
-    )
+    self._asWarmBlooded = .init(parent: self, typeCaseFields: \Self.typeCaseFields.asWarmBlooded)
   }
 
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
@@ -192,7 +186,7 @@ public final class Animal: ResponseData, HasFragments {
       )
       self.typeCaseFields = typeCaseFields
 
-      self._asWarmBlooded = .init(parent: self, fields: typeCaseFields.asWarmBlooded)
+      self._asWarmBlooded = .init(parent: self, typeCaseFields: \Self.typeCaseFields.asWarmBlooded)
     }
 
     subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
@@ -303,7 +297,7 @@ public final class Animal: ResponseData, HasFragments {
       self.fields = fields
       self.typeCaseFields = typeCaseFields
 
-      self._asWarmBlooded = .init(parent: self, fields: typeCaseFields.asWarmBlooded)
+      self._asWarmBlooded = .init(parent: self, typeCaseFields: \Self.typeCaseFields.asWarmBlooded)
     }
 
     subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {

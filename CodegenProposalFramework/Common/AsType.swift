@@ -53,6 +53,10 @@ extension AsType where T.TypeCaseFields == Void {
   init(parent: T.Parent, typeCaseFields: KeyPath<T.Parent, T.Fields?>) {
     self.init(parent: parent, fields: parent[keyPath: typeCaseFields], typeCaseFields: ())
   }
+
+  init(parent: T.Parent, fields: T.Fields?) {
+    self.init(parent: parent, fields: fields, typeCaseFields: ())
+  }
 }
 
 private final class LazyWeakTypeCase<T: TypeCase> {
