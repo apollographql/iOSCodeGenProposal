@@ -7,6 +7,16 @@
 
 import Foundation
 
+final class Unwrapped<T> { // TODO: find better name?
+  var value: T!
+
+  init() {}
+
+  init(value: T?) {
+    self.value = value
+  }
+}
+
 /// A property wrapper for a `TypeCase` on a `ResponseObject`.
 ///
 /// `AsType` uses a lazy and weak wrapper that can create a `TypeCase` data object
@@ -21,16 +31,7 @@ import Foundation
 
   static var `nil`: Self { Self.init() }
 
-  init(parent: T.Parent, dataPath: KeyPath<T.Parent, T.ResponseData?>) {
-    guard let data = parent[keyPath: dataPath] else {
-      self.init()
-      return
-    }
-
-    self.init(parent: parent, data: data)
-  }
-
-  init(parent: T.Parent, data: T.ResponseData?) {
+  init(parent: Unwrapped<T.Parent>, data: T.ResponseData?) {
     guard let data = data else {
       self.typeCase = nil
       return
@@ -52,10 +53,10 @@ import Foundation
 private final class LazyWeakTypeCase<T: TypeCase> {
   private weak var _value: T?
 
-  private unowned let parent: T.Parent
+  private unowned let parent: Unwrapped<T.Parent>
   fileprivate let data: T.ResponseData
 
-  init(parent: T.Parent, data: T.ResponseData) {
+  init(parent: Unwrapped<T.Parent>, data: T.ResponseData) {
     self.parent = parent
     self.data = data
   }
@@ -66,11 +67,9 @@ private final class LazyWeakTypeCase<T: TypeCase> {
         return value
       }
 
-      let value = T.init(parent: parent, data: data)
+      let value = T.init(parent: parent.value, data: data)
       self._value = value
       return value
     }
   }
 }
-
-

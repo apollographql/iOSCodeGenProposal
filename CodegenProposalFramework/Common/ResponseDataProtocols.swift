@@ -18,10 +18,10 @@ protocol ResponseObject: AnyObject { // TODO: Make base class?
   associatedtype Fields
 
   /// A type representing the fields for all `TypeCase`s that the object may be.
-  associatedtype TypeCaseFields = Void
+  associatedtype TypeCases = Void
 
   /// A typealias for the `FieldData` of the object. This stores the `Fields` and `TypeCaseFields`.
-  typealias ResponseData = FieldData<Fields, TypeCaseFields>
+  typealias ResponseData = FieldData<Fields, TypeCases>
 
   /// The GraphQL fields fetched and stored directly on this object.
   var data: ResponseData { get }
@@ -39,7 +39,7 @@ protocol RootResponseObject: ResponseObject {
   init(data: ResponseData)
 }
 
-extension RootResponseObject where TypeCaseFields == Void {
+extension RootResponseObject where TypeCases == Void {
   init(fields: Fields) {
     self.init(data: .init(fields: fields))
   }
@@ -75,7 +75,7 @@ protocol TypeCase: ResponseObject {
   subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T { get }
 }
 
-extension TypeCase where TypeCaseFields == Void {
+extension TypeCase where TypeCases == Void {
   /// Designated initializer for a `TypeCase`.
   /// - Parameters:
   ///   - parent: The parent data object that the `TypeCase` is a more specific type for.
@@ -102,12 +102,12 @@ protocol FragmentTypeCase: TypeCase, HasFragments {
   /// on the fragment directly. // TODO: Docs
 
   associatedtype Fields = FragmentType.Fields
-  associatedtype TypeCaseFields = FragmentType.Fields
+  associatedtype TypeCases = FragmentType.Fields
 }
 
 extension FragmentTypeCase {
   typealias Fields = FragmentType.Fields
-  typealias TypeCaseFields = FragmentType.TypeCaseFields
+  typealias TypeCases = FragmentType.TypeCases
 }
 
 // MARK: - Fragment

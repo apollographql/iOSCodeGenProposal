@@ -43,24 +43,21 @@ public final class Animal: RootResponseObject, HasFragments {
     }
   }
 
-  final class TypeCaseFields {
-    let asPet: AsPet.ResponseData?
-    let asWarmBlooded: AsWarmBlooded.ResponseData?
+  final class TypeCases: TypeCasesBase<Animal> {
+    @AsType var asPet: AsPet?
+    @AsType var asWarmBlooded: AsWarmBlooded?
 
     init(
       asPet: AsPet.ResponseData? = nil,
       asWarmBlooded: AsWarmBlooded.ResponseData? = nil
     ) {
-      self.asPet = asPet
-      self.asWarmBlooded = asWarmBlooded
+      super.init()
+      self._asPet = AsType(parent: parent, data: asPet)
+      self._asWarmBlooded = AsType(parent: parent, data: asWarmBlooded)
     }
   }
 
-  let data: FieldData<Fields, TypeCaseFields>
-
-  @AsType var asPet: AsPet?
-
-  @AsType var asWarmBlooded: AsWarmBlooded?
+  let data: FieldData<Fields, TypeCases>
 
   private(set) lazy var fragments = Fragments(parent: (), data: data)
 
@@ -74,31 +71,35 @@ public final class Animal: RootResponseObject, HasFragments {
     species: String,
     height: Height,
     predators: [Predators],
-    typeCaseFields: TypeCaseFields = .init(
-      asPet: nil, asWarmBlooded: nil
-    )
+    asPet: AsPet.ResponseData? = nil,
+    asWarmBlooded: AsWarmBlooded.ResponseData? = nil
   ) {
-    let data = FieldData(
+    let data = ResponseData(
       fields: Fields(
         __typename: __typename,
         species: species,
         height: height,
         predators: predators
       ),
-      typeCaseFields: typeCaseFields
-    )
+      typeCaseFields: TypeCases(
+        asPet: asPet,
+        asWarmBlooded: asWarmBlooded
+      ))
 
     self.init(data: data)
   }
 
   init(data: ResponseData) {
     self.data = data
-    self._asPet = .init(parent: self, dataPath: \Self.data.typeCaseFields.asPet)
-    self._asWarmBlooded = .init(parent: self, dataPath: \Self.data.typeCaseFields.asWarmBlooded)
+    self.data.typeCaseFields.parent.value = self
   }
 
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
     return data.fields[keyPath: keyPath]
+  }
+
+  subscript<T>(dynamicMember keyPath: KeyPath<TypeCases, T>) -> T {
+    return data.typeCaseFields[keyPath: keyPath]
   }
 
   /// `Animal.Height`
@@ -166,22 +167,22 @@ public final class Animal: RootResponseObject, HasFragments {
       }
     }
 
-    final class TypeCaseFields {
-      let asWarmBlooded: AsWarmBlooded.ResponseData?
+    final class TypeCases: TypeCasesBase<Predators> {
+      @AsType var asWarmBlooded: AsWarmBlooded?
 
       init(asWarmBlooded: AsWarmBlooded.ResponseData? = nil) {
-        self.asWarmBlooded = asWarmBlooded
+        super.init()
+        self._asWarmBlooded = AsType(parent: parent, data: asWarmBlooded)
       }
     }
 
-    let data: FieldData<Fields, TypeCaseFields>
+    let data: FieldData<Fields, TypeCases>
 
-    @AsType var asWarmBlooded: AsWarmBlooded?
 
     init(
       __typename: String,
       species: String,
-      typeCaseFields: TypeCaseFields = .init(asWarmBlooded: nil)
+      typeCaseFields: TypeCases = .init(asWarmBlooded: nil)
     ) {
       self.data = .init(
         fields: Fields(
@@ -190,12 +191,15 @@ public final class Animal: RootResponseObject, HasFragments {
         ),
         typeCaseFields: typeCaseFields
       )
-
-      self._asWarmBlooded = .init(parent: self, dataPath: \Self.data.typeCaseFields.asWarmBlooded)
+      self.data.typeCaseFields.parent.value = self
     }
 
     subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
       data.fields[keyPath: keyPath]
+    }
+
+    subscript<T>(dynamicMember keyPath: KeyPath<TypeCases, T>) -> T {
+      return data.typeCaseFields[keyPath: keyPath]
     }
 
     /// `AllAnimals.Predators.AsWarmBlooded`
@@ -261,18 +265,18 @@ public final class Animal: RootResponseObject, HasFragments {
       }
     }
 
-    final class TypeCaseFields {
-      let asWarmBlooded: AsWarmBlooded.ResponseData?
+    final class TypeCases: TypeCasesBase<AsPet> {
+      @AsType var asWarmBlooded: AsWarmBlooded?
 
       init(asWarmBlooded: AsWarmBlooded.ResponseData? = nil) {
-        self.asWarmBlooded = asWarmBlooded
+        super.init()
+        self._asWarmBlooded = AsType(parent: parent, data: asWarmBlooded)
       }
     }
 
-    let data: FieldData<Fields, TypeCaseFields>
+    let data: FieldData<Fields, TypeCases>
     let parent: Animal
 
-    @AsType var asWarmBlooded: AsWarmBlooded?
 
     private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
@@ -297,18 +301,23 @@ public final class Animal: RootResponseObject, HasFragments {
     init(parent: Animal, data: ResponseData) {
       self.parent = parent
       self.data = data
-
-      self._asWarmBlooded = .init(parent: self, dataPath: \Self.data.typeCaseFields.asWarmBlooded)
+      
+      self.data.typeCaseFields.parent.value = self
     }
 
     subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
       return data.fields[keyPath: keyPath]
     }
 
+    subscript<T>(dynamicMember keyPath: KeyPath<TypeCases, T>) -> T {
+      return data.typeCaseFields[keyPath: keyPath]
+    }
+
     subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
       parent.data.fields[keyPath: keyPath]
     }
 
+    /// `Animal.AsPet.AsWarmBlooded`
     final class AsWarmBlooded: AsWarmBloodedDetails<Animal.AsPet> {
       final class Height: FieldJoiner<Animal.Height, WarmBloodedDetails.Height> {
         var meters: Int { first.meters }
@@ -322,61 +331,10 @@ public final class Animal: RootResponseObject, HasFragments {
       }
 
       subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
+        // TODO: Could we use FieldJoiners so we don't have to create additional subscripts for each
+        // level of nested type cases?
         parent.parent.data.fields[keyPath: keyPath]
       }
     }
   }
-}
-
-// MARK: - Extensions for creating mock objects
-// I am NOT at all happy with this part yet.
-
-extension Animal {
-
-  func makeAsPet(humanName: String, favoriteToy: String) -> AsPet {
-    let asPetFields = AsPet.Fields(humanName: humanName,
-                                 favoriteToy: favoriteToy)
-    self._asPet = AsType(
-      parent: self,
-      data: .init(
-        fields: asPetFields,
-        typeCaseFields: .init(asWarmBlooded: nil)
-      ))
-    return self.asPet!
-  }
-
-  func makeAsWarmBlooded(
-    bodyTemperature: Int,
-    height: WarmBloodedDetails.Height
-  ) -> Animal.AsWarmBlooded {
-    let asWarmBloodedFields = AsWarmBloodedDetails<Animal>.Fields(
-      bodyTemperature: bodyTemperature,
-      height: height
-    )
-    self._asWarmBlooded = AsType(
-      parent: self,
-      data: .init(fields: asWarmBloodedFields)
-    )
-    return self.asWarmBlooded!
-  }
-
-}
-
-extension Animal.AsPet {
-
-  func makeAsWarmBlooded(
-    bodyTemperature: Int,
-    height: WarmBloodedDetails.Height
-  ) -> Animal.AsPet.AsWarmBlooded {
-    let asWarmBloodedFields = AsWarmBloodedDetails<Animal.AsPet>.Fields(
-      bodyTemperature: bodyTemperature,
-      height: height
-    )
-    self._asWarmBlooded = AsType(
-      parent: self,
-      data: .init(fields: asWarmBloodedFields)
-    )
-    return self.asWarmBlooded!
-  }
-
 }

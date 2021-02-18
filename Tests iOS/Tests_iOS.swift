@@ -27,33 +27,56 @@ class Tests_iOS: XCTestCase {
   }
 
   func testSpecies_onTypeNested2TypeCasesDeep() throws {
-    let cat = Animal( // TODO: have to retain this for nested weak type case
+    let cat = Animal(
       __typename: "Cat",
       species: "Cat",
       height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10)),
-      predators: []
+      predators: [],
+      asPet: .init(fields: .init(humanName: "Tiger Lily", favoriteToy: "Shoelaces"),
+                   typeCaseFields: .init(
+                    asWarmBlooded: .init(
+                      fields: .init(
+                        bodyTemperature: 98,
+                        height: .init(
+                          fields: .init(
+                            meters: 10,
+                            yards: 3)))))),
+      asWarmBlooded: .init(fields: .init(
+                            bodyTemperature: 98,
+                            height: .init(
+                              fields: .init(
+                                meters: 10,
+                                yards: 3))))
     )
-    .makeAsPet(humanName: "Tiger Lily", favoriteToy: "Shoelaces")
-    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(fields: .init(meters: 10, yards: 3)))
+
 
     XCTAssertEqual(cat.species, "Cat")
-    XCTAssertEqual(cat.parent.parent.asPet?.species, "Cat")
-    XCTAssertEqual(cat.parent.parent.asPet?.asWarmBlooded?.species, "Cat")
+    XCTAssertEqual(cat.asPet?.species, "Cat")
+    XCTAssertEqual(cat.asPet?.asWarmBlooded?.species, "Cat")
   }
 
   func testAsTypeFragment_withDuplicateFieldOnParent() throws {
-    let asWarmBloodedPet = Animal( // TODO: have to retain this for nested weak type case
+    let subject = Animal(
       __typename: "Cat",
       species: "Cat",
       height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10)),
-      predators: []
+      predators: [],
+      asPet: .init(fields: .init(humanName: "Tiger Lily", favoriteToy: "Shoelaces"),
+                   typeCaseFields: .init(
+                    asWarmBlooded: .init(
+                      fields: .init(
+                        bodyTemperature: 98,
+                        height: .init(
+                          fields: .init(
+                            meters: 10,
+                            yards: 3)))))),
+      asWarmBlooded: .init(fields: .init(
+                            bodyTemperature: 98,
+                            height: .init(
+                              fields: .init(
+                                meters: 10,
+                                yards: 3))))
     )
-    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(fields: .init(meters: 10, yards: 3)))
-    .parent
-    .makeAsPet(humanName: "Tiger Lily", favoriteToy: "Shoelaces")
-    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(fields: .init(meters: 10, yards: 3)))
-
-    let subject = asWarmBloodedPet.parent.parent
 
     XCTAssertEqual(subject.height.feet, 2)
     XCTAssertEqual(subject.height.inches, 7)
@@ -69,18 +92,27 @@ class Tests_iOS: XCTestCase {
   }
 
   func testAsTypeFragment_withFragmentsOnParent_convertToFragments() throws {
-    let asWarmBloodedPet = Animal( // TODO: have to retain this for nested weak type case
+    let subject = Animal(
       __typename: "Cat",
       species: "Cat",
       height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10)),
-      predators: []
+      predators: [],
+      asPet: .init(fields: .init(humanName: "Tiger Lily", favoriteToy: "Shoelaces"),
+                   typeCaseFields: .init(
+                    asWarmBlooded: .init(
+                      fields: .init(
+                        bodyTemperature: 98,
+                        height: .init(
+                          fields: .init(
+                            meters: 10,
+                            yards: 3)))))),
+      asWarmBlooded: .init(fields: .init(
+                            bodyTemperature: 98,
+                            height: .init(
+                              fields: .init(
+                                meters: 10,
+                                yards: 3))))
     )
-    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(fields: .init(meters: 10, yards: 3)))
-    .parent
-    .makeAsPet(humanName: "Tiger Lily", favoriteToy: "Shoelaces")
-    .makeAsWarmBlooded(bodyTemperature: 98, height: .init(fields: .init(meters: 10, yards: 3)))
-
-    let subject = asWarmBloodedPet.parent.parent
 
     XCTAssertEqual(subject.fragments.heightInMeters.height.meters, 10)
 
