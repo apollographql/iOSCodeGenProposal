@@ -20,7 +20,7 @@ class ToFragments<Parent, FieldData> {
                      // just its Fragments (if the parent HasFragments)
   let data: FieldData
 
-  required internal init(parent: Parent, data: FieldData) {
+  required init(parent: Parent, data: FieldData) {
     self.parent = parent
     self.data = data
   }

@@ -109,7 +109,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
   }
 
   /// `Animal.AsPet`
-  final class AsPet: TypeCase, HasFragments {
+  final class AsPet: TypeCaseBase<AsPet.Fields, AsPet.TypeCases, Animal>, HasFragments {
     final class Fields {
       let humanName: String
       let favoriteToy: String
@@ -129,12 +129,6 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
       }
     }
 
-    let data: FieldData<Fields, TypeCases>
-    let parent: Animal
-
-
-    private(set) lazy var fragments = Fragments(parent: parent, data: data)
-
     final class Fragments: ToFragments<Animal, ResponseData> {
       private(set) lazy var petDetails = PetDetails(
         data: .init(
@@ -144,33 +138,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
           )))
     }
 
-    convenience init(
-      humanName: String = "",
-      favoriteToy: String,
-      parent: Animal
-    ) {
-      let fields = Fields(humanName: humanName, favoriteToy: favoriteToy)
-      self.init(parent: parent, data: .init(fields: fields, typeCaseFields: .init())) // TODO: Type Case Fields
-    }
-
-    init(parent: Animal, data: ResponseData) {
-      self.parent = parent
-      self.data = data
-
-      self.data.typeCaseFields.parent.value = self
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      return data.fields[keyPath: keyPath]
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<TypeCases, T>) -> T {
-      return data.typeCaseFields[keyPath: keyPath]
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
-      parent.data.fields[keyPath: keyPath]
-    }
+    private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
     /// `Animal.AsPet.AsWarmBlooded`
     final class AsWarmBlooded: AsWarmBloodedDetails<Animal.AsPet> {

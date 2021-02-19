@@ -44,8 +44,8 @@ extension ResponseObjectBase where TypeCases == Void {
 //  private(set) lazy var fragments = Fragments(parent: (), data: data)
 //}
 
-class TypeCaseBase<Parent: ResponseObject, Fields, TypeCaseFields>:
-  ResponseObjectBase<Fields, TypeCaseFields>, TypeCase {
+class TypeCaseBase<Fields, TypeCases, Parent: ResponseObject>:
+  ResponseObjectBase<Fields, TypeCases>, TypeCase {
 
   final let parent: Parent
 
@@ -56,5 +56,19 @@ class TypeCaseBase<Parent: ResponseObject, Fields, TypeCaseFields>:
 
   final subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
     parent.data.fields[keyPath: keyPath]
+  }
+}
+
+// These extensions can be generated based on the max number of levels of nested type cases
+// in the user's project.
+extension TypeCaseBase where Parent: TypeCase {
+  final subscript<T>(dynamicMember keyPath: KeyPath<Parent.Parent.Fields, T>) -> T {
+    parent.parent.data.fields[keyPath: keyPath]
+  }
+}
+
+extension TypeCaseBase where Parent: TypeCase, Parent.Parent: TypeCase {
+  final subscript<T>(dynamicMember keyPath: KeyPath<Parent.Parent.Parent.Fields, T>) -> T {
+    parent.parent.parent.data.fields[keyPath: keyPath]
   }
 }
