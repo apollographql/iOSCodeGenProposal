@@ -103,7 +103,7 @@ extension FragmentTypeCase {
 /// any `Fragment`s included on that object using its `fragments` property.
 protocol Fragment: ResponseObject { }
 
-// MARK: - HasFragment
+// MARK: - HasFragments
 
 /// A protocol that a `ResponseObject` object that contains fragments should conform to.
 protocol HasFragments: ResponseObject {
@@ -120,4 +120,12 @@ protocol HasFragments: ResponseObject {
   /// A `ToFragments` object that contains accessors for all of the fragments
   /// the object can be converted to.
   var fragments: Fragments { get }
+}
+
+extension HasFragments where Parent == Void, Fragments: ToFragments<Parent, ResponseData> {
+  var fragments: Fragments { Fragments(parent: (), data: data) }
+}
+
+extension HasFragments where Self: TypeCase, Fragments: ToFragments<Parent, ResponseData> {
+  var fragments: Fragments { Fragments(parent: parent, data: data) }
 }

@@ -46,7 +46,8 @@ extension ResponseObjectBase where TypeCases == Void {
 
 class TypeCaseBase<Fields, TypeCases, Parent: ResponseObject>:
   ResponseObjectBase<Fields, TypeCases>, TypeCase {
-
+  typealias Parent = Parent
+  
   final let parent: Parent
 
   required init(parent: Parent, data: ResponseData) {

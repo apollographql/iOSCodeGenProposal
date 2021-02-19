@@ -61,8 +61,6 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
     private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: data.fields.height.meters))
   }
 
-  private(set) lazy var fragments = Fragments(parent: (), data: data)
-
   // TODO: spread type case fields into initializers?
   convenience init(
     __typename: String,
@@ -137,8 +135,6 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
             favoriteToy: data.fields.favoriteToy
           )))
     }
-
-    private(set) lazy var fragments = Fragments(parent: parent, data: data)
 
     /// `Animal.AsPet.AsWarmBlooded`
     final class AsWarmBlooded: AsWarmBloodedDetails<Animal.AsPet> {
