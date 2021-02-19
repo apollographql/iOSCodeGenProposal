@@ -108,6 +108,91 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
     }
   }
 
+  /// `Animal.AsPet`
+  final class AsPet: TypeCase, HasFragments {
+    final class Fields {
+      let humanName: String
+      let favoriteToy: String
+
+      init(humanName: String, favoriteToy: String) {
+        self.humanName = humanName
+        self.favoriteToy = favoriteToy
+      }
+    }
+
+    final class TypeCases: TypeCasesBase<AsPet> {
+      @AsType var asWarmBlooded: AsWarmBlooded?
+
+      init(asWarmBlooded: AsWarmBlooded.ResponseData? = nil) {
+        super.init()
+        self._asWarmBlooded = AsType(parent: parent, data: asWarmBlooded)
+      }
+    }
+
+    let data: FieldData<Fields, TypeCases>
+    let parent: Animal
+
+
+    private(set) lazy var fragments = Fragments(parent: parent, data: data)
+
+    final class Fragments: ToFragments<Animal, ResponseData> {
+      private(set) lazy var petDetails = PetDetails(
+        data: .init(
+          fields: .init(
+            humanName: data.fields.humanName,
+            favoriteToy: data.fields.favoriteToy
+          )))
+    }
+
+    convenience init(
+      humanName: String = "",
+      favoriteToy: String,
+      parent: Animal
+    ) {
+      let fields = Fields(humanName: humanName, favoriteToy: favoriteToy)
+      self.init(parent: parent, data: .init(fields: fields, typeCaseFields: .init())) // TODO: Type Case Fields
+    }
+
+    init(parent: Animal, data: ResponseData) {
+      self.parent = parent
+      self.data = data
+
+      self.data.typeCaseFields.parent.value = self
+    }
+
+    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+      return data.fields[keyPath: keyPath]
+    }
+
+    subscript<T>(dynamicMember keyPath: KeyPath<TypeCases, T>) -> T {
+      return data.typeCaseFields[keyPath: keyPath]
+    }
+
+    subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
+      parent.data.fields[keyPath: keyPath]
+    }
+
+    /// `Animal.AsPet.AsWarmBlooded`
+    final class AsWarmBlooded: AsWarmBloodedDetails<Animal.AsPet> {
+      final class Height: FieldJoiner<Animal.Height, WarmBloodedDetails.Height> {
+        var meters: Int { first.meters }
+      }
+
+      let height: Height
+
+      required init(parent: Animal.AsPet, data: ResponseData) {
+        self.height = .init(first: parent.height, second: data.fields.height)
+        super.init(parent: parent, data: data)
+      }
+
+      subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
+        // TODO: Could we use FieldJoiners so we don't have to create additional subscripts for each
+        // level of nested type cases?
+        parent.parent.data.fields[keyPath: keyPath]
+      }
+    }
+  }
+
   // - NOTE:
   // Because the type case for `WarmBlooded` only includes the fragment, we can just inherit the fragment type case.
   //
@@ -198,91 +283,6 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
 
       subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
         parent.data.fields[keyPath: keyPath]
-      }
-    }
-  }
-  
-  /// `Animal.AsPet`
-  final class AsPet: TypeCase, HasFragments {
-    final class Fields {
-      let humanName: String
-      let favoriteToy: String
-
-      init(humanName: String, favoriteToy: String) {
-        self.humanName = humanName
-        self.favoriteToy = favoriteToy
-      }
-    }
-
-    final class TypeCases: TypeCasesBase<AsPet> {
-      @AsType var asWarmBlooded: AsWarmBlooded?
-
-      init(asWarmBlooded: AsWarmBlooded.ResponseData? = nil) {
-        super.init()
-        self._asWarmBlooded = AsType(parent: parent, data: asWarmBlooded)
-      }
-    }
-
-    let data: FieldData<Fields, TypeCases>
-    let parent: Animal
-
-
-    private(set) lazy var fragments = Fragments(parent: parent, data: data)
-
-    final class Fragments: ToFragments<Animal, ResponseData> {
-      private(set) lazy var petDetails = PetDetails(
-        data: .init(
-          fields: .init(
-            humanName: data.fields.humanName,
-            favoriteToy: data.fields.favoriteToy
-          )))
-    }
-
-    convenience init(
-      humanName: String = "",
-      favoriteToy: String,
-      parent: Animal
-    ) {
-      let fields = Fields(humanName: humanName, favoriteToy: favoriteToy)
-      self.init(parent: parent, data: .init(fields: fields, typeCaseFields: .init())) // TODO: Type Case Fields
-    }
-
-    init(parent: Animal, data: ResponseData) {
-      self.parent = parent
-      self.data = data
-      
-      self.data.typeCaseFields.parent.value = self
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      return data.fields[keyPath: keyPath]
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<TypeCases, T>) -> T {
-      return data.typeCaseFields[keyPath: keyPath]
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
-      parent.data.fields[keyPath: keyPath]
-    }
-
-    /// `Animal.AsPet.AsWarmBlooded`
-    final class AsWarmBlooded: AsWarmBloodedDetails<Animal.AsPet> {
-      final class Height: FieldJoiner<Animal.Height, WarmBloodedDetails.Height> {
-        var meters: Int { first.meters }
-      }
-
-      let height: Height
-
-      required init(parent: Animal.AsPet, data: ResponseData) {
-        self.height = .init(first: parent.height, second: data.fields.height)
-        super.init(parent: parent, data: data)
-      }
-
-      subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
-        // TODO: Could we use FieldJoiners so we don't have to create additional subscripts for each
-        // level of nested type cases?
-        parent.parent.data.fields[keyPath: keyPath]
       }
     }
   }

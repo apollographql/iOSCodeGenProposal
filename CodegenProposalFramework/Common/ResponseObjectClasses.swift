@@ -38,7 +38,6 @@ extension ResponseObjectBase where TypeCases == Void {
   }
 }
 
-
 //class BaseResponseObjectWithFragments<Fields, TypeCaseFields, Fragments>:
 //  BaseResponseObject<Fields, TypeCaseFields>, HasFragments {
 //
