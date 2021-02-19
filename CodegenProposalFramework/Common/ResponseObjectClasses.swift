@@ -7,12 +7,12 @@
 
 import Foundation
 
-class TypeCasesBase<T> {
-  let parent: Unwrapped<T> = .init()
-}
 
 @dynamicMemberLookup
-class BaseResponseObject<Fields, TypeCases>: ResponseObject {
+class ResponseObjectBase<Fields, TypeCases>: ResponseObject {
+  class TypeCasesBase<T> {
+    final let parent: Unwrapped<T> = .init()
+  }
 
   final let data: FieldData<Fields, TypeCases>
 
@@ -32,14 +32,21 @@ class BaseResponseObject<Fields, TypeCases>: ResponseObject {
   }
 }
 
+extension ResponseObjectBase where TypeCases == Void {
+  convenience init(fields: Fields) {
+    self.init(data: .init(fields: fields))
+  }
+}
+
+
 //class BaseResponseObjectWithFragments<Fields, TypeCaseFields, Fragments>:
 //  BaseResponseObject<Fields, TypeCaseFields>, HasFragments {
 //
 //  private(set) lazy var fragments = Fragments(parent: (), data: data)
 //}
 
-class BaseTypeCase<Parent: ResponseObject, Fields, TypeCaseFields>:
-  BaseResponseObject<Fields, TypeCaseFields>, TypeCase {
+class TypeCaseBase<Parent: ResponseObject, Fields, TypeCaseFields>:
+  ResponseObjectBase<Fields, TypeCaseFields>, TypeCase {
 
   final let parent: Parent
 

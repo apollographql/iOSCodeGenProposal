@@ -28,7 +28,7 @@ import Foundation
 
 // MARK: - Query Response Data Structs
 
-final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCases>, RootResponseObject, HasFragments {
+final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFragments {
   final class Fields {
     let __typename: String
     let species: String
@@ -88,7 +88,7 @@ final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCases>, RootRes
   }
 
   /// `Animal.Height`
-  final class Height: BaseResponseObject<Height.Fields, Void>, RootResponseObject {
+  final class Height: ResponseObjectBase<Height.Fields, Void> {
     final class Fields {
       let __typename: String
       let feet: Int
@@ -131,7 +131,7 @@ final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCases>, RootRes
   }
 
   /// `Animal.Predators`
-  final class Predators: ResponseObject {
+  final class Predators: ResponseObjectBase<Predators.Fields, Predators.TypeCases> {
     final class Fields {
       let __typename: String
       let species: String
@@ -149,32 +149,6 @@ final class Animal: BaseResponseObject<Animal.Fields, Animal.TypeCases>, RootRes
         super.init()
         self._asWarmBlooded = AsType(parent: parent, data: asWarmBlooded)
       }
-    }
-
-    let data: FieldData<Fields, TypeCases>
-
-
-    init(
-      __typename: String,
-      species: String,
-      typeCaseFields: TypeCases = .init(asWarmBlooded: nil)
-    ) {
-      self.data = .init(
-        fields: Fields(
-          __typename: __typename,
-          species: species
-        ),
-        typeCaseFields: typeCaseFields
-      )
-      self.data.typeCaseFields.parent.value = self
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      data.fields[keyPath: keyPath]
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<TypeCases, T>) -> T {
-      return data.typeCaseFields[keyPath: keyPath]
     }
 
     /// `AllAnimals.Predators.AsWarmBlooded`

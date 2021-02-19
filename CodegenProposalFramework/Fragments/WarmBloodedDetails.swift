@@ -35,7 +35,7 @@ final class WarmBloodedDetails: Fragment {
     self.data = data
   }
 
-  final class Height: RootResponseObject {
+  final class Height: ResponseObject {
     final class Fields {
       let meters: Int
       let yards: Int

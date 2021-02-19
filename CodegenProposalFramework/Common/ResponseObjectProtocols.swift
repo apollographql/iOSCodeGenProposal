@@ -30,20 +30,20 @@ protocol ResponseObject: AnyObject { // TODO: Make base class?
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
 }
 
-// MARK: - RootResponseObject
-/// A protocol representing a `ResponseObject` that is the root of its entity.
-/// That is, it has no parent.
-protocol RootResponseObject: ResponseObject {
-  /// Designated initializer for a `RootResponseObject`
-  /// - Parameter data: The GraphQL fields fetched and stored directly on this object.
-  init(data: ResponseData)
-}
-
-extension RootResponseObject where TypeCases == Void {
-  init(fields: Fields) {
-    self.init(data: .init(fields: fields))
-  }
-}
+//// MARK: - RootResponseObject
+///// A protocol representing a `ResponseObject` that is the root of its entity.
+///// That is, it has no parent.
+//protocol RootResponseObject: ResponseObject {
+//  /// Designated initializer for a `RootResponseObject`
+//  /// - Parameter data: The GraphQL fields fetched and stored directly on this object.
+//  init(data: ResponseData)
+//}
+//
+//extension RootResponseObject where TypeCases == Void {
+//  init(fields: Fields) {
+//    self.init(data: .init(fields: fields))
+//  }
+//}
 
 // MARK: - TypeCase
 
@@ -116,7 +116,7 @@ extension FragmentTypeCase {
 ///
 /// Any `ResponseObject` object that conforms to `HasFragments` can be converted to
 /// any `Fragment`s included on that object using its `fragments` property.
-protocol Fragment: RootResponseObject { }
+protocol Fragment: ResponseObject { }
 
 // MARK: - HasFragment
 

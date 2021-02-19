@@ -16,7 +16,8 @@ import Foundation
 /// If the object has a parent, fragments from the parent will also be accessible.
 @dynamicMemberLookup
 class ToFragments<Parent, FieldData> {
-  let parent: Parent
+  let parent: Parent // TODO: We don't really need a reference to the parent,
+                     // just its Fragments (if the parent HasFragments)
   let data: FieldData
 
   required internal init(parent: Parent, data: FieldData) {
