@@ -38,16 +38,10 @@ extension ResponseObjectBase where TypeCases == Void {
   }
 }
 
-//class BaseResponseObjectWithFragments<Fields, TypeCaseFields, Fragments>:
-//  BaseResponseObject<Fields, TypeCaseFields>, HasFragments {
-//
-//  private(set) lazy var fragments = Fragments(parent: (), data: data)
-//}
-
 class TypeCaseBase<Fields, TypeCases, Parent: ResponseObject>:
   ResponseObjectBase<Fields, TypeCases>, TypeCase {
   typealias Parent = Parent
-  
+
   final let parent: Parent
 
   required init(parent: Parent, data: ResponseData) {
@@ -61,7 +55,7 @@ class TypeCaseBase<Fields, TypeCases, Parent: ResponseObject>:
 }
 
 // These extensions can be generated based on the max number of levels of nested type cases
-// in the user's project.
+// in the user's project. // TODO: need to do the same for ToFragments I think. Need to test
 extension TypeCaseBase where Parent: TypeCase {
   final subscript<T>(dynamicMember keyPath: KeyPath<Parent.Parent.Fields, T>) -> T {
     parent.parent.data.fields[keyPath: keyPath]

@@ -129,11 +129,10 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
 
     final class Fragments: ToFragments<Animal, ResponseData> {
       private(set) lazy var petDetails = PetDetails(
-        data: .init(
-          fields: .init(
-            humanName: data.fields.humanName,
-            favoriteToy: data.fields.favoriteToy
-          )))
+        data: .init(fields: .init(
+          humanName: data.fields.humanName,
+          favoriteToy: data.fields.favoriteToy
+        )))
     }
 
     /// `Animal.AsPet.AsWarmBlooded`
@@ -201,7 +200,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
     }
 
     /// `AllAnimals.Predators.AsWarmBlooded`
-    final class AsWarmBlooded: TypeCase, HasFragments {
+    final class AsWarmBlooded: TypeCaseBase<AsWarmBlooded.Fields, Void, Predators>, HasFragments {
       final class Fields {
         let bodyTemperature: Int
         let height: WarmBloodedDetails.Height // - NOTE:
@@ -222,31 +221,12 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
         }
       }
 
-      let data: FieldData<Fields, Void>
-      let parent: Animal.Predators
-
-      private(set) lazy var fragments = Fragments(parent: parent, data: data)
-
-      init(parent: Animal.Predators, data: FieldData<Fields, Void>) {
-        self.parent = parent
-        self.data = data
-      }
-
       final class Fragments: ToFragments<Animal.Predators, ResponseData> {
         private(set) lazy var warmBloodedDetails = WarmBloodedDetails(
-          data: .init(
-            fields: .init(
-              bodyTemperature: data.fields.bodyTemperature,
-              height: data.fields.height
-            )))
-      }
-
-      subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-        data.fields[keyPath: keyPath]
-      }
-
-      subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
-        parent.data.fields[keyPath: keyPath]
+          data: .init(fields: .init(
+            bodyTemperature: data.fields.bodyTemperature,
+            height: data.fields.height
+          )))
       }
     }
   }
