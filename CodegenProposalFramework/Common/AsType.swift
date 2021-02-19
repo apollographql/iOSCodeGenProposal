@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class Unwrapped<T> { // TODO: find better name?
+final class Unwrapped<T> { // TODO: find better name? Or use UnsafePointer or something like that?
   var value: T!
 
   init() {}

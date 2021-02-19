@@ -35,7 +35,7 @@ final class WarmBloodedDetails: Fragment {
     self.data = data
   }
 
-  final class Height: ResponseObject {
+  final class Height: ResponseObjectBase<Height.Fields, Void> {
     final class Fields {
       let meters: Int
       let yards: Int
@@ -44,16 +44,6 @@ final class WarmBloodedDetails: Fragment {
         self.meters = meters
         self.yards = yards
       }
-    }
-
-    let data: FieldData<Fields, Void>
-
-    init(data: ResponseData) {
-      self.data = data
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      return data.fields[keyPath: keyPath]
     }
   }
 
