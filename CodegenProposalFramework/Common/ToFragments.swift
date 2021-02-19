@@ -7,10 +7,10 @@
 
 import Foundation
 
-/// An abstract base class for a `Fragments` object on a `ResponseObject` object that
+/// An abstract base class for a `Fragments` object on a `ResponseObject` that
 /// conforms to `HasFragments`.
 ///
-/// `ResponseObject` objects can be generated with subclasses of this object that provide
+/// A `ResponseObject` can be generated with subclasses of this object that provide
 /// accessors to convert the object into any included fragments.
 ///
 /// If the object has a parent, fragments from the parent will also be accessible.

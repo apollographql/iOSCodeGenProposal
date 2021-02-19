@@ -7,15 +7,27 @@
 
 import Foundation
 
-
+/// An abstract base class for any data object that is part of the response
+/// data for a `GraphQLOperation`.
+///
+/// This class uses `@dynamicMemberLookup` to provide accessors to all of the fields and
+/// type cases on the provided `Fields` and `TypeCases` objects.
+///
+/// - Generic Parameters:
+///   - `Fields`: An object that stores the fields fetched and stored directly on this object.
+///   - `TypeCases`: [optional] An object that stores the `TypeCase`s that the object may be
+///                  and their fields. Defaults to `Void`.
 @dynamicMemberLookup
 class ResponseObjectBase<Fields, TypeCases>: ResponseObject {
+  /// An abstract base class that a subclasses `TypeCases` should inherit from.
   class TypeCasesBase<T> {
     final let parent: Unwrapped<T> = .init()
   }
 
   final let data: FieldData<Fields, TypeCases>
 
+  /// The designated initializer.
+  /// - Parameter data: The raw data for the fields of the type and any of its `TypeCases`
   init(data: FieldData<Fields, TypeCases>) {
     self.data = data
     if let typeCases = self.data.typeCaseFields as? TypeCasesBase<Self> {
@@ -33,11 +45,17 @@ class ResponseObjectBase<Fields, TypeCases>: ResponseObject {
 }
 
 extension ResponseObjectBase where TypeCases == Void {
+  /// Initializes a `ResponseObject` that has no `TypeCases`.
+  /// - Parameter fields: The GraphQL fields fetched and stored directly on this object.
   convenience init(fields: Fields) {
     self.init(data: .init(fields: fields))
   }
 }
 
+/// An abstract base class for a type case response data object.
+///
+/// A type case is a more specific type, that a `ResponseObject` may also be, such as an
+/// interface or a type in a union. For more information see `TypeCase`
 class TypeCaseBase<Fields, TypeCases, Parent: ResponseObject>:
   ResponseObjectBase<Fields, TypeCases>, TypeCase {
   typealias Parent = Parent

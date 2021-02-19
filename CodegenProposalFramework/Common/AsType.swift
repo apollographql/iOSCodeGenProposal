@@ -24,11 +24,14 @@ final class Unwrapped<T> { // TODO: find better name? Or use UnsafePointer or so
 ///
 /// To ensure a retain cycle is not created, this uses an an unowned reference to
 /// the `parent` and lazily creates the child `TypeCase` object, which is retained weakly.
-/// If the child is de-referenced, it will deallocate, losing it's retain on the parent.
-/// If the property is accessed on the parent again, the `TypeCase` will be re-created.
+/// If the child is dereferenced, it will deallocate, losing it's retain on the parent.
+/// If the property is accessed on the parent again, the `TypeCase` will be recreated.
+///
+/// - SeeAlso: `LazyWeakTypeCase`
 @propertyWrapper struct AsType<T: TypeCase> {
   private let typeCase: LazyWeakTypeCase<T>?
 
+  /// A convenience property for creating an instance with a `nil` value.
   static var `nil`: Self { Self.init() }
 
   init(parent: Unwrapped<T.Parent>, data: T.ResponseData?) {

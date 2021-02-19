@@ -9,7 +9,7 @@ import Foundation
 
 /// Combines the fields of two `ResponseObject` objects onto one object.
 ///
-/// This is used when different fields on a type are being fetched by `ResponseObject` objects
+/// This is used when different fields on a type are being fetched by a `ResponseObject`
 /// and their child `TypeCase`s. A `FieldJoiner` allows you to merge the fields
 /// from each `TypeCase` and their parent.
 ///
