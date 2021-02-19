@@ -18,7 +18,8 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class WarmBloodedDetails: Fragment {
+final class WarmBloodedDetails:
+  ResponseObjectBase<WarmBloodedDetails.Fields, Void>,  Fragment {
   final class Fields {
     let bodyTemperature: Int
     let height: Height
@@ -27,12 +28,6 @@ final class WarmBloodedDetails: Fragment {
       self.bodyTemperature = bodyTemperature
       self.height = height
     }
-  }
-
-  let data: FieldData<Fields, Void>
-
-  init(data: ResponseData) {
-    self.data = data
   }
 
   final class Height: ResponseObjectBase<Height.Fields, Void> {
@@ -45,11 +40,7 @@ final class WarmBloodedDetails: Fragment {
         self.yards = yards
       }
     }
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return data.fields[keyPath: keyPath]
-  }
+  }  
 }
 
 /// A generic type case for a `WarmBloodedDetails` fragment.

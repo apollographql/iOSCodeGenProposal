@@ -26,7 +26,7 @@ class Tests_iOS: XCTestCase {
     XCTAssertEqual(cat.species, "Cat")
   }
 
-  func testSpecies_onTypeNested2TypeCasesDeep() throws {
+  func testAsTypeCase_fieldOnTypeNested2TypeCasesDeep() throws {
     let cat = Animal(
       __typename: "Cat",
       species: "Cat",
@@ -55,7 +55,7 @@ class Tests_iOS: XCTestCase {
     XCTAssertEqual(cat.asPet?.asWarmBlooded?.species, "Cat")
   }
 
-  func testAsTypeFragment_withDuplicateFieldOnParent() throws {
+  func testAsTypeCase_withDuplicateFieldOnParent() throws {
     let subject = Animal(
       __typename: "Cat",
       species: "Cat",
@@ -91,7 +91,7 @@ class Tests_iOS: XCTestCase {
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.height.yards, 3)
   }
 
-  func testAsTypeFragment_withFragmentsOnParent_convertToFragments() throws {
+  func testAsTypeCase_withFragmentsOnParent_convertToFragments() throws {
     let subject = Animal(
       __typename: "Cat",
       species: "Cat",

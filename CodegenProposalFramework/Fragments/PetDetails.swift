@@ -15,7 +15,7 @@ import Foundation
 ///  favoriteToy
 /// }
 /// ```
-final class PetDetails: Fragment {
+final class PetDetails: ResponseObjectBase<PetDetails.Fields, Void>, Fragment {
   final class Fields {
     let humanName: String
     let favoriteToy: String
@@ -26,14 +26,8 @@ final class PetDetails: Fragment {
     }
   }
 
-  let data: FieldData<Fields, Void>
-
-  init(data: ResponseData) {
-    self.data = data
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return data.fields[keyPath: keyPath]
+  convenience init(humanName: String, favoriteToy: String) {
+    self.init(fields: Fields(humanName: humanName, favoriteToy: favoriteToy))
   }
 }
 

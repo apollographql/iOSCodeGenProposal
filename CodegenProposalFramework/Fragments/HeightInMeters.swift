@@ -16,7 +16,7 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class HeightInMeters: Fragment {
+final class HeightInMeters: ResponseObjectBase<HeightInMeters.Fields, Void>, Fragment {
   final class Fields {
     let height: Height
 
@@ -25,17 +25,11 @@ final class HeightInMeters: Fragment {
     }
   }
 
-  let data: FieldData<Fields, Void>
-
-  init(data: ResponseData) {
-    self.data = data
+  convenience init(height: Height) {
+    self.init(fields: Fields(height: height))
   }
 
-  init(height: Height) {
-    self.data = .init(fields: Fields(height: height))
-  }
-
-  final class Height: ResponseObject {
+  final class Height: ResponseObjectBase<Height.Fields, Void> {
     final class Fields {
       let meters: Int
 
@@ -44,24 +38,10 @@ final class HeightInMeters: Fragment {
       }
     }
 
-    let data: FieldData<Fields, Void>
-
-    init(data: ResponseData) {
-      self.data = data
+    convenience init(meters: Int) {
+      self.init(fields: Fields(meters: meters))
     }
-
-    init(meters: Int) {
-      self.data = .init(fields: Fields(meters: meters))
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      return data.fields[keyPath: keyPath]
-    }
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return data.fields[keyPath: keyPath]
-  }
+  }  
 }
 
 /// A generic type case for a `HeightInMeters` fragment
