@@ -15,7 +15,7 @@ import Foundation
 ///  favoriteToy
 /// }
 /// ```
-final class PetDetails: Fragment {
+final class PetDetails: ResponseObjectBase<PetDetails.Fields, Void>, Fragment {
   final class Fields {
     let humanName: String
     let favoriteToy: String
@@ -26,14 +26,8 @@ final class PetDetails: Fragment {
     }
   }
 
-  let fields: Fields
-
-  init(fields: Fields) {
-    self.fields = fields
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
+  convenience init(humanName: String, favoriteToy: String) {
+    self.init(fields: Fields(humanName: humanName, favoriteToy: favoriteToy))
   }
 }
 
@@ -45,27 +39,8 @@ final class PetDetails: Fragment {
 ///  favoriteToy
 /// }
 /// ```
-class AsPetDetails<Parent: ResponseData>: FragmentTypeCase {
-  typealias FragmentType = PetDetails
-
-  let fields: Fields
-  let parent: Parent
-  private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
-
-  required init(parent: Parent, fields: Fields, typeCaseFields: Void = ()) {
-    self.parent = parent
-    self.fields = fields
-  }
-
-  final class Fragments: ToFragments<Parent, Fields> {
-    private(set) lazy var petDetails = PetDetails(fields: self.fields)
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
-    return parent.fields[keyPath: keyPath]
+class AsPetDetails<Parent: ResponseObject>: FragmentTypeCaseBase<PetDetails, Parent> {
+  final class Fragments: ToFragments<Parent, ResponseData> {
+    private(set) lazy var petDetails = PetDetails(data: self.data)
   }
 }

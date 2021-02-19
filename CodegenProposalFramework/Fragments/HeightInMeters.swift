@@ -16,7 +16,7 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class HeightInMeters: Fragment {
+final class HeightInMeters: ResponseObjectBase<HeightInMeters.Fields, Void>, Fragment {
   final class Fields {
     let height: Height
 
@@ -25,17 +25,11 @@ final class HeightInMeters: Fragment {
     }
   }
 
-  let fields: Fields
-
-  init(fields: Fields) {
-    self.fields = fields
+  convenience init(height: Height) {
+    self.init(fields: Fields(height: height))
   }
 
-  init(height: Height) {
-    self.fields = Fields(height: height)
-  }
-
-  final class Height: ResponseData {
+  final class Height: ResponseObjectBase<Height.Fields, Void> {
     final class Fields {
       let meters: Int
 
@@ -44,24 +38,10 @@ final class HeightInMeters: Fragment {
       }
     }
 
-    let fields: Fields
-
-    init(fields: Fields) {
-      self.fields = fields
+    convenience init(meters: Int) {
+      self.init(fields: Fields(meters: meters))
     }
-
-    init(meters: Int) {
-      self.fields = Fields(meters: meters)
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      return fields[keyPath: keyPath]
-    }
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
-  }
+  }  
 }
 
 /// A generic type case for a `HeightInMeters` fragment
@@ -73,27 +53,8 @@ final class HeightInMeters: Fragment {
 ///   }
 /// }
 /// ```
-class AsHeightInMeters<Parent: ResponseData>: FragmentTypeCase {
-  typealias FragmentType = HeightInMeters
-
-  let fields: Fields
-  let parent: Parent
-  private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
-
-  required init(parent: Parent, fields: Fields, typeCaseFields: Void = ()) {
-    self.parent = parent
-    self.fields = fields
-  }
-  
-  final class Fragments: ToFragments<Parent, Fields> {
-    private(set) lazy var heightInMeters = HeightInMeters(fields: self.fields)
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
-    return parent.fields[keyPath: keyPath]
+class AsHeightInMeters<Parent: ResponseObject>: FragmentTypeCaseBase<HeightInMeters, Parent> {
+  final class Fragments: ToFragments<Parent, ResponseData> {
+    private(set) lazy var heightInMeters = HeightInMeters(data: self.data)
   }
 }

@@ -7,21 +7,22 @@
 
 import Foundation
 
-/// An abstract base class for a `Fragments` object on a `ResponseData` object that
+/// An abstract base class for a `Fragments` object on a `ResponseObject` that
 /// conforms to `HasFragments`.
 ///
-/// `ResponseData` objects can be generated with subclasses of this object that provide
+/// A `ResponseObject` can be generated with subclasses of this object that provide
 /// accessors to convert the object into any included fragments.
 ///
 /// If the object has a parent, fragments from the parent will also be accessible.
 @dynamicMemberLookup
-class ToFragments<Parent, Fields> {
-  let parent: Parent
-  let fields: Fields
+class ToFragments<Parent, FieldData> {
+  let parent: Parent // TODO: We don't really need a reference to the parent,
+                     // just its Fragments (if the parent HasFragments)
+  let data: FieldData
 
-  internal init(parent: Parent, fields: Fields) {
+  required init(parent: Parent, data: FieldData) {
     self.parent = parent
-    self.fields = fields
+    self.data = data
   }
 }
 

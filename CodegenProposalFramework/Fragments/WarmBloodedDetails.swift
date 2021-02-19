@@ -18,7 +18,8 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class WarmBloodedDetails: Fragment {
+final class WarmBloodedDetails:
+  ResponseObjectBase<WarmBloodedDetails.Fields, Void>,  Fragment {
   final class Fields {
     let bodyTemperature: Int
     let height: Height
@@ -29,13 +30,7 @@ final class WarmBloodedDetails: Fragment {
     }
   }
 
-  let fields: Fields
-
-  init(fields: Fields) {
-    self.fields = fields
-  }
-
-  final class Height: ResponseData {
+  final class Height: ResponseObjectBase<Height.Fields, Void> {
     final class Fields {
       let meters: Int
       let yards: Int
@@ -45,21 +40,7 @@ final class WarmBloodedDetails: Fragment {
         self.yards = yards
       }
     }
-
-    let fields: Fields
-
-    init(fields: Fields) {
-      self.fields = fields
-    }
-
-    subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-      return fields[keyPath: keyPath]
-    }
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
-  }
+  }  
 }
 
 /// A generic type case for a `WarmBloodedDetails` fragment.
@@ -73,27 +54,9 @@ final class WarmBloodedDetails: Fragment {
 ///   }
 /// }
 /// ```
-class AsWarmBloodedDetails<Parent: ResponseData>: FragmentTypeCase {
-  typealias FragmentType = WarmBloodedDetails
-
-  let fields: Fields
-  let parent: Parent
-  private(set) lazy var fragments = Fragments(parent: parent, fields: fields)
-
-  required init(parent: Parent, fields: Fields, typeCaseFields: Void = ()) {
-    self.parent = parent
-    self.fields = fields
-  }
-
-  final class Fragments: ToFragments<Parent, Fields> {
-    private(set) lazy var warmBloodedDetails = WarmBloodedDetails(fields: self.fields)
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
-    return parent.fields[keyPath: keyPath]
+class AsWarmBloodedDetails<Parent: ResponseObject>:
+  FragmentTypeCaseBase<WarmBloodedDetails, Parent> {
+  final class Fragments: ToFragments<Parent, ResponseData> {
+    private(set) lazy var warmBloodedDetails = WarmBloodedDetails(data: self.data)
   }
 }
