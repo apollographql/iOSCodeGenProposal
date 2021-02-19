@@ -53,27 +53,8 @@ final class HeightInMeters: ResponseObjectBase<HeightInMeters.Fields, Void>, Fra
 ///   }
 /// }
 /// ```
-class AsHeightInMeters<Parent: ResponseObject>: FragmentTypeCase {
-  typealias FragmentType = HeightInMeters
-
-  let data: FieldData<HeightInMeters.Fields, Void>
-  let parent: Parent
-  private(set) lazy var fragments = Fragments(parent: parent, data: data)
-
-  required init(parent: Parent, data: ResponseData) {
-    self.parent = parent
-    self.data = data
-  }
-  
+class AsHeightInMeters<Parent: ResponseObject>: FragmentTypeCaseBase<HeightInMeters, Parent> {
   final class Fragments: ToFragments<Parent, ResponseData> {
     private(set) lazy var heightInMeters = HeightInMeters(data: self.data)
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return data.fields[keyPath: keyPath]
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
-    return parent.data.fields[keyPath: keyPath]
   }
 }

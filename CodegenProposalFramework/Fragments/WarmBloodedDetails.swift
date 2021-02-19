@@ -54,27 +54,9 @@ final class WarmBloodedDetails:
 ///   }
 /// }
 /// ```
-class AsWarmBloodedDetails<Parent: ResponseObject>: FragmentTypeCase {
-  typealias FragmentType = WarmBloodedDetails  
-
-  let data: FieldData<WarmBloodedDetails.Fields, Void>
-  let parent: Parent
-  private(set) lazy var fragments = Fragments(parent: parent, data: data)
-
-  required init(parent: Parent, data: ResponseData) {
-    self.parent = parent
-    self.data = data
-  }
-
+class AsWarmBloodedDetails<Parent: ResponseObject>:
+  FragmentTypeCaseBase<WarmBloodedDetails, Parent> {
   final class Fragments: ToFragments<Parent, ResponseData> {
     private(set) lazy var warmBloodedDetails = WarmBloodedDetails(data: self.data)
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return data.fields[keyPath: keyPath]
-  }
-
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T {
-    return parent.data.fields[keyPath: keyPath]
   }
 }

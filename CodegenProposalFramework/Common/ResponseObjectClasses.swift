@@ -67,3 +67,12 @@ extension TypeCaseBase where Parent: TypeCase, Parent.Parent: TypeCase {
     parent.parent.parent.data.fields[keyPath: keyPath]
   }
 }
+
+/// A typealias for a `TypeCase` that is included as a fragment.
+///
+/// Each fragment defined has a generic class generated that inherits from
+/// `FragmentTypeCase`. Other response data objects can subclass that generated class to
+/// include the reusable fragment.
+/// Like other `TypeCase`s, the fields from the parent object are also accessible on the
+/// child type case.
+typealias FragmentTypeCaseBase<FragmentType: Fragment, Parent: ResponseObject> = TypeCaseBase<FragmentType.Fields, FragmentType.TypeCases, Parent> & HasFragments

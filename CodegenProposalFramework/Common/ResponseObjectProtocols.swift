@@ -70,31 +70,6 @@ extension TypeCase where TypeCases == Void {
   }
 }
 
-// MARK: - FragmentTypeCase
-
-/// A protocol representing a `TypeCase` that is included as a fragment.
-///
-/// Each fragment defined has a generic class generated that conforms to `FragmentTypeCase`.
-/// Other response data objects can subclass that generated class to include the reusable fragment.
-/// Like other `TypeCase`s, the fields from the parent object are also accessible on the
-/// child type case.
-protocol FragmentTypeCase: TypeCase, HasFragments {
-
-  /// The type of the fragment that the `FragmentTypeCase` represents
-  associatedtype FragmentType: Fragment
-
-  /// A type representing the GraphQL fields for the fragment. These will be stored
-  /// on the fragment directly. // TODO: Docs
-
-  associatedtype Fields = FragmentType.Fields
-  associatedtype TypeCases = FragmentType.Fields
-}
-
-extension FragmentTypeCase {
-  typealias Fields = FragmentType.Fields
-  typealias TypeCases = FragmentType.TypeCases
-}
-
 // MARK: - Fragment
 
 /// A protocol representing a fragment that a `ResponseObject` object may be converted to.
