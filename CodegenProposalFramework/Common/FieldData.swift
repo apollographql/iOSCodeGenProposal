@@ -7,24 +7,83 @@
 
 import Foundation
 
-/// An object that stores the raw data objects for the `Fields` of a `ResponseObject`
-/// and any of its `TypeConditions`.
-final class FieldData<Fields, TypeConditionFields> { // TODO: One generic param for ResponseObject type? Try this again after making base classes!
-  /// An object that stores the GraphQL fields fetched and stored directly on this object.
-  let fields: Fields
+//protocol FieldData {
+//
+//  var data: [String: Any] { get }
+//
+//  init(data: [String: Any])
+//
+//}
 
-  /// An object that stores the `TypeCondition`s that the object may be and their fields.
-  let typeConditionFields: TypeConditionFields
+class FieldData {
 
-  init(fields: Fields, typeConditionFields: TypeConditionFields) {
-    self.fields = fields
-    self.typeConditionFields = typeConditionFields
+  final let data: [String: Any]
+
+  required init(data: [String: Any]) {
+    self.data = data
   }
 }
 
-extension FieldData where TypeConditionFields == Void {
-  convenience init(fields: Fields) {
-    self.init(fields: fields, typeConditionFields: ())
+@propertyWrapper
+struct Field<Value> {
+
+  let key: String
+
+  init(_ key: String) {
+    self.key = key
   }
+
+  static subscript<T: FieldData>(
+    _enclosingInstance instance: T,
+    wrapped wrappedKeyPath: ReferenceWritableKeyPath<T, Value>,
+    storage storageKeyPath: ReferenceWritableKeyPath<T, Self>
+  ) -> Value {
+    get {
+      let key = instance[keyPath: storageKeyPath].key
+      return instance.data[key] as! Value
+    }
+  }
+
+  @available(*, unavailable, message: "This property wrapper can only be applied to classes")
+  var wrappedValue: Value {
+      get { fatalError() }
+//      set { fatalError() }
+  }
+
 }
 
+extension Field where Value: RootResponseObject {
+
+  static subscript<T: FieldData>(
+    _enclosingInstance instance: T,
+    wrapped wrappedKeyPath: ReferenceWritableKeyPath<T, Value>,
+    storage storageKeyPath: ReferenceWritableKeyPath<T, Self>
+  ) -> Value {
+    get {
+      let key = instance[keyPath: storageKeyPath].key
+      let data = instance.data[key] as! [String: Any]
+      return Value(data: data)
+    }
+  }
+
+}
+///// An object that stores the raw data objects for the `Fields` of a `ResponseObject`
+///// and any of its `TypeConditions`.
+//final class FieldData<Fields, TypeConditionFields> { // TODO: One generic param for ResponseObject type? Try this again after making base classes!
+//  /// An object that stores the GraphQL fields fetched and stored directly on this object.
+//  let fields: Fields
+//
+//  /// An object that stores the `TypeCondition`s that the object may be and their fields.
+//  let typeConditionFields: TypeConditionFields
+//
+//  init(fields: Fields, typeConditionFields: TypeConditionFields) {
+//    self.fields = fields
+//    self.typeConditionFields = typeConditionFields
+//  }
+//}
+//
+//extension FieldData where TypeConditionFields == Void {
+//  convenience init(fields: Fields) {
+//    self.init(fields: fields, typeConditionFields: ())
+//  }
+//}

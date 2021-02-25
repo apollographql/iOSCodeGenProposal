@@ -16,31 +16,23 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class HeightInMeters: ResponseObjectBase<HeightInMeters.Fields, Void>, Fragment {
-  final class Fields {
-    let height: Height
-
-    init(height: Height) {
-      self.height = height
-    }
+final class HeightInMeters: RootResponseObjectBase<HeightInMeters.Fields, Void>, Fragment {
+  final class Fields: FieldData {
+    @Field("height") final var height: Height
   }
 
-  convenience init(height: Height) {
-    self.init(fields: Fields(height: height))
-  }
+//  convenience init(height: Height) {
+//    self.init(fields: Fields(height: height))
+//  }
 
-  final class Height: ResponseObjectBase<Height.Fields, Void> {
-    final class Fields {
-      let meters: Int
-
-      init(meters: Int) {
-        self.meters = meters
-      }
+  final class Height: RootResponseObjectBase<Height.Fields, Void> {
+    final class Fields: FieldData {
+      @Field("meters") final var meters: Int
     }
 
-    convenience init(meters: Int) {
-      self.init(fields: Fields(meters: meters))
-    }
+//    convenience init(meters: Int) {
+//      self.init(fields: Fields(meters: meters))
+//    }
   }  
 }
 

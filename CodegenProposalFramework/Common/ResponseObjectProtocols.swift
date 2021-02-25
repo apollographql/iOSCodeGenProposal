@@ -15,19 +15,25 @@ import Foundation
 protocol ResponseObject: AnyObject {
 
   /// A type representing the GraphQL fields fetched and stored directly on this object.
-  associatedtype Fields
+  associatedtype Fields: FieldData
 
   /// A type representing the `TypeCondition`s that the object may be.
   associatedtype TypeConditions = Void
 
   /// A typealias for the `FieldData` of the object. This stores the `Fields` and `TypeConditions`.
-  typealias ResponseData = FieldData<Fields, TypeConditions> // TODO: Remove this?
+  typealias ResponseData = [String: Any] // TODO: Remove this?
 
   /// The raw data objects for the fields of the type and any of its `TypeConditions`
-  var data: ResponseData { get }
+  var data: [String: Any] { get }
+  
+  var fields: Fields { get }
 
   /// A subscript used by `@dynamicMemberLookup` to access the `Field`s on the data object directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
+}
+
+protocol RootResponseObject: ResponseObject {
+  init(data: [String: Any])
 }
 
 // MARK: - TypeCondition
@@ -51,26 +57,26 @@ protocol TypeCondition: ResponseObject {
   ///   - parent: The parent data object that the `TypeCondition` is a more specific type for.
   ///   - data: The data for the `Fields` on the object,
   ///           including fields for any child `TypeCondition`s.
-  init(parent: Parent, data: ResponseData)
+  init(parent: Parent, data: [String: Any])
 
   /// The parent `ResponseObject` that the `TypeCondition` is a more specific type of.
   ///
-  /// The fields from the parent object are also accessible on the child type condition.
+  /// The fields from the parent object are also accessible on the child type condition.
   var parent: Parent { get }
 
   /// A subscript used by `@dynamicMemberLookup` to access the `Parent`'s `Fields` directly.
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T { get }
+//  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T { get }
 }
 
-extension TypeCondition where TypeConditions == Void {
-  /// Initializes a `TypeCondition` that has no child `TypeConditions`.
-  /// - Parameters:
-  ///   - parent: The parent data object that the `TypeCondition` is a more specific type for.
-  ///   - fields: The GraphQL fields fetched and stored directly on this object.
-  init(parent: Parent, fields: Fields) {
-    self.init(parent: parent, data: .init(fields: fields))
-  }
-}
+//extension TypeCondition where TypeConditions == Void {
+//  /// Initializes a `TypeCondition` that has no child `TypeConditions`.
+//  /// - Parameters:
+//  ///   - parent: The parent data object that the `TypeCondition` is a more specific type for.
+//  ///   - fields: The GraphQL fields fetched and stored directly on this object.
+//  init(parent: Parent, fields: Fields) {
+//    self.init(parent: parent, data: .init(fields: fields))
+//  }
+//}
 
 // MARK: - Fragment
 
@@ -80,7 +86,7 @@ extension TypeCondition where TypeConditions == Void {
 /// any `Fragment` included in it's `Fragments` object via its `fragments` property.
 ///
 /// - SeeAlso: `HasFragments`, `ToFragments`
-protocol Fragment: ResponseObject { }
+protocol Fragment: RootResponseObject { }
 
 // MARK: - HasFragments
 
@@ -94,17 +100,21 @@ protocol HasFragments: ResponseObject {
   /// A type representing all of the fragments contained on the `ResponseObject`.
   ///
   /// This type should always be a generic `ToFragments` object.
-  associatedtype Fragments = ToFragments<Parent, ResponseData>
+  associatedtype Fragments: FieldData
 
   /// A `ToFragments` object that contains accessors for all of the fragments
   /// the object can be converted to.
   var fragments: Fragments { get }
 }
 
-extension HasFragments where Parent == Void, Fragments: ToFragments<Parent, ResponseData> {
-  var fragments: Fragments { Fragments(parent: (), data: data) }
+extension HasFragments {
+  var fragments: Fragments { Fragments(data: data) }
 }
 
-extension HasFragments where Self: TypeCondition, Fragments: ToFragments<Parent, ResponseData> {
-  var fragments: Fragments { Fragments(parent: parent, data: data) }
-}
+//extension HasFragments where Parent == Void, Fragments: ToFragments<Parent, ResponseData> {
+//  var fragments: Fragments { Fragments(parent: (), data: data) }
+//}
+//
+//extension HasFragments where Self: TypeCondition, Fragments: ToFragments<Parent, ResponseData> {
+//  var fragments: Fragments { Fragments(parent: parent, data: data) }
+//}

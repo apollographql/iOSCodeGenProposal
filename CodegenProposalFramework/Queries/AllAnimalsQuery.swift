@@ -28,94 +28,66 @@ import Foundation
 
 // MARK: - Query Response Data Structs
 
-final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeConditions>, HasFragments {
-  final class Fields {
-    let __typename: String
-    let species: String
-    let height: Height
-    let predators: [Predators]
-
-    init(__typename: String, species: String, height: Animal.Height, predators: [Predators]) {
-      self.__typename = __typename
-      self.species = species
-      self.height = height
-      self.predators = predators
-    }
+final class Animal: RootResponseObjectBase<Animal.Fields, Animal.TypeConditions>, HasFragments {
+  class Fields: FieldData {
+    @Field("__typename") final var __typename: String
+    @Field("species") final var species: String
+    @Field("height") final var height: Height
+    @Field("predators") final var predators: [Predators]
   }
 
   final class TypeConditions: TypeConditionsBase<Animal> {
     @AsType var asPet: AsPet?
     @AsType var asWarmBlooded: AsWarmBlooded?
-
-    init(
-      asPet: AsPet.ResponseData? = nil,
-      asWarmBlooded: AsWarmBlooded.ResponseData? = nil
-    ) {
-      super.init()
-      self._asPet = AsType(parent: parent, data: asPet)
-      self._asWarmBlooded = AsType(parent: parent, data: asWarmBlooded)
-    }
   }
 
-  final class Fragments: ToFragments<Void, ResponseData> {
-    private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: data.fields.height.meters))
+  class Fragments: FieldData {
+    @ToFragment var heightInMeters: HeightInMeters
   }
 
   // TODO: spread type condition fields into initializers?
-  convenience init(
-    __typename: String,
-    species: String,
-    height: Height,
-    predators: [Predators],
-    asPet: AsPet.ResponseData? = nil,
-    asWarmBlooded: AsWarmBlooded.ResponseData? = nil
-  ) {
-    let data = ResponseData(
-      fields: Fields(
-        __typename: __typename,
-        species: species,
-        height: height,
-        predators: predators
-      ),
-      typeConditionFields: TypeConditions(
-        asPet: asPet,
-        asWarmBlooded: asWarmBlooded
-      ))
-
-    self.init(data: data)
-  }
+//  convenience init(
+//    __typename: String,
+//    species: String,
+//    height: Height,
+//    predators: [Predators],
+//    asPet: AsPet.ResponseData? = nil,
+//    asWarmBlooded: AsWarmBlooded.ResponseData? = nil
+//  ) {
+//    let data = ResponseData(
+//      fields: Fields(
+//        __typename: __typename,
+//        species: species,
+//        height: height,
+//        predators: predators
+//      ),
+//      typeConditionFields: TypeConditions(
+//        asPet: asPet,
+//        asWarmBlooded: asWarmBlooded
+//      ))
+//
+//    self.init(data: data)
+//  }
 
   /// `Animal.Height`
-  final class Height: ResponseObjectBase<Height.Fields, Void> {
-    final class Fields {
-      let __typename: String
-      let feet: Int
-      let inches: Int
-      let meters: Int // - NOTE:
+  final class Height: RootResponseObjectBase<Height.Fields, Void> {
+    final class Fields: FieldData {
+      @Field("__typename") final var __typename: String
+      @Field("feet") final var feet: Int
+      @Field("inches") final var inches: Int
+      @Field("meters") final var meters: Int // - NOTE:
       // This field is merged in from `HeightInMeters` fragment.
       // Because the fragment type identically matches the type it is queried on, we do
       // not need an optional `TypeCondition` and can merge the field up.
       // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
-
-      init(__typename: String, feet: Int, inches: Int, meters: Int) {
-        self.__typename = __typename
-        self.feet = feet
-        self.inches = inches
-        self.meters = meters
-      }
     }
   }
 
   /// `Animal.AsPet`
   final class AsPet: TypeConditionBase<AsPet.Fields, AsPet.TypeConditions, Animal>, HasFragments {
-    final class Fields {
-      let humanName: String
-      let favoriteToy: String
-
-      init(humanName: String, favoriteToy: String) {
-        self.humanName = humanName
-        self.favoriteToy = favoriteToy
-      }
+    final class Fields: Animal.Fields {
+      @Field("humanName") final var humanName: String
+      @Field("favoriteToy") final var favoriteToy: String
     }
 
     final class TypeConditions: TypeConditionsBase<AsPet> {

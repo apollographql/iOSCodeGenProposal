@@ -14,20 +14,41 @@ import Foundation
 /// accessors to convert the object into any included fragments.
 ///
 /// If the object has a parent, fragments from the parent will also be accessible.
-@dynamicMemberLookup
-class ToFragments<Parent, FieldData> {
-  let parent: Parent // TODO: We don't really need a reference to the parent,
-                     // just its Fragments (if the parent HasFragments)
-  let data: FieldData
+//@dynamicMemberLookup
+//class ToFragments<Parent, FieldData> {
+//
+//  let parent: Parent // TODO: We don't really need a reference to the parent,
+//                     // just its Fragments (if the parent HasFragments)
+//  let data: FieldData
+//
+//  required init(parent: Parent, data: FieldData) {
+//    self.parent = parent
+//    self.data = data
+//  }
+//}
+//
+//extension ToFragments where Parent: HasFragments {
+//  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fragments, T>) -> T {
+//    return parent.fragments[keyPath: keyPath]
+//  }
+//}
 
-  required init(parent: Parent, data: FieldData) {
-    self.parent = parent
-    self.data = data
-  }
-}
+@propertyWrapper
+struct ToFragment<Value: Fragment> {
 
-extension ToFragments where Parent: HasFragments {
-  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fragments, T>) -> T {
-    return parent.fragments[keyPath: keyPath]
+  static subscript<T: FieldData>(
+    _enclosingInstance instance: T,
+    wrapped wrappedKeyPath: ReferenceWritableKeyPath<T, Value>,
+    storage storageKeyPath: ReferenceWritableKeyPath<T, Self>
+  ) -> Value {
+    get {
+      return Value(data: instance.data)
+    }
   }
+
+  @available(*, unavailable, message: "This property wrapper can only be applied to classes")
+  var wrappedValue: Value {
+      get { fatalError() }
+  }
+
 }
