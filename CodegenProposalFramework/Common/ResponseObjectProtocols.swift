@@ -17,55 +17,55 @@ protocol ResponseObject: AnyObject {
   /// A type representing the GraphQL fields fetched and stored directly on this object.
   associatedtype Fields
 
-  /// A type representing the `TypeCase`s that the object may be.
-  associatedtype TypeCases = Void
+  /// A type representing the `TypeCondition`s that the object may be.
+  associatedtype TypeConditions = Void
 
-  /// A typealias for the `FieldData` of the object. This stores the `Fields` and `TypeCases`.
-  typealias ResponseData = FieldData<Fields, TypeCases> // TODO: Remove this?
+  /// A typealias for the `FieldData` of the object. This stores the `Fields` and `TypeConditions`.
+  typealias ResponseData = FieldData<Fields, TypeConditions> // TODO: Remove this?
 
-  /// The raw data objects for the fields of the type and any of its `TypeCases`
+  /// The raw data objects for the fields of the type and any of its `TypeConditions`
   var data: ResponseData { get }
 
   /// A subscript used by `@dynamicMemberLookup` to access the `Field`s on the data object directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
 }
 
-// MARK: - TypeCase
+// MARK: - TypeCondition
 
-/// A protocol representing a type case response data object.
-/// A type case is a more specific type, that a `ResponseObject` may also be, such as an
+/// A protocol representing a type condition response data object.
+/// A type condition is a more specific type, that a `ResponseObject` may also be, such as an
 /// interface or a type in a union.
 ///
-/// A `TypeCase` can typically be accessed using an `@AsType` wrapped property on the parent object.
-/// The child type case is always optional, and will only exist if the type of the object
-/// matches the type case.
+/// A `TypeCondition` can typically be accessed using an `@AsType` wrapped property on the parent object.
+/// The child type condition is always optional, and will only exist if the type of the object
+/// matches the type condition.
 ///
-/// The fields from the parent object are also accessible on the child type case.
-protocol TypeCase: ResponseObject {
+/// The fields from the parent object are also accessible on the child type condition.
+protocol TypeCondition: ResponseObject {
 
-  /// The type of the parent response data object that the type case is a more specific type of.
+  /// The type of the parent response data object that the type condition is a more specific type of.
   associatedtype Parent: ResponseObject
 
-  /// Designated initializer for a `TypeCase`.
+  /// Designated initializer for a `TypeCondition`.
   /// - Parameters:
-  ///   - parent: The parent data object that the `TypeCase` is a more specific type for.
+  ///   - parent: The parent data object that the `TypeCondition` is a more specific type for.
   ///   - data: The data for the `Fields` on the object,
-  ///           including fields for any child `TypeCase`s.
+  ///           including fields for any child `TypeCondition`s.
   init(parent: Parent, data: ResponseData)
 
-  /// The parent `ResponseObject` that the `TypeCase` is a more specific type of.
+  /// The parent `ResponseObject` that the `TypeCondition` is a more specific type of.
   ///
-  /// The fields from the parent object are also accessible on the child type case.
+  /// The fields from the parent object are also accessible on the child type condition.
   var parent: Parent { get }
 
   /// A subscript used by `@dynamicMemberLookup` to access the `Parent`'s `Fields` directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T { get }
 }
 
-extension TypeCase where TypeCases == Void {
-  /// Initializes a `TypeCase` that has no child `TypeCases`.
+extension TypeCondition where TypeConditions == Void {
+  /// Initializes a `TypeCondition` that has no child `TypeConditions`.
   /// - Parameters:
-  ///   - parent: The parent data object that the `TypeCase` is a more specific type for.
+  ///   - parent: The parent data object that the `TypeCondition` is a more specific type for.
   ///   - fields: The GraphQL fields fetched and stored directly on this object.
   init(parent: Parent, fields: Fields) {
     self.init(parent: parent, data: .init(fields: fields))
@@ -88,7 +88,7 @@ protocol Fragment: ResponseObject { }
 protocol HasFragments: ResponseObject {
 
   /// If applicable, the type of the parent response data object. Defaults to `Void`.
-  /// This will be the `Parent` of any `TypeCase` that also conforms to `HasFragments`.
+  /// This will be the `Parent` of any `TypeCondition` that also conforms to `HasFragments`.
   associatedtype Parent = Void
 
   /// A type representing all of the fragments contained on the `ResponseObject`.
@@ -105,6 +105,6 @@ extension HasFragments where Parent == Void, Fragments: ToFragments<Parent, Resp
   var fragments: Fragments { Fragments(parent: (), data: data) }
 }
 
-extension HasFragments where Self: TypeCase, Fragments: ToFragments<Parent, ResponseData> {
+extension HasFragments where Self: TypeCondition, Fragments: ToFragments<Parent, ResponseData> {
   var fragments: Fragments { Fragments(parent: parent, data: data) }
 }

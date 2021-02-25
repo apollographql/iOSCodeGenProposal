@@ -43,7 +43,7 @@ final class WarmBloodedDetails:
   }  
 }
 
-/// A generic type case for a `WarmBloodedDetails` fragment.
+/// A generic type condition for a `WarmBloodedDetails` fragment.
 ///
 /// ```
 /// fragment WarmBloodedDetails on WarmBlooded {
@@ -55,7 +55,7 @@ final class WarmBloodedDetails:
 /// }
 /// ```
 class AsWarmBloodedDetails<Parent: ResponseObject>:
-  FragmentTypeCaseBase<WarmBloodedDetails, Parent> {
+  FragmentTypeConditionBase<WarmBloodedDetails, Parent> {
   final class Fragments: ToFragments<Parent, ResponseData> {
     private(set) lazy var warmBloodedDetails = WarmBloodedDetails(data: self.data)
   }

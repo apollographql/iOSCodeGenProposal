@@ -10,8 +10,8 @@ import Foundation
 /// Combines the fields of two `ResponseObject` objects onto one object.
 ///
 /// This is used when different fields on a type are being fetched by a `ResponseObject`
-/// and their child `TypeCase`s. A `FieldJoiner` allows you to merge the fields
-/// from each `TypeCase` and their parent.
+/// and their child `TypeCondition`s. A `FieldJoiner` allows you to merge the fields
+/// from each `TypeCondition` and their parent.
 ///
 /// `FieldJoiner` can be subclassed to provide computed properties to resolve any naming conflicts
 /// for fields that exist on both of the joined objects. `FieldJoiner`s can also be nested to merge

@@ -23,12 +23,12 @@ import Foundation
 // }
 //
 
-// TODO: Fragment with nested type case
+// TODO: Fragment with nested type condition
 // TODO: Figure out access control on everything
 
 // MARK: - Query Response Data Structs
 
-final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFragments {
+final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeConditions>, HasFragments {
   final class Fields {
     let __typename: String
     let species: String
@@ -43,7 +43,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
     }
   }
 
-  final class TypeCases: TypeCasesBase<Animal> {
+  final class TypeConditions: TypeConditionsBase<Animal> {
     @AsType var asPet: AsPet?
     @AsType var asWarmBlooded: AsWarmBlooded?
 
@@ -61,7 +61,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
     private(set) lazy var heightInMeters = HeightInMeters(height: .init(meters: data.fields.height.meters))
   }
 
-  // TODO: spread type case fields into initializers?
+  // TODO: spread type condition fields into initializers?
   convenience init(
     __typename: String,
     species: String,
@@ -77,7 +77,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
         height: height,
         predators: predators
       ),
-      typeCaseFields: TypeCases(
+      typeConditionFields: TypeConditions(
         asPet: asPet,
         asWarmBlooded: asWarmBlooded
       ))
@@ -94,7 +94,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
       let meters: Int // - NOTE:
       // This field is merged in from `HeightInMeters` fragment.
       // Because the fragment type identically matches the type it is queried on, we do
-      // not need an optional `TypeCase` and can merge the field up.
+      // not need an optional `TypeCondition` and can merge the field up.
       // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
 
       init(__typename: String, feet: Int, inches: Int, meters: Int) {
@@ -107,7 +107,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
   }
 
   /// `Animal.AsPet`
-  final class AsPet: TypeCaseBase<AsPet.Fields, AsPet.TypeCases, Animal>, HasFragments {
+  final class AsPet: TypeConditionBase<AsPet.Fields, AsPet.TypeConditions, Animal>, HasFragments {
     final class Fields {
       let humanName: String
       let favoriteToy: String
@@ -118,7 +118,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
       }
     }
 
-    final class TypeCases: TypeCasesBase<AsPet> {
+    final class TypeConditions: TypeConditionsBase<AsPet> {
       @AsType var asWarmBlooded: AsWarmBlooded?
 
       init(asWarmBlooded: AsWarmBlooded.ResponseData? = nil) {
@@ -150,17 +150,17 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
 
       subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
         // TODO: Could we use FieldJoiners so we don't have to create additional subscripts for each
-        // level of nested type cases?
+        // level of nested type condtions?
         parent.parent.data.fields[keyPath: keyPath]
       }
     }
   }
 
   // - NOTE:
-  // Because the type case for `WarmBlooded` only includes the fragment, we can just inherit the fragment type case.
+  // Because the type condition for `WarmBlooded` only includes the fragment, we can just inherit the fragment type condition.
   //
-  // For a type case that fetches a fragment in addition to other fields, we would use a custom `TypeCase`
-  // with the fragment type case nested inside. See `Predators.AsWarmBlooded` for an example of this.
+  // For a type condition that fetches a fragment in addition to other fields, we would use a custom `TypeCondition`
+  // with the fragment type condition nested inside. See `Predators.AsWarmBlooded` for an example of this.
   /// `Animal.AsWarmBlooded`
   final class AsWarmBlooded: AsWarmBloodedDetails<Animal> {
     final class Height: FieldJoiner<Animal.Height, WarmBloodedDetails.Height> {
@@ -179,7 +179,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
   }
 
   /// `Animal.Predators`
-  final class Predators: ResponseObjectBase<Predators.Fields, Predators.TypeCases> {
+  final class Predators: ResponseObjectBase<Predators.Fields, Predators.TypeConditions> {
     final class Fields {
       let __typename: String
       let species: String
@@ -190,7 +190,7 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
       }
     }
 
-    final class TypeCases: TypeCasesBase<Predators> {
+    final class TypeConditions: TypeConditionsBase<Predators> {
       @AsType var asWarmBlooded: AsWarmBlooded?
 
       init(asWarmBlooded: AsWarmBlooded.ResponseData? = nil) {
@@ -200,13 +200,13 @@ final class Animal: ResponseObjectBase<Animal.Fields, Animal.TypeCases>, HasFrag
     }
 
     /// `AllAnimals.Predators.AsWarmBlooded`
-    final class AsWarmBlooded: TypeCaseBase<AsWarmBlooded.Fields, Void, Predators>, HasFragments {
+    final class AsWarmBlooded: TypeConditionBase<AsWarmBlooded.Fields, Void, Predators>, HasFragments {
       final class Fields {
         let bodyTemperature: Int
         let height: WarmBloodedDetails.Height // - NOTE:
         // These 2 fields are merged in from `WarmBloodedDetails` fragment.
         // Because the fragment type identically matches the type it is queried on, we do
-        // not need an optional `TypeCase` and can merge the fields up.
+        // not need an optional `TypeCondition` and can merge the fields up.
         // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
         let hasFur: Bool
 

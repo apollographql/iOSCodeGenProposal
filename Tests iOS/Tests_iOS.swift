@@ -26,14 +26,14 @@ class Tests_iOS: XCTestCase {
     XCTAssertEqual(cat.species, "Cat")
   }
 
-  func testAsTypeCase_fieldOnTypeNested2TypeCasesDeep() throws {
+  func testAsTypeCondition_fieldOnTypeNested2TypeConditionsDeep() throws {
     let cat = Animal(
       __typename: "Cat",
       species: "Cat",
       height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10)),
       predators: [],
       asPet: .init(fields: .init(humanName: "Tiger Lily", favoriteToy: "Shoelaces"),
-                   typeCaseFields: .init(
+                   typeConditionFields: .init(
                     asWarmBlooded: .init(
                       fields: .init(
                         bodyTemperature: 98,
@@ -55,14 +55,14 @@ class Tests_iOS: XCTestCase {
     XCTAssertEqual(cat.asPet?.asWarmBlooded?.species, "Cat")
   }
 
-  func testAsTypeCase_withDuplicateFieldOnParent() throws {
+  func testAsTypeCondition_withDuplicateFieldOnParent() throws {
     let subject = Animal(
       __typename: "Cat",
       species: "Cat",
       height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10)),
       predators: [],
       asPet: .init(fields: .init(humanName: "Tiger Lily", favoriteToy: "Shoelaces"),
-                   typeCaseFields: .init(
+                   typeConditionFields: .init(
                     asWarmBlooded: .init(
                       fields: .init(
                         bodyTemperature: 98,
@@ -91,14 +91,14 @@ class Tests_iOS: XCTestCase {
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.height.yards, 3)
   }
 
-  func testAsTypeCase_withFragmentsOnParent_convertToFragments() throws {
+  func testAsTypeCondition_withFragmentsOnParent_convertToFragments() throws {
     let subject = Animal(
       __typename: "Cat",
       species: "Cat",
       height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10)),
       predators: [],
       asPet: .init(fields: .init(humanName: "Tiger Lily", favoriteToy: "Shoelaces"),
-                   typeCaseFields: .init(
+                   typeConditionFields: .init(
                     asWarmBlooded: .init(
                       fields: .init(
                         bodyTemperature: 98,

@@ -31,7 +31,7 @@ final class PetDetails: ResponseObjectBase<PetDetails.Fields, Void>, Fragment {
   }
 }
 
-/// A generic type case for a `PetDetails` fragment.
+/// A generic type condition for a `PetDetails` fragment.
 ///
 /// ```
 /// fragment PetDetails on Pet {
@@ -39,7 +39,7 @@ final class PetDetails: ResponseObjectBase<PetDetails.Fields, Void>, Fragment {
 ///  favoriteToy
 /// }
 /// ```
-class AsPetDetails<Parent: ResponseObject>: FragmentTypeCaseBase<PetDetails, Parent> {
+class AsPetDetails<Parent: ResponseObject>: FragmentTypeConditionBase<PetDetails, Parent> {
   final class Fragments: ToFragments<Parent, ResponseData> {
     private(set) lazy var petDetails = PetDetails(data: self.data)
   }

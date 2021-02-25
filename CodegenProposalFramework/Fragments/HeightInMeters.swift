@@ -44,7 +44,7 @@ final class HeightInMeters: ResponseObjectBase<HeightInMeters.Fields, Void>, Fra
   }  
 }
 
-/// A generic type case for a `HeightInMeters` fragment
+/// A generic type condition for a `HeightInMeters` fragment
 ///
 /// ```
 /// fragment HeightInMeters on Animal {
@@ -53,7 +53,7 @@ final class HeightInMeters: ResponseObjectBase<HeightInMeters.Fields, Void>, Fra
 ///   }
 /// }
 /// ```
-class AsHeightInMeters<Parent: ResponseObject>: FragmentTypeCaseBase<HeightInMeters, Parent> {
+class AsHeightInMeters<Parent: ResponseObject>: FragmentTypeConditionBase<HeightInMeters, Parent> {
   final class Fragments: ToFragments<Parent, ResponseData> {
     private(set) lazy var heightInMeters = HeightInMeters(data: self.data)
   }

@@ -1,6 +1,6 @@
 @testable import CodegenProposalFramework
 
-let cat = Animal( // TODO: have to retain this for nested weak type case
+let cat = Animal( // TODO: have to retain this for nested weak type condition
   __typename: "Cat",
   species: "Cat",
   height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10)),

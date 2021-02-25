@@ -17,43 +17,43 @@ final class Unwrapped<T> { // TODO: find better name? Or use UnsafePointer or so
   }
 }
 
-/// A property wrapper for a `TypeCase` on a `ResponseObject`.
+/// A property wrapper for a `TypeCondition` on a `ResponseObject`.
 ///
-/// `AsType` uses a lazy and weak wrapper that can create a `TypeCase` data object
-/// given the fields for the `TypeCase` and the parent `ResponseObject`.
+/// `AsType` uses a lazy and weak wrapper that can create a `TypeCondition` data object
+/// given the fields for the `TypeCondition` and the parent `ResponseObject`.
 ///
 /// To ensure a retain cycle is not created, this uses an an unowned reference to
-/// the `parent` and lazily creates the child `TypeCase` object, which is retained weakly.
+/// the `parent` and lazily creates the child `TypeCondition` object, which is retained weakly.
 /// If the child is dereferenced, it will deallocate, losing it's retain on the parent.
-/// If the property is accessed on the parent again, the `TypeCase` will be recreated.
+/// If the property is accessed on the parent again, the `TypeCondition` will be recreated.
 ///
-/// - SeeAlso: `LazyWeakTypeCase`
-@propertyWrapper struct AsType<T: TypeCase> {
-  private let typeCase: LazyWeakTypeCase<T>?
+/// - SeeAlso: `LazyWeakTypeCondition`
+@propertyWrapper struct AsType<T: TypeCondition> {
+  private let typeCondition: LazyWeakTypeCondition<T>?
 
   /// A convenience property for creating an instance with a `nil` value.
   static var `nil`: Self { Self.init() }
 
   init(parent: Unwrapped<T.Parent>, data: T.ResponseData?) {
     guard let data = data else {
-      self.typeCase = nil
+      self.typeCondition = nil
       return
     }
 
-    self.typeCase = LazyWeakTypeCase(parent: parent, data: data)
+    self.typeCondition = LazyWeakTypeCondition(parent: parent, data: data)
   }
 
   init() {
-    self.typeCase = nil
+    self.typeCondition = nil
   }
 
   var wrappedValue: T? {
-    guard let typeCase = typeCase else { return nil }
-    return typeCase.value
+    guard let typeCondition = typeCondition else { return nil }
+    return typeCondition.value
   }
 }
 
-private final class LazyWeakTypeCase<T: TypeCase> {
+private final class LazyWeakTypeCondition<T: TypeCondition> {
   private weak var _value: T?
 
   private unowned let parent: Unwrapped<T.Parent>
