@@ -8,7 +8,7 @@
 import XCTest
 @testable import CodegenProposalFramework
 
-class Tests_iOS: XCTestCase {
+class SanityCheckTests: XCTestCase {
 
   var data: [String: Any] = [:]
 
