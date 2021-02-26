@@ -38,7 +38,7 @@ struct Field<Value> {
   static subscript<T: FieldData>(
     _enclosingInstance instance: T,
     wrapped wrappedKeyPath: KeyPath<T, Value>,
-    storage storageKeyPath: KeyPath<T, Self>
+    storage storageKeyPath: KeyPath<T, Field>
   ) -> Value {
     get {
       let key = instance[keyPath: storageKeyPath].key
@@ -59,7 +59,7 @@ extension Field where Value: ResponseObject {
   static subscript<T: FieldData>(
     _enclosingInstance instance: T,
     wrapped wrappedKeyPath: KeyPath<T, Value>,
-    storage storageKeyPath: KeyPath<T, Self>
+    storage storageKeyPath: KeyPath<T, Field>
   ) -> Value {
     get {
       let key = instance[keyPath: storageKeyPath].key

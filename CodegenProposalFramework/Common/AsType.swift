@@ -16,7 +16,7 @@ import Foundation
     storage storageKeyPath: KeyPath<T, Self>
   ) -> Value? {
     get {
-      guard Value.possibleTypes.contains(instance.__typename) else { return nil }
+//      guard Value.possibleTypes.contains(instance.__typename) else { return nil } // TODO: Implement
       return Value(data: instance.data)
     }
   }

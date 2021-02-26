@@ -21,17 +21,3 @@ final class PetDetails: ResponseObjectBase<PetDetails.Fields>, Fragment {
     @Field("favoriteToy") final var  favoriteToy: String
   }
 }
-
-/// A generic type condition for a `PetDetails` fragment.
-///
-/// ```
-/// fragment PetDetails on Pet {
-///  humanName
-///  favoriteToy
-/// }
-/// ```
-class AsPetDetails<Parent: ResponseObject>: FragmentTypeConditionBase<PetDetails, Parent> {
-  final class Fragments: BaseClass.Fragments {
-    @ToFragment var petDetails: PetDetails
-  }
-}

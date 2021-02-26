@@ -31,20 +31,3 @@ final class WarmBloodedDetails: ResponseObjectBase<WarmBloodedDetails.Fields>, F
     }
   }  
 }
-
-/// A generic type condition for a `WarmBloodedDetails` fragment.
-///
-/// ```
-/// fragment WarmBloodedDetails on WarmBlooded {
-///   bodyTemperature
-///   height {
-///     meters // TODO: Use HeightInMeters fragment?
-///     yards
-///   }
-/// }
-/// ```
-class AsWarmBloodedDetails<Parent: ResponseObject>: FragmentTypeConditionBase<WarmBloodedDetails, Parent> {
-  final class Fragments: BaseClass.Fragments {
-    @ToFragment var warmBloodedDetails: WarmBloodedDetails
-  }
-}

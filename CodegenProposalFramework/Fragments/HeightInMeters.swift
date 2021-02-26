@@ -27,18 +27,3 @@ final class HeightInMeters: ResponseObjectBase<HeightInMeters.Fields>, Fragment 
     }
   }
 }
-
-/// A generic type condition for a `HeightInMeters` fragment
-///
-/// ```
-/// fragment HeightInMeters on Animal {
-///   height {
-///     meters
-///   }
-/// }
-/// ```
-class AsHeightInMeters<Parent: ResponseObject>: FragmentTypeConditionBase<HeightInMeters, Parent> {
-  final class Fragments: BaseClass.Fragments {
-    @ToFragment var heightInMeters: HeightInMeters
-  }
-}

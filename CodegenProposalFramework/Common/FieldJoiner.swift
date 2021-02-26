@@ -18,6 +18,7 @@ import Foundation
 /// more than two objects.
 @dynamicMemberLookup
 class FieldJoiner<T: ResponseObject, U: ResponseObject>: FieldData {
+  // TODO: If we get rid of FragmentTypeConditionBase we don't need this to inherit from `FieldData`
   let first: T.Fields
   let second: U.Fields
 
