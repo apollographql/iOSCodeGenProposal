@@ -16,45 +16,10 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class HeightInMeters: ResponseObjectBase<HeightInMeters.Fields, Void>, Fragment {
-  final class Fields {
-    let height: Height
+final class HeightInMeters: FieldData, Fragment {
+  @Field("height") final var height: Height
 
-    init(height: Height) {
-      self.height = height
-    }
-  }
-
-  convenience init(height: Height) {
-    self.init(fields: Fields(height: height))
-  }
-
-  final class Height: ResponseObjectBase<Height.Fields, Void> {
-    final class Fields {
-      let meters: Int
-
-      init(meters: Int) {
-        self.meters = meters
-      }
-    }
-
-    convenience init(meters: Int) {
-      self.init(fields: Fields(meters: meters))
-    }
-  }  
-}
-
-/// A generic type condition for a `HeightInMeters` fragment
-///
-/// ```
-/// fragment HeightInMeters on Animal {
-///   height {
-///     meters
-///   }
-/// }
-/// ```
-class AsHeightInMeters<Parent: ResponseObject>: FragmentTypeConditionBase<HeightInMeters, Parent> {
-  final class Fragments: ToFragments<Parent, ResponseData> {
-    private(set) lazy var heightInMeters = HeightInMeters(data: self.data)
+  final class Height: FieldData {
+    @Field("meters") final var meters: Int
   }
 }

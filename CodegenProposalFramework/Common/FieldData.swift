@@ -7,24 +7,48 @@
 
 import Foundation
 
-/// An object that stores the raw data objects for the `Fields` of a `ResponseObject`
-/// and any of its `TypeConditions`.
-final class FieldData<Fields, TypeConditionFields> { // TODO: One generic param for ResponseObject type? Try this again after making base classes!
-  /// An object that stores the GraphQL fields fetched and stored directly on this object.
-  let fields: Fields
+class FieldData: Equatable {
 
-  /// An object that stores the `TypeCondition`s that the object may be and their fields.
-  let typeConditionFields: TypeConditionFields
+  final let data: [String: Any]
 
-  init(fields: Fields, typeConditionFields: TypeConditionFields) {
-    self.fields = fields
-    self.typeConditionFields = typeConditionFields
+  @Field("__typename") final var __typename: String
+
+  required init(data: [String: Any]) {
+    self.data = data
   }
 }
 
-extension FieldData where TypeConditionFields == Void {
-  convenience init(fields: Fields) {
-    self.init(fields: fields, typeConditionFields: ())
-  }
+func ==<T: FieldData>(lhs: T, rhs: T) -> Bool {
+  return true // TODO: Unit test & implement this
 }
 
+@propertyWrapper
+struct Field<Value> {
+
+  let key: String // TODO: change to CodingKeys or something more safe than strings?
+
+  init(_ key: String) {
+    self.key = key
+  }
+
+  static subscript<T: FieldData>(
+    _enclosingInstance instance: T,
+    wrapped wrappedKeyPath: KeyPath<T, Value>,
+    storage storageKeyPath: KeyPath<T, Field>
+  ) -> Value {
+    get {
+      let key = instance[keyPath: storageKeyPath].key
+
+      switch Value.self {
+      case let Type as FieldData.Type:
+        let data = instance.data[key] as! [String: Any]
+        return Type.init(data: data) as! Value
+      default:
+        return instance.data[key] as! Value
+      }
+    }
+  }
+
+  @available(*, unavailable, message: "This property wrapper can only be applied to classes")
+  var wrappedValue: Value { fatalError() }
+}
