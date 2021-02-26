@@ -6,12 +6,12 @@ import Foundation
 //       inches
 //     }
 //     ...HeightInMeters
+//     ...WarmBloodedDetails
 //     species
 //     ... on Pet {
 //       ...PetDetails
 //       ...WarmBloodedDetails
 //     }
-//     ...WarmBloodedDetails
 //     predators {
 //       species
 //       ... on WarmBlooded {
@@ -28,22 +28,19 @@ import Foundation
 
 // MARK: - Query Response Data Structs
 
-final class Animal: RootResponseObjectBase<Animal.Fields, Animal.TypeConditions>, HasFragments {
+final class Animal: ResponseObjectBase<Animal.Fields>, HasFragments {
   class Fields: FieldData {
-    @Field("__typename") final var __typename: String
     @Field("species") final var species: String
     @Field("height") final var height: Height
     @Field("predators") final var predators: [Predators]
   }
 
-  final class TypeConditions: TypeConditionsBase<Animal> {
-    @AsType var asPet: AsPet?
-    @AsType var asWarmBlooded: AsWarmBlooded?
-  }
-
   class Fragments: FieldData {
     @ToFragment var heightInMeters: HeightInMeters
   }
+
+  @AsType var asWarmBlooded: AsWarmBlooded?
+  @AsType var asPet: AsPet?
 
   // TODO: spread type condition fields into initializers?
 //  convenience init(
@@ -70,9 +67,8 @@ final class Animal: RootResponseObjectBase<Animal.Fields, Animal.TypeConditions>
 //  }
 
   /// `Animal.Height`
-  final class Height: RootResponseObjectBase<Height.Fields, Void> {
+  final class Height: ResponseObjectBase<Height.Fields> {
     final class Fields: FieldData {
-      @Field("__typename") final var __typename: String
       @Field("feet") final var feet: Int
       @Field("inches") final var inches: Int
       @Field("meters") final var meters: Int // - NOTE:
@@ -83,51 +79,6 @@ final class Animal: RootResponseObjectBase<Animal.Fields, Animal.TypeConditions>
     }
   }
 
-  /// `Animal.AsPet`
-  final class AsPet: TypeConditionBase<AsPet.Fields, AsPet.TypeConditions, Animal>, HasFragments {
-    final class Fields: Animal.Fields {
-      @Field("humanName") final var humanName: String
-      @Field("favoriteToy") final var favoriteToy: String
-    }
-
-    final class TypeConditions: TypeConditionsBase<AsPet> {
-      @AsType var asWarmBlooded: AsWarmBlooded?
-
-      init(asWarmBlooded: AsWarmBlooded.ResponseData? = nil) {
-        super.init()
-        self._asWarmBlooded = AsType(parent: parent, data: asWarmBlooded)
-      }
-    }
-
-    final class Fragments: ToFragments<Animal, ResponseData> {
-      private(set) lazy var petDetails = PetDetails(
-        data: .init(fields: .init(
-          humanName: data.fields.humanName,
-          favoriteToy: data.fields.favoriteToy
-        )))
-    }
-
-    /// `Animal.AsPet.AsWarmBlooded`
-    final class AsWarmBlooded: AsWarmBloodedDetails<Animal.AsPet> {
-      final class Height: FieldJoiner<Animal.Height, WarmBloodedDetails.Height> {
-        var meters: Int { first.meters }
-      }
-
-      let height: Height
-
-      required init(parent: Animal.AsPet, data: ResponseData) {
-        self.height = .init(first: parent.height, second: data.fields.height)
-        super.init(parent: parent, data: data)
-      }
-
-      subscript<T>(dynamicMember keyPath: KeyPath<Animal.Fields, T>) -> T {
-        // TODO: Could we use FieldJoiners so we don't have to create additional subscripts for each
-        // level of nested type condtions?
-        parent.parent.data.fields[keyPath: keyPath]
-      }
-    }
-  }
-
   // - NOTE:
   // Because the type condition for `WarmBlooded` only includes the fragment, we can just inherit the fragment type condition.
   //
@@ -135,70 +86,62 @@ final class Animal: RootResponseObjectBase<Animal.Fields, Animal.TypeConditions>
   // with the fragment type condition nested inside. See `Predators.AsWarmBlooded` for an example of this.
   /// `Animal.AsWarmBlooded`
   final class AsWarmBlooded: AsWarmBloodedDetails<Animal> {
-    final class Height: FieldJoiner<Animal.Height, WarmBloodedDetails.Height> {
-      var meters: Int { first.meters }
+    class Fields: BaseClass.Fields {
+      @Field("height") final var height: Height
+
+      final class Height: FieldJoiner<Animal.Height, WarmBloodedDetails.Height> {
+        @Field("meters") final var meters: Int
+      }
+    }
+  }
+
+  /// `Animal.AsPet`
+  final class AsPet: TypeCondition<AsPet.Fields>, HasFragments {
+    final class Fields: Animal.Fields {
+      @Field("humanName") final var humanName: String
+      @Field("favoriteToy") final var favoriteToy: String
     }
 
-    let height: Height
+    @AsType var asWarmBlooded: AsWarmBlooded?
 
-    required init(
-      parent: Animal,
-      data: FieldData<WarmBloodedDetails.Fields, Void>
-    ) {
-      self.height = .init(first: parent.height, second: data.fields.height)
-      super.init(parent: parent, data: data)
+    final class Fragments: Animal.Fragments {
+      @ToFragment var petDetails: PetDetails
+    }
+
+    /// `Animal.AsPet.AsWarmBlooded`
+    final class AsWarmBlooded: AsWarmBloodedDetails<Animal.AsPet> {
+      class Fields: BaseClass.Fields {
+        @Field("height") final var height: Height
+
+        final class Height: FieldJoiner<Animal.Height, WarmBloodedDetails.Height> {
+          @Field("meters") final var meters: Int
+        }
+      }
     }
   }
 
   /// `Animal.Predators`
-  final class Predators: ResponseObjectBase<Predators.Fields, Predators.TypeConditions> {
-    final class Fields {
-      let __typename: String
-      let species: String
-
-      init(__typename: String, species: String) {
-        self.__typename = __typename
-        self.species = species
-      }
+  final class Predators: ResponseObjectBase<Predators.Fields> {
+    class Fields: FieldData {
+      @Field("species") final var  species: String
     }
 
-    final class TypeConditions: TypeConditionsBase<Predators> {
-      @AsType var asWarmBlooded: AsWarmBlooded?
-
-      init(asWarmBlooded: AsWarmBlooded.ResponseData? = nil) {
-        super.init()
-        self._asWarmBlooded = AsType(parent: parent, data: asWarmBlooded)
-      }
-    }
+    @AsType var asWarmBlooded: AsWarmBlooded?
 
     /// `AllAnimals.Predators.AsWarmBlooded`
-    final class AsWarmBlooded: TypeConditionBase<AsWarmBlooded.Fields, Void, Predators>, HasFragments {
-      final class Fields {
-        let bodyTemperature: Int
-        let height: WarmBloodedDetails.Height // - NOTE:
+    final class AsWarmBlooded: TypeCondition<AsWarmBlooded.Fields>, HasFragments {
+      final class Fields: Predators.Fields {
+        @Field("bodyTemperature") final var bodyTemperature: Int
+        @Field("height") final var height: Height // - NOTE:
         // These 2 fields are merged in from `WarmBloodedDetails` fragment.
         // Because the fragment type identically matches the type it is queried on, we do
         // not need an optional `TypeCondition` and can merge the fields up.
         // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
-        let hasFur: Bool
-
-        init(
-          bodyTemperature: Int,
-          height: WarmBloodedDetails.Height,
-          hasFur: Bool
-        ) {
-          self.bodyTemperature = bodyTemperature
-          self.height = height
-          self.hasFur = hasFur
-        }
+        @Field("hasFur") final var hasFur: Bool
       }
 
-      final class Fragments: ToFragments<Animal.Predators, ResponseData> {
-        private(set) lazy var warmBloodedDetails = WarmBloodedDetails(
-          data: .init(fields: .init(
-            bodyTemperature: data.fields.bodyTemperature,
-            height: data.fields.height
-          )))
+      final class Fragments: FragmentJoiner<Predators> {
+        @ToFragment var warmBloodedDetails: WarmBloodedDetails
       }
     }
   }

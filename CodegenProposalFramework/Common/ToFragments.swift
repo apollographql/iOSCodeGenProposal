@@ -14,32 +14,22 @@ import Foundation
 /// accessors to convert the object into any included fragments.
 ///
 /// If the object has a parent, fragments from the parent will also be accessible.
-//@dynamicMemberLookup
-//class ToFragments<Parent, FieldData> {
-//
-//  let parent: Parent // TODO: We don't really need a reference to the parent,
-//                     // just its Fragments (if the parent HasFragments)
-//  let data: FieldData
-//
-//  required init(parent: Parent, data: FieldData) {
-//    self.parent = parent
-//    self.data = data
-//  }
-//}
-//
-//extension ToFragments where Parent: HasFragments {
-//  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fragments, T>) -> T {
-//    return parent.fragments[keyPath: keyPath]
-//  }
-//}
+@dynamicMemberLookup
+class FragmentJoiner<Parent: ResponseObject>: FieldData {}
+
+extension FragmentJoiner where Parent: HasFragments {
+  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fragments, T>) -> T {
+    return Parent.Fragments.init(data: data)[keyPath: keyPath]
+  }
+}
 
 @propertyWrapper
 struct ToFragment<Value: Fragment> {
 
   static subscript<T: FieldData>(
     _enclosingInstance instance: T,
-    wrapped wrappedKeyPath: ReferenceWritableKeyPath<T, Value>,
-    storage storageKeyPath: ReferenceWritableKeyPath<T, Self>
+    wrapped wrappedKeyPath: KeyPath<T, Value>,
+    storage storageKeyPath: KeyPath<T, Self>
   ) -> Value {
     get {
       return Value(data: instance.data)
@@ -50,5 +40,30 @@ struct ToFragment<Value: Fragment> {
   var wrappedValue: Value {
       get { fatalError() }
   }
-
 }
+
+//@dynamicMemberLookup
+//class FragmentJoiner<T: ResponseObject & HasFragments, U: ResponseObject>: FieldData {
+//  let first: T.Fragments
+//  let second: U.Fields
+//
+//  init(first: T, second: U) {
+//    self.first = first.fields
+//    self.second = second.fields
+//    super.init(data: first.data)
+//  }
+//
+//  required init(data: [String : Any]) {
+//    self.first = T.Fields(data: data)
+//    self.second = U.Fields(data: data)
+//    super.init(data: data)
+//  }
+//
+//  subscript<Value>(dynamicMember keyPath: KeyPath<T.Fields, Value>) -> Value {
+//    first[keyPath: keyPath]
+//  }
+//
+//  subscript<Value>(dynamicMember keyPath: KeyPath<U.Fields, Value>) -> Value {
+//    second[keyPath: keyPath]
+//  }
+//}

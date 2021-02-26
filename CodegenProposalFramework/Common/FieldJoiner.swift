@@ -17,13 +17,20 @@ import Foundation
 /// for fields that exist on both of the joined objects. `FieldJoiner`s can also be nested to merge
 /// more than two objects.
 @dynamicMemberLookup
-class FieldJoiner<T: ResponseObject, U: ResponseObject> {
+class FieldJoiner<T: ResponseObject, U: ResponseObject>: FieldData {
   let first: T.Fields
   let second: U.Fields
 
   init(first: T, second: U) {
-    self.first = first.data.fields
-    self.second = second.data.fields
+    self.first = first.fields
+    self.second = second.fields
+    super.init(data: first.data)
+  }
+
+  required init(data: [String : Any]) {
+    self.first = T.Fields(data: data)
+    self.second = U.Fields(data: data)
+    super.init(data: data)
   }
 
   subscript<Value>(dynamicMember keyPath: KeyPath<T.Fields, Value>) -> Value {

@@ -19,6 +19,8 @@ class FieldData {
 
   final let data: [String: Any]
 
+  @Field("__typename") final var __typename: String
+
   required init(data: [String: Any]) {
     self.data = data
   }
@@ -27,7 +29,7 @@ class FieldData {
 @propertyWrapper
 struct Field<Value> {
 
-  let key: String
+  let key: String // TODO: change to CodingKeys or something more safe than strings?
 
   init(_ key: String) {
     self.key = key
@@ -35,8 +37,8 @@ struct Field<Value> {
 
   static subscript<T: FieldData>(
     _enclosingInstance instance: T,
-    wrapped wrappedKeyPath: ReferenceWritableKeyPath<T, Value>,
-    storage storageKeyPath: ReferenceWritableKeyPath<T, Self>
+    wrapped wrappedKeyPath: KeyPath<T, Value>,
+    storage storageKeyPath: KeyPath<T, Self>
   ) -> Value {
     get {
       let key = instance[keyPath: storageKeyPath].key
@@ -52,17 +54,17 @@ struct Field<Value> {
 
 }
 
-extension Field where Value: RootResponseObject {
+extension Field where Value: ResponseObject {
 
   static subscript<T: FieldData>(
     _enclosingInstance instance: T,
-    wrapped wrappedKeyPath: ReferenceWritableKeyPath<T, Value>,
-    storage storageKeyPath: ReferenceWritableKeyPath<T, Self>
+    wrapped wrappedKeyPath: KeyPath<T, Value>,
+    storage storageKeyPath: KeyPath<T, Self>
   ) -> Value {
     get {
       let key = instance[keyPath: storageKeyPath].key
       let data = instance.data[key] as! [String: Any]
-      return Value(data: data)
+      return Value(data: data) // TODO: Unit test this actually gets called
     }
   }
 

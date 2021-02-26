@@ -17,22 +17,17 @@ protocol ResponseObject: AnyObject {
   /// A type representing the GraphQL fields fetched and stored directly on this object.
   associatedtype Fields: FieldData
 
-  /// A type representing the `TypeCondition`s that the object may be.
-  associatedtype TypeConditions = Void
-
   /// A typealias for the `FieldData` of the object. This stores the `Fields` and `TypeConditions`.
   typealias ResponseData = [String: Any] // TODO: Remove this?
 
   /// The raw data objects for the fields of the type and any of its `TypeConditions`
   var data: [String: Any] { get }
   
-  var fields: Fields { get }
+  var fields: Fields { get } // TODO: remove this?
 
   /// A subscript used by `@dynamicMemberLookup` to access the `Field`s on the data object directly.
   subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
-}
 
-protocol RootResponseObject: ResponseObject {
   init(data: [String: Any])
 }
 
@@ -49,23 +44,14 @@ protocol RootResponseObject: ResponseObject {
 /// The fields from the parent object are also accessible on the child type condition.
 protocol TypeCondition: ResponseObject {
 
-  /// The type of the parent response data object that the type condition is a more specific type of.
-  associatedtype Parent: ResponseObject
+  static var possibleTypes: [String] { get }
 
   /// Designated initializer for a `TypeCondition`.
   /// - Parameters:
   ///   - parent: The parent data object that the `TypeCondition` is a more specific type for.
   ///   - data: The data for the `Fields` on the object,
   ///           including fields for any child `TypeCondition`s.
-  init(parent: Parent, data: [String: Any])
-
-  /// The parent `ResponseObject` that the `TypeCondition` is a more specific type of.
-  ///
-  /// The fields from the parent object are also accessible on the child type condition.
-  var parent: Parent { get }
-
-  /// A subscript used by `@dynamicMemberLookup` to access the `Parent`'s `Fields` directly.
-//  subscript<T>(dynamicMember keyPath: KeyPath<Parent.Fields, T>) -> T { get }
+  init(data: [String: Any])
 }
 
 //extension TypeCondition where TypeConditions == Void {
@@ -86,7 +72,7 @@ protocol TypeCondition: ResponseObject {
 /// any `Fragment` included in it's `Fragments` object via its `fragments` property.
 ///
 /// - SeeAlso: `HasFragments`, `ToFragments`
-protocol Fragment: RootResponseObject { }
+protocol Fragment: ResponseObject { }
 
 // MARK: - HasFragments
 

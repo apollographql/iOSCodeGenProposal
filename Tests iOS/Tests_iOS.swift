@@ -19,65 +19,61 @@ class Tests_iOS: XCTestCase {
   }
 
   func testSpecies() throws {
-    let cat = Animal(__typename: "Cat",
-                     species: "Cat",
-                     height: .init(fields: .init(__typename: "Height", feet: 2, inches: 10, meters: 4)),
-                     predators: [])
+    let data: [String: Any] = [
+      "__typename": "Cat",
+      "species": "Cat",
+      "height": [
+        "__typename": "Height",
+        "feet": 2,
+        "inches": 7,
+        "meters": 10
+      ],
+      "predators": []
+    ]
+    let cat = Animal(data: data)
     XCTAssertEqual(cat.species, "Cat")
   }
 
   func testAsTypeCondition_fieldOnTypeNested2TypeConditionsDeep() throws {
-    let cat = Animal(
-      __typename: "Cat",
-      species: "Cat",
-      height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10)),
-      predators: [],
-      asPet: .init(fields: .init(humanName: "Tiger Lily", favoriteToy: "Shoelaces"),
-                   typeConditionFields: .init(
-                    asWarmBlooded: .init(
-                      fields: .init(
-                        bodyTemperature: 98,
-                        height: .init(
-                          fields: .init(
-                            meters: 10,
-                            yards: 3)))))),
-      asWarmBlooded: .init(fields: .init(
-                            bodyTemperature: 98,
-                            height: .init(
-                              fields: .init(
-                                meters: 10,
-                                yards: 3))))
-    )
+    let data: [String: Any] = [
+      "__typename": "Cat",
+      "species": "Cat",
+      "height": [
+        "__typename": "Height",
+        "feet": 2,
+        "inches": 7,
+        "meters": 10,
+        "yards": 3
+      ],
+      "predators": [],
+      "humanName": "Tiger Lily",
+      "favoriteToy": "Shoelaces"
+    ]
+    let subject = Animal(data: data)
 
-
-    XCTAssertEqual(cat.species, "Cat")
-    XCTAssertEqual(cat.asPet?.species, "Cat")
-    XCTAssertEqual(cat.asPet?.asWarmBlooded?.species, "Cat")
+    XCTAssertEqual(subject.species, "Cat")
+    XCTAssertEqual(subject.asPet?.species, "Cat")
+    XCTAssertEqual(subject.asPet?.asWarmBlooded?.species, "Cat")
   }
 
   func testAsTypeCondition_withDuplicateFieldOnParent() throws {
-    let subject = Animal(
-      __typename: "Cat",
-      species: "Cat",
-      height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10)),
-      predators: [],
-      asPet: .init(fields: .init(humanName: "Tiger Lily", favoriteToy: "Shoelaces"),
-                   typeConditionFields: .init(
-                    asWarmBlooded: .init(
-                      fields: .init(
-                        bodyTemperature: 98,
-                        height: .init(
-                          fields: .init(
-                            meters: 10,
-                            yards: 3)))))),
-      asWarmBlooded: .init(fields: .init(
-                            bodyTemperature: 98,
-                            height: .init(
-                              fields: .init(
-                                meters: 10,
-                                yards: 3))))
-    )
-
+    let data: [String: Any] = [
+      "__typename": "Cat",
+      "species": "Cat",
+      "height": [
+        "__typename": "Height",
+        "feet": 2,
+        "inches": 7,
+        "meters": 10,
+        "yards": 3
+      ],
+      "predators": [],
+      "humanName": "Tiger Lily",
+      "favoriteToy": "Shoelaces",
+      "bodyTemperature": 98
+    ]
+    let subject = Animal(data: data)    
+    
     XCTAssertEqual(subject.height.feet, 2)
     XCTAssertEqual(subject.height.inches, 7)
     XCTAssertEqual(subject.height.meters, 10)
@@ -92,27 +88,23 @@ class Tests_iOS: XCTestCase {
   }
 
   func testAsTypeCondition_withFragmentsOnParent_convertToFragments() throws {
-    let subject = Animal(
-      __typename: "Cat",
-      species: "Cat",
-      height: .init(fields: .init(__typename: "Height", feet: 2, inches: 7, meters: 10)),
-      predators: [],
-      asPet: .init(fields: .init(humanName: "Tiger Lily", favoriteToy: "Shoelaces"),
-                   typeConditionFields: .init(
-                    asWarmBlooded: .init(
-                      fields: .init(
-                        bodyTemperature: 98,
-                        height: .init(
-                          fields: .init(
-                            meters: 10,
-                            yards: 3)))))),
-      asWarmBlooded: .init(fields: .init(
-                            bodyTemperature: 98,
-                            height: .init(
-                              fields: .init(
-                                meters: 10,
-                                yards: 3))))
-    )
+    let data: [String: Any] = [
+      "__typename": "Cat",
+      "species": "Cat",
+      "height": [
+        "__typename": "Height",
+        "feet": 2,
+        "inches": 7,
+        "meters": 10,
+        "yards": 3
+      ],
+      "predators": [],
+      "humanName": "Tiger Lily",
+      "favoriteToy": "Shoelaces",
+      "bodyTemperature": 98
+    ]
+    let subject = Animal(data: data)
+
 
     XCTAssertEqual(subject.fragments.heightInMeters.height.meters, 10)
 

@@ -16,24 +16,16 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class HeightInMeters: RootResponseObjectBase<HeightInMeters.Fields, Void>, Fragment {
+final class HeightInMeters: ResponseObjectBase<HeightInMeters.Fields>, Fragment {
   final class Fields: FieldData {
     @Field("height") final var height: Height
   }
 
-//  convenience init(height: Height) {
-//    self.init(fields: Fields(height: height))
-//  }
-
-  final class Height: RootResponseObjectBase<Height.Fields, Void> {
+  final class Height: ResponseObjectBase<Height.Fields> {
     final class Fields: FieldData {
       @Field("meters") final var meters: Int
     }
-
-//    convenience init(meters: Int) {
-//      self.init(fields: Fields(meters: meters))
-//    }
-  }  
+  }
 }
 
 /// A generic type condition for a `HeightInMeters` fragment
@@ -46,7 +38,7 @@ final class HeightInMeters: RootResponseObjectBase<HeightInMeters.Fields, Void>,
 /// }
 /// ```
 class AsHeightInMeters<Parent: ResponseObject>: FragmentTypeConditionBase<HeightInMeters, Parent> {
-  final class Fragments: ToFragments<Parent, ResponseData> {
-    private(set) lazy var heightInMeters = HeightInMeters(data: self.data)
+  final class Fragments: BaseClass.Fragments {
+    @ToFragment var heightInMeters: HeightInMeters
   }
 }

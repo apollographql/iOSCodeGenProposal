@@ -18,27 +18,16 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class WarmBloodedDetails:
-  ResponseObjectBase<WarmBloodedDetails.Fields, Void>,  Fragment {
-  final class Fields {
-    let bodyTemperature: Int
-    let height: Height
-
-    init(bodyTemperature: Int, height: Height) {
-      self.bodyTemperature = bodyTemperature
-      self.height = height
-    }
+final class WarmBloodedDetails: ResponseObjectBase<WarmBloodedDetails.Fields>, Fragment {
+  final class Fields: FieldData {
+    @Field("bodyTemperature") final var bodyTemperature: Int
+    @Field("height") final var height: Height
   }
 
-  final class Height: ResponseObjectBase<Height.Fields, Void> {
-    final class Fields {
-      let meters: Int
-      let yards: Int
-
-      init(meters: Int, yards: Int) {
-        self.meters = meters
-        self.yards = yards
-      }
+  final class Height: ResponseObjectBase<Height.Fields> {
+    final class Fields: FieldData {
+      @Field("meters") final var meters: Int
+      @Field("yards") final var yards: Int
     }
   }  
 }
@@ -54,9 +43,8 @@ final class WarmBloodedDetails:
 ///   }
 /// }
 /// ```
-class AsWarmBloodedDetails<Parent: ResponseObject>:
-  FragmentTypeConditionBase<WarmBloodedDetails, Parent> {
-  final class Fragments: ToFragments<Parent, ResponseData> {
-    private(set) lazy var warmBloodedDetails = WarmBloodedDetails(data: self.data)
+class AsWarmBloodedDetails<Parent: ResponseObject>: FragmentTypeConditionBase<WarmBloodedDetails, Parent> {
+  final class Fragments: BaseClass.Fragments {
+    @ToFragment var warmBloodedDetails: WarmBloodedDetails
   }
 }
