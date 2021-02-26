@@ -16,10 +16,10 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class HeightInMeters: FieldData, ResponseObject, Fragment {
+final class HeightInMeters: FieldData, Fragment {
   @Field("height") final var height: Height
 
-  final class Height: FieldData, ResponseObject {
+  final class Height: FieldData {
     @Field("meters") final var meters: Int
   }
 }

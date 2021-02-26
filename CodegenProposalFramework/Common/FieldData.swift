@@ -7,7 +7,7 @@
 
 import Foundation
 
-class FieldData: Equatable { // TODO: Rename this?
+class FieldData: Equatable {
 
   final let data: [String: Any]
 

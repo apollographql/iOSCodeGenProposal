@@ -15,7 +15,7 @@ import Foundation
 ///  favoriteToy
 /// }
 /// ```
-final class PetDetails:FieldData, ResponseObject, Fragment {
+final class PetDetails:FieldData, Fragment {
   @Field("humanName") final var  humanName: String
   @Field("favoriteToy") final var  favoriteToy: String
 }

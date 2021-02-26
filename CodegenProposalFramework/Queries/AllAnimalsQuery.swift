@@ -1,4 +1,3 @@
-import Foundation
 /// query AllAnimals {
 ///   allAnimals {
 ///     height {
@@ -32,7 +31,7 @@ import Foundation
 // MARK: - Query Response Data Structs
 
 /// `Animal`
-final class Animal: FieldData, ResponseObject, HasFragments {
+final class Animal: FieldData, HasFragments {
   @Field("species") final var species: String
   @Field("height") var height: Height
   @Field("predators") final var predators: [Predators]
@@ -45,7 +44,7 @@ final class Animal: FieldData, ResponseObject, HasFragments {
   }
 
   /// `Animal.Height`
-  class Height: FieldData, ResponseObject {
+  class Height: FieldData {
     @Field("feet") final var feet: Int
     @Field("inches") final var inches: Int
     @Field("meters") final var meters: Int // - NOTE:
@@ -56,13 +55,13 @@ final class Animal: FieldData, ResponseObject, HasFragments {
   }
 
   /// `Animal.Predators`
-  final class Predators: FieldData, ResponseObject {
+  final class Predators: FieldData {
     @Field("species") final var  species: String
 
     @AsType var asWarmBlooded: AsWarmBlooded?
 
     /// `AllAnimals.Predators.AsWarmBlooded`
-    final class AsWarmBlooded: FieldData, ResponseObject, HasFragments {
+    final class AsWarmBlooded: FieldData, HasFragments {
       @Field("bodyTemperature") final var bodyTemperature: Int
       @Field("height") final var height: Height
       @Field("hasFur") final var hasFur: Bool
@@ -72,7 +71,7 @@ final class Animal: FieldData, ResponseObject, HasFragments {
       // not need an optional `TypeCondition` and can merge the fields up.
       // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
 
-      class Fragments: FragmentJoiner<Predators> {
+      class Fragments: FieldData {
         @ToFragment var warmBloodedDetails: WarmBloodedDetails
       }
     }
@@ -86,7 +85,7 @@ final class Animal: FieldData, ResponseObject, HasFragments {
   // we would use a custom `TypeCondition` with the fragment type condition nested inside.
   // See `Predators.AsWarmBlooded` for an example of this.
   /// `Animal.AsWarmBlooded`
-  final class AsWarmBlooded: FieldData, ResponseObject, HasFragments {
+  final class AsWarmBlooded: FieldData, HasFragments {
     @Field("species") final var species: String
     @Field("height") final var height: Height
     @Field("predators") final var predators: [Predators]
@@ -96,7 +95,7 @@ final class Animal: FieldData, ResponseObject, HasFragments {
       @ToFragment var warmBloodedDetails: WarmBloodedDetails
     }
 
-    class Height: FieldData, ResponseObject {
+    class Height: FieldData {
       @Field("feet") final var feet: Int
       @Field("inches") final var inches: Int
       @Field("meters") final var meters: Int
@@ -105,7 +104,7 @@ final class Animal: FieldData, ResponseObject, HasFragments {
   }
 
   /// `Animal.AsPet`
-  final class AsPet: FieldData, ResponseObject, HasFragments {
+  final class AsPet: FieldData, HasFragments {
     @Field("species") final var species: String
     @Field("height") var height: Height
     @Field("predators") final var predators: [Predators]
@@ -118,7 +117,7 @@ final class Animal: FieldData, ResponseObject, HasFragments {
       @ToFragment var petDetails: PetDetails
     }
 
-    class Height: FieldData, ResponseObject {
+    class Height: FieldData {
       @Field("feet") final var feet: Int
       @Field("inches") final var inches: Int
       @Field("meters") final var meters: Int
@@ -126,7 +125,7 @@ final class Animal: FieldData, ResponseObject, HasFragments {
     }
 
     /// `Animal.AsPet.AsWarmBlooded`
-    final class AsWarmBlooded: FieldData, ResponseObject, HasFragments {
+    final class AsWarmBlooded: FieldData, HasFragments {
       @Field("species") final var species: String
       @Field("height") var height: Height
       @Field("predators") final var predators: [Predators]
@@ -138,7 +137,7 @@ final class Animal: FieldData, ResponseObject, HasFragments {
         @ToFragment var warmBloodedDetails: WarmBloodedDetails
       }
 
-      final class Height: FieldData, ResponseObject {
+      final class Height: FieldData {
         @Field("feet") final var feet: Int
         @Field("inches") final var inches: Int
         @Field("meters") final var meters: Int
