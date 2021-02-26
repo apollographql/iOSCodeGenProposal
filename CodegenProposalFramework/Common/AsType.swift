@@ -8,7 +8,7 @@
 import Foundation
 
 /// A property wrapper for a `TypeCondition` on a `ResponseObject`.
-@propertyWrapper struct AsType<Value: TypeCondition> {
+@propertyWrapper struct AsType<Value: FieldData> {
 
   static subscript<T: FieldData>(
     _enclosingInstance instance: T,

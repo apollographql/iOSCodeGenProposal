@@ -18,16 +18,12 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class WarmBloodedDetails: ResponseObjectBase<WarmBloodedDetails.Fields>, Fragment {
-  final class Fields: FieldData {
-    @Field("bodyTemperature") final var bodyTemperature: Int
-    @Field("height") final var height: Height
-  }
+final class WarmBloodedDetails: FieldData, ResponseObject, Fragment {
+  @Field("bodyTemperature") final var bodyTemperature: Int
+  @Field("height") final var height: Height
 
-  final class Height: ResponseObjectBase<Height.Fields> {
-    final class Fields: FieldData {
-      @Field("meters") final var meters: Int
-      @Field("yards") final var yards: Int
-    }
+  final class Height: FieldData, ResponseObject {
+    @Field("meters") final var meters: Int
+    @Field("yards") final var yards: Int
   }  
 }

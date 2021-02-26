@@ -16,29 +16,29 @@ import Foundation
 /// `FieldJoiner` can be subclassed to provide computed properties to resolve any naming conflicts
 /// for fields that exist on both of the joined objects. `FieldJoiner`s can also be nested to merge
 /// more than two objects.
-@dynamicMemberLookup
-class FieldJoiner<T: ResponseObject, U: ResponseObject>: FieldData {
-  // TODO: If we get rid of FragmentTypeConditionBase we don't need this to inherit from `FieldData`
-  let first: T.Fields
-  let second: U.Fields
-
-  init(first: T, second: U) {
-    self.first = first.fields
-    self.second = second.fields
-    super.init(data: first.data)
-  }
-
-  required init(data: [String : Any]) {
-    self.first = T.Fields(data: data)
-    self.second = U.Fields(data: data)
-    super.init(data: data)
-  }
-
-  subscript<Value>(dynamicMember keyPath: KeyPath<T.Fields, Value>) -> Value {
-    first[keyPath: keyPath]
-  }
-
-  subscript<Value>(dynamicMember keyPath: KeyPath<U.Fields, Value>) -> Value {
-    second[keyPath: keyPath]
-  }
-}
+//@dynamicMemberLookup
+//class FieldJoiner<T: ResponseObject, U: ResponseObject>: FieldData {
+//  // TODO: If we get rid of FragmentTypeConditionBase we don't need this to inherit from `FieldData`
+//  let first: T.Fields
+//  let second: U.Fields
+//
+//  init(first: T, second: U) {
+//    self.first = first.fields
+//    self.second = second.fields
+//    super.init(data: first.data)
+//  }
+//
+//  required init(data: [String : Any]) {
+//    self.first = T.Fields(data: data)
+//    self.second = U.Fields(data: data)
+//    super.init(data: data)
+//  }
+//
+//  subscript<Value>(dynamicMember keyPath: KeyPath<T.Fields, Value>) -> Value {
+//    first[keyPath: keyPath]
+//  }
+//
+//  subscript<Value>(dynamicMember keyPath: KeyPath<U.Fields, Value>) -> Value {
+//    second[keyPath: keyPath]
+//  }
+//}

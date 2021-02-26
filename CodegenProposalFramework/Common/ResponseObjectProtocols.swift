@@ -11,22 +11,19 @@ import Foundation
 
 /// A protocol representing any data object that is part of the response
 /// data for a `GraphQLOperation`.
-@dynamicMemberLookup
-protocol ResponseObject: AnyObject {
+//@dynamicMemberLookup
+protocol ResponseObject: FieldData { // TODO: May not need this?
 
-  /// A type representing the GraphQL fields fetched and stored directly on this object.
-  associatedtype Fields: FieldData
-
-  /// A typealias for the `FieldData` of the object. This stores the `Fields` and `TypeConditions`.
-  typealias ResponseData = [String: Any] // TODO: Remove this?
+//  /// A type representing the GraphQL fields fetched and stored directly on this object.
+//  associatedtype Fields: FieldData
 
   /// The raw data objects for the fields of the type and any of its `TypeConditions`
   var data: [String: Any] { get }
   
-  var fields: Fields { get } // TODO: remove this?
+//  var fields: Fields { get } // TODO: remove this?
 
   /// A subscript used by `@dynamicMemberLookup` to access the `Field`s on the data object directly.
-  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
+//  subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T { get }
 
   init(data: [String: Any])
 }

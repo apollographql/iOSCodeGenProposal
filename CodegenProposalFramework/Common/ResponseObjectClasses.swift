@@ -17,24 +17,24 @@ import Foundation
 ///   - `Fields`: An object that stores the fields fetched and stored directly on this object.
 ///   - `TypeConditions`: [optional] An object that stores the `TypeCondition`s that the object may be
 ///                  and their fields. Defaults to `Void`.
-@dynamicMemberLookup
-class ResponseObjectBase<Fields: FieldData>: FieldData, ResponseObject {
-
-  typealias TypeCondition<SubtypeFields: FieldData> =
-    TypeConditionBase<SubtypeFields, ResponseObjectBase<Fields>>
-
-//  final let data: [String: Any] // Do we need this here, or just on Fields?
-  private(set) lazy final var fields: Fields = Fields(data: data)
-
-  final subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
-    return fields[keyPath: keyPath]
-  }
-}
-
-class TypeConditionBase<Fields: FieldData, Parent: ResponseObject>:
-  ResponseObjectBase<Fields>, TypeCondition {
-
-//  typealias BaseClass = TypeConditionBase<Fields, Parent>
-
-  static var possibleTypes: [String] { [] } // TODO
-}
+//@dynamicMemberLookup
+//class ResponseObjectBase<Fields: FieldData>: FieldData, ResponseObject {
+//
+//  typealias TypeCondition<SubtypeFields: FieldData> =
+//    TypeConditionBase<SubtypeFields, ResponseObjectBase<Fields>>
+//
+////  final let data: [String: Any] // Do we need this here, or just on Fields?
+////  private(set) lazy final var fields: Fields = Fields(data: data)
+////
+////  final subscript<T>(dynamicMember keyPath: KeyPath<Fields, T>) -> T {
+////    return fields[keyPath: keyPath]
+////  }
+//}
+//
+//class TypeConditionBase<Fields: FieldData, Parent: ResponseObject>:
+//  ResponseObjectBase<Fields>, TypeCondition {
+//
+////  typealias BaseClass = TypeConditionBase<Fields, Parent>
+//
+//  static var possibleTypes: [String] { [] } // TODO
+//}
