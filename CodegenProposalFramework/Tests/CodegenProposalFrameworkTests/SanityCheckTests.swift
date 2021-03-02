@@ -26,7 +26,23 @@ class SanityCheckTests: XCTestCase {
         "centimeters": 1000,
         "yards": 3
       ],
-      "predators": [],
+      "predators": [
+//        [
+//          "__typename": "Coyote",
+//          "species": "Coyote",
+//          "bodyTemperature": 96,
+//          "height": [
+//            "__typename": "Height",
+//            "meters": 3,
+//            "yards": 1
+//          ],
+//          "hasFur": true
+//        ],
+//        [
+//          "__typename": "Crocodile",
+//          "species": "Crocodile",
+//        ]
+      ],
       "humanName": "Tiger Lily",
       "favoriteToy": "Shoelaces",
       "bodyTemperature": 98
@@ -64,7 +80,7 @@ class SanityCheckTests: XCTestCase {
     XCTAssertEqual(subject.asWarmBlooded?.height.feet, 2)
     XCTAssertEqual(subject.asWarmBlooded?.height.inches, 7)
     XCTAssertEqual(subject.asWarmBlooded?.height.meters, 10)
-    XCTAssertEqual(subject.asWarmBlooded?.predators, [])
+    XCTAssertEqual(subject.asWarmBlooded?.predators.count, 2)
     XCTAssertEqual(subject.asWarmBlooded?.height.yards, 3)
     XCTAssertEqual(subject.asWarmBlooded?.bodyTemperature, 98)
 
@@ -72,7 +88,7 @@ class SanityCheckTests: XCTestCase {
     XCTAssertEqual(subject.asPet?.height.feet, 2)
     XCTAssertEqual(subject.asPet?.height.inches, 7)
     XCTAssertEqual(subject.asPet?.height.meters, 10)
-    XCTAssertEqual(subject.asPet?.predators, [])
+    XCTAssertEqual(subject.asPet?.predators.count, 2)
     XCTAssertEqual(subject.asPet?.height.centimeters, 1000)
     XCTAssertEqual(subject.asPet?.humanName, "Tiger Lily")
     XCTAssertEqual(subject.asPet?.favoriteToy, "Shoelaces")
@@ -81,7 +97,7 @@ class SanityCheckTests: XCTestCase {
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.height.feet, 2)
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.height.inches, 7)
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.height.meters, 10)
-    XCTAssertEqual(subject.asPet?.asWarmBlooded?.predators, [])
+    XCTAssertEqual(subject.asPet?.asWarmBlooded?.predators.count, 2)
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.height.centimeters, 1000)
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.height.yards, 3)
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.humanName, "Tiger Lily")
@@ -103,6 +119,20 @@ class SanityCheckTests: XCTestCase {
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.fragments.heightInMeters.height.meters, 10)
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.fragments.warmBloodedDetails.height.meters, 10)
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.fragments.petDetails.favoriteToy, "Shoelaces")
+  }
+
+  func testListField() {
+    let subject = Animal(data: data)
+    let coyote = subject.predators[0]
+    let crocodile = subject.predators[0]
+
+    XCTAssertEqual(coyote.species, "Coyote")
+    XCTAssertEqual(coyote.asWarmBlooded?.bodyTemperature, 96)
+    XCTAssertEqual(coyote.asWarmBlooded?.height.meters, 3)
+    XCTAssertEqual(coyote.asWarmBlooded?.height.yards, 1)
+    XCTAssertEqual(coyote.asWarmBlooded?.hasFur, true)
+
+    XCTAssertEqual(crocodile.species, "Crocodile")
   }
 
 }

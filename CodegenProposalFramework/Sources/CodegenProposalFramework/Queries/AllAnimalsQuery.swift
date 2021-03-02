@@ -33,7 +33,7 @@
 /// `Animal`
 final class Animal: FieldData, HasFragments {
   @Field("species") final var species: String
-  @Field("height") var height: Height
+  @Field("height") final var height: Height
   @Field("predators") final var predators: [Predators]
 
   @AsType var asWarmBlooded: AsWarmBlooded?
@@ -74,6 +74,11 @@ final class Animal: FieldData, HasFragments {
       class Fragments: FieldData {
         @ToFragment var warmBloodedDetails: WarmBloodedDetails
       }
+
+      final class Height: FieldData {
+        @Field("meters") final var meters: Int
+        @Field("yards") final var yards: Int
+      }  
     }
   }
 
@@ -106,7 +111,7 @@ final class Animal: FieldData, HasFragments {
   /// `Animal.AsPet`
   final class AsPet: FieldData, HasFragments {
     @Field("species") final var species: String
-    @Field("height") var height: Height
+    @Field("height") final var height: Height
     @Field("predators") final var predators: [Predators]
     @Field("humanName") final var humanName: String
     @Field("favoriteToy") final var favoriteToy: String
@@ -127,7 +132,7 @@ final class Animal: FieldData, HasFragments {
     /// `Animal.AsPet.AsWarmBlooded`
     final class AsWarmBlooded: FieldData, HasFragments {
       @Field("species") final var species: String
-      @Field("height") var height: Height
+      @Field("height") final var height: Height
       @Field("predators") final var predators: [Predators]
       @Field("humanName") final var humanName: String
       @Field("favoriteToy") final var favoriteToy: String
