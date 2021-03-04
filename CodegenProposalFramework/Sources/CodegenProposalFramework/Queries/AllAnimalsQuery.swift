@@ -31,23 +31,29 @@
 // MARK: - Query Response Data Structs
 
 /// `Animal`
-final class Animal: FieldData, HasFragments {
-  @Field("species") final var species: String
-  @Field("height") final var height: Height
-  @Field("predators") final var predators: [Predators]
+struct Animal: FieldData, HasFragments {
+  let data: ResponseData
 
-  @AsType var asWarmBlooded: AsWarmBlooded?
-  @AsType var asPet: AsPet?
+  var species: String { data["species"] }
+  var height: Height { data["height"] }
+  var predators: [Predators] { data["predators"] }
 
-  class Fragments: FieldData {
-    @ToFragment var heightInMeters: HeightInMeters
+  var asWarmBlooded: AsWarmBlooded? { asType() }
+  var asPet: AsPet? { asType() }
+
+  struct Fragments: FieldData {
+    let data: ResponseData
+    
+    var heightInMeters: HeightInMeters { toFragment() }
   }
 
   /// `Animal.Height`
-  class Height: FieldData {
-    @Field("feet") final var feet: Int
-    @Field("inches") final var inches: Int
-    @Field("meters") final var meters: Int // - NOTE:
+  struct Height: FieldData {
+    let data: ResponseData
+
+    var feet: Int { data["feet"] }
+    var inches: Int { data["inches"] }
+    var meters: Int { data["meters"] } // - NOTE:
     // This field is merged in from `HeightInMeters` fragment.
     // Because the fragment type identically matches the type it is queried on, we do
     // not need an optional `TypeCondition` and can merge the field up.
@@ -55,30 +61,37 @@ final class Animal: FieldData, HasFragments {
   }
 
   /// `Animal.Predators`
-  final class Predators: FieldData {
-    @Field("species") final var  species: String
+  struct Predators: FieldData {
+    let data: ResponseData
 
-    @AsType var asWarmBlooded: AsWarmBlooded?
+    var species: String { data["species"] }
+
+    var asWarmBlooded: AsWarmBlooded? { asType() }
 
     /// `AllAnimals.Predators.AsWarmBlooded`
-    final class AsWarmBlooded: FieldData, HasFragments {
-      @Field("bodyTemperature") final var bodyTemperature: Int
-      @Field("height") final var height: Height
-      @Field("hasFur") final var hasFur: Bool
+    struct AsWarmBlooded: FieldData, HasFragments {
+      let data: ResponseData
+
+      var bodyTemperature: Int { data["bodyTemperature"] }
+      var height: Height { data["height"] }
+      var hasFur: Bool { data["hasFur"] }
       // - NOTE:
       // These 2 fields are merged in from `WarmBloodedDetails` fragment.
       // Because the fragment type identically matches the type it is queried on, we do
       // not need an optional `TypeCondition` and can merge the fields up.
       // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
 
-      class Fragments: FieldData {
-        @ToFragment var warmBloodedDetails: WarmBloodedDetails
+      struct Fragments: FieldData {
+        let data: ResponseData
+        var warmBloodedDetails: WarmBloodedDetails { toFragment() }
       }
 
-      final class Height: FieldData {
-        @Field("meters") final var meters: Int
-        @Field("yards") final var yards: Int
-      }  
+      struct Height: FieldData {
+        let data: ResponseData
+
+        var meters: Int { data["meters"] }
+        var yards: Int { data["yards"] }
+      }
     }
   }
 
@@ -90,64 +103,86 @@ final class Animal: FieldData, HasFragments {
   // we would use a custom `TypeCondition` with the fragment type condition nested inside.
   // See `Predators.AsWarmBlooded` for an example of this.
   /// `Animal.AsWarmBlooded`
-  final class AsWarmBlooded: FieldData, HasFragments {
-    @Field("species") final var species: String
-    @Field("height") final var height: Height
-    @Field("predators") final var predators: [Predators]
-    @Field("bodyTemperature") final var bodyTemperature: Int
+  struct AsWarmBlooded: FieldData, HasFragments {
+    let data: ResponseData
 
-    class Fragments: Animal.Fragments {
-      @ToFragment var warmBloodedDetails: WarmBloodedDetails
+    var species: String { data["species"] }
+    var height: Height  { data["height"] }
+    var predators: [Predators]  { data["predators"] }
+    var bodyTemperature: Int { data["bodyTemperature"] }
+
+    struct Fragments: FieldData {
+      let data: ResponseData
+
+      var heightInMeters: HeightInMeters { toFragment() }
+      var warmBloodedDetails: WarmBloodedDetails  { toFragment() }
     }
 
-    class Height: FieldData {
-      @Field("feet") final var feet: Int
-      @Field("inches") final var inches: Int
-      @Field("meters") final var meters: Int
-      @Field("yards") final var yards: Int
+    struct Height: FieldData {
+      let data: ResponseData
+
+      var feet: Int { data["feet"] }
+      var inches: Int { data["inches"] }
+      var meters: Int { data["meters"] }
+      var yards: Int { data["yards"] }
     }
   }
 
   /// `Animal.AsPet`
-  final class AsPet: FieldData, HasFragments {
-    @Field("species") final var species: String
-    @Field("height") final var height: Height
-    @Field("predators") final var predators: [Predators]
-    @Field("humanName") final var humanName: String
-    @Field("favoriteToy") final var favoriteToy: String
+  struct AsPet: FieldData, HasFragments {
+    let data: ResponseData
 
-    @AsType var asWarmBlooded: AsWarmBlooded?
+    var species: String { data["species"] }
+    var height: Height  { data["height"] }
+    var predators: [Predators]  { data["predators"] }
+    var humanName: String { data["humanName"] }
+    var favoriteToy: String { data["favoriteToy"] }
 
-    class Fragments: Animal.Fragments {
-      @ToFragment var petDetails: PetDetails
+    var asWarmBlooded: AsWarmBlooded? { asType() }
+
+    struct Fragments: FieldData {
+      let data: ResponseData
+
+      var heightInMeters: HeightInMeters { toFragment() }
+      var petDetails: PetDetails  { toFragment() }
     }
 
-    class Height: FieldData {
-      @Field("feet") final var feet: Int
-      @Field("inches") final var inches: Int
-      @Field("meters") final var meters: Int
-      @Field("centimeters") final var centimeters: Int
+    struct Height: FieldData {
+      let data: ResponseData
+
+      var feet: Int { data["feet"] }
+      var inches: Int { data["inches"] }
+      var meters: Int { data["meters"] }
+      var centimeters: Int { data["centimeters"] }
     }
 
     /// `Animal.AsPet.AsWarmBlooded`
-    final class AsWarmBlooded: FieldData, HasFragments {
-      @Field("species") final var species: String
-      @Field("height") final var height: Height
-      @Field("predators") final var predators: [Predators]
-      @Field("humanName") final var humanName: String
-      @Field("favoriteToy") final var favoriteToy: String
-      @Field("bodyTemperature") final var bodyTemperature: Int
+    struct AsWarmBlooded: FieldData, HasFragments {
+      let data: ResponseData
 
-      class Fragments: Animal.AsPet.Fragments {
-        @ToFragment var warmBloodedDetails: WarmBloodedDetails
+      var species: String { data["species"] }
+      var height: Height  { data["height"] }
+      var predators: [Predators]  { data["predators"] }
+      var humanName: String { data["humanName"] }
+      var favoriteToy: String { data["favoriteToy"] }
+      var bodyTemperature: Int { data["bodyTemperature"] }
+
+      struct Fragments: FieldData {
+        let data: ResponseData
+
+        var heightInMeters: HeightInMeters { toFragment() }
+        var petDetails: PetDetails  { toFragment() }
+        var warmBloodedDetails: WarmBloodedDetails  { toFragment() }
       }
 
-      final class Height: FieldData {
-        @Field("feet") final var feet: Int
-        @Field("inches") final var inches: Int
-        @Field("meters") final var meters: Int
-        @Field("centimeters") final var centimeters: Int
-        @Field("yards") final var yards: Int
+      struct Height: FieldData {
+        let data: ResponseData
+
+        var feet: Int { data["feet"] }
+        var inches: Int { data["inches"] }
+        var meters: Int { data["meters"] }
+        var centimeters: Int { data["centimeters"] }
+        var yards: Int { data["yards"] }
       }
     }
   }

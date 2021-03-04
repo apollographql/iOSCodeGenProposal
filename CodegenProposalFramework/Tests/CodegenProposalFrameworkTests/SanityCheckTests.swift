@@ -10,12 +10,12 @@ import XCTest
 
 class SanityCheckTests: XCTestCase {
 
-  var data: [String: Any] = [:]
+  var data: ResponseData!
 
   override func setUpWithError() throws {
     try super.setUpWithError()
 
-    data = [
+    data = ResponseData(data: [
       "__typename": "Cat",
       "species": "Cat",
       "height": [
@@ -27,26 +27,26 @@ class SanityCheckTests: XCTestCase {
         "yards": 3
       ],
       "predators": [
-//        [
-//          "__typename": "Coyote",
-//          "species": "Coyote",
-//          "bodyTemperature": 96,
-//          "height": [
-//            "__typename": "Height",
-//            "meters": 3,
-//            "yards": 1
-//          ],
-//          "hasFur": true
-//        ],
-//        [
-//          "__typename": "Crocodile",
-//          "species": "Crocodile",
-//        ]
+        [
+          "__typename": "Coyote",
+          "species": "Coyote",
+          "bodyTemperature": 96,
+          "height": [
+            "__typename": "Height",
+            "meters": 3,
+            "yards": 1
+          ],
+          "hasFur": true
+        ],
+        [
+          "__typename": "Crocodile",
+          "species": "Crocodile",
+        ]
       ],
       "humanName": "Tiger Lily",
       "favoriteToy": "Shoelaces",
       "bodyTemperature": 98
-    ]
+    ])
   }
 
   override func tearDownWithError() throws {
@@ -74,7 +74,7 @@ class SanityCheckTests: XCTestCase {
     XCTAssertEqual(subject.height.feet, 2)
     XCTAssertEqual(subject.height.inches, 7)
     XCTAssertEqual(subject.height.meters, 10)
-    XCTAssertEqual(subject.predators, [])
+    XCTAssertEqual(subject.predators.count, 2)
 
     XCTAssertEqual(subject.asWarmBlooded?.species, "Cat")
     XCTAssertEqual(subject.asWarmBlooded?.height.feet, 2)
@@ -124,7 +124,7 @@ class SanityCheckTests: XCTestCase {
   func testListField() {
     let subject = Animal(data: data)
     let coyote = subject.predators[0]
-    let crocodile = subject.predators[0]
+    let crocodile = subject.predators[1]
 
     XCTAssertEqual(coyote.species, "Coyote")
     XCTAssertEqual(coyote.asWarmBlooded?.bodyTemperature, 96)

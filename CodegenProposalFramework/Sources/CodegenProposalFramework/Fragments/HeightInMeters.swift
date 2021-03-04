@@ -16,10 +16,14 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class HeightInMeters: FieldData, Fragment {
-  @Field("height") final var height: Height
+struct HeightInMeters: FieldData, Fragment {
+  let data: ResponseData
 
-  final class Height: FieldData {
-    @Field("meters") final var meters: Int
+  var height: Height  { data["height"] }
+
+  struct Height: FieldData {
+    let data: ResponseData
+
+    var meters: Int { data["meters"] }
   }
 }

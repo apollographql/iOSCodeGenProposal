@@ -18,12 +18,16 @@ import Foundation
 ///   }
 /// }
 /// ```
-final class WarmBloodedDetails: FieldData, Fragment {
-  @Field("bodyTemperature") final var bodyTemperature: Int
-  @Field("height") final var height: Height
+struct WarmBloodedDetails: FieldData, Fragment {
+  let data: ResponseData
 
-  final class Height: FieldData {
-    @Field("meters") final var meters: Int
-    @Field("yards") final var yards: Int
+  var bodyTemperature: Int { data["bodyTemperature"] }
+  var height: Height  { data["height"] }
+
+  struct Height: FieldData {
+    let data: ResponseData
+
+    var meters: Int { data["meters"] }
+    var yards: Int { data["yards"] }
   }  
 }

@@ -15,7 +15,9 @@ import Foundation
 ///  favoriteToy
 /// }
 /// ```
-final class PetDetails:FieldData, Fragment {
-  @Field("humanName") final var  humanName: String
-  @Field("favoriteToy") final var  favoriteToy: String
+struct PetDetails: FieldData, Fragment {
+  let data: ResponseData
+
+  var humanName: String { data["humanName"] }
+  var favoriteToy: String { data["favoriteToy"] }
 }

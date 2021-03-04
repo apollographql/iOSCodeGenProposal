@@ -7,14 +7,23 @@
 
 import Foundation
 
-class FieldData: Equatable {
+protocol FieldData: Equatable {
 
-  final let data: [String: Any]
+  var data: ResponseData { get }
 
-  @Field("__typename") final var __typename: String
+  init(data: ResponseData)
+}
 
-  required init(data: [String: Any]) {
-    self.data = data
+extension FieldData {
+  var __typename: String { data["__typename"] }
+
+  func asType<T: FieldData>() -> T? {
+//  guard T.possibleTypes.contains(__typename) else { return nil } // TODO: Implement
+    return T.init(data: data)
+  }
+
+  func toFragment<T: FieldData>() -> T {
+    return T.init(data: data)
   }
 }
 
@@ -22,33 +31,26 @@ func ==<T: FieldData>(lhs: T, rhs: T) -> Bool {
   return true // TODO: Unit test & implement this
 }
 
-@propertyWrapper
-struct Field<Value> {
+struct ResponseData {
 
-  let key: String // TODO: change to CodingKeys or something more safe than strings?
+  let data: [String: Any]
 
-  init(_ key: String) {
-    self.key = key
+  subscript<T: ScalarType>(_ key: String) -> T {
+    data[key] as! T
   }
 
-  static subscript<T: FieldData>(
-    _enclosingInstance instance: T,
-    wrapped wrappedKeyPath: KeyPath<T, Value>,
-    storage storageKeyPath: KeyPath<T, Field>
-  ) -> Value {
-    get {
-      let key = instance[keyPath: storageKeyPath].key
-
-      switch Value.self {
-      case let Type as FieldData.Type:
-        let data = instance.data[key] as! [String: Any]
-        return Type.init(data: data) as! Value
-      default:
-        return instance.data[key] as! Value
-      }
-    }
+  subscript<T: FieldData>(_ key: String) -> T {
+    let entityData = data[key] as! [String: Any]
+    return T.init(data: ResponseData(data: entityData))
   }
 
-  @available(*, unavailable, message: "This property wrapper can only be applied to classes")
-  var wrappedValue: Value { fatalError() }
+  subscript<T: FieldData>(_ key: String) -> [T] {
+    let entityData = data[key] as! [[String: Any]]
+    return entityData.map { T.init(data: ResponseData(data: $0)) }
+  }
 }
+
+protocol ScalarType {}
+extension String: ScalarType {}
+extension Int: ScalarType {}
+extension Bool: ScalarType {}
