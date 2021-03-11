@@ -46,7 +46,8 @@ class SanityCheckTests: XCTestCase {
       ],
       "humanName": "Tiger Lily",
       "favoriteToy": "Shoelaces",
-      "bodyTemperature": 98
+      "bodyTemperature": 98,
+      "isJellical": true
     ]
 
     data = ResponseData(data: dataDict)
@@ -131,6 +132,20 @@ class SanityCheckTests: XCTestCase {
 
     XCTAssertNil(subject.asWarmBlooded)
     XCTAssertNotNil(subject.asPet)
+  }
+
+  func testAsTypeConditionForConcreteType_withDifferentConcreteType() throws {
+    dataDict["__typename"] = Schema.ConcreteType.Fish.rawValue
+    data = ResponseData(data: dataDict)
+    let subject = Animal(data: data)
+
+    XCTAssertNil(subject.asCat)
+  }
+
+  func testAsTypeConditionForConcreteType_withMatchingConcreteType() throws {
+    let subject = Animal(data: data)
+
+    XCTAssertNotNil(subject.asCat)
   }
 
   func testListField() {

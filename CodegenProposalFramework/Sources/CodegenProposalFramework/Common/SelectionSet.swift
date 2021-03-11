@@ -42,7 +42,7 @@ extension SelectionSet {
     guard case let __concreteType = __concreteType, __concreteType != ._unknown else { return nil } // TODO: Unit Test
     switch T.__type {
     case .ConcreteType(let type):
-      guard __concreteType == type else { return nil } // TODO: Unit Test
+      guard __concreteType == type else { return nil }
     case .Interface(let interface):
       guard __concreteType.implements(interface) else { return nil }
     }

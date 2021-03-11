@@ -14,6 +14,9 @@
 ///         centimeters
 ///       }
 ///     }
+///     ... on Cat {
+///       isJellical
+///     }
 ///     predators {
 ///       species
 ///       ... on WarmBlooded {
@@ -39,6 +42,7 @@ struct Animal: SelectionSet, HasFragments {
   var height: Height { data["height"] }
   var predators: [Predators] { data["predators"] }
 
+  var asCat: AsCat? { asType() }
   var asWarmBlooded: AsWarmBlooded? { asType() }
   var asPet: AsPet? { asType() }
 
@@ -99,6 +103,14 @@ struct Animal: SelectionSet, HasFragments {
         var yards: Int { data["yards"] }
       }
     }
+  }
+
+  /// `Animal.AsCat`
+  struct AsCat: SelectionSet {
+    static var __type: SelectionSetType { .ConcreteType(.Cat) }
+    let data: ResponseData
+
+    var isJellical: Bool { data["isJellical"] }
   }
 
   // - NOTE:
