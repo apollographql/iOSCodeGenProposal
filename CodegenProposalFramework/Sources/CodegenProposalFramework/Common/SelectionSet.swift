@@ -7,21 +7,45 @@
 
 import Foundation
 
-protocol SelectionSet: Equatable {
-
+protocol DataContainer {
   var data: ResponseData { get }
 
   init(data: ResponseData)
 }
 
+enum SelectionSetType {
+  case ConcreteType(Schema.ConcreteType)
+  case Interface(Schema.Interface)
+}
+
+protocol SelectionSet: DataContainer, Equatable {
+
+  /// The GraphQL type for the `SelectionSet`.
+  ///
+  /// This may be a concrete type (`ConcreteType`) or an abstract type (`Interface`).
+  static var __type: SelectionSetType { get }
+}
+
 extension SelectionSet {
+
+  var __concreteType: Schema.ConcreteType { Schema.ConcreteType(rawValue: __typename) ?? ._unknown }
+
   var __typename: String { data["__typename"] }
 
   func asType<T: SelectionSet>() -> T? {
-//  guard T.possibleTypes.contains(__typename) else { return nil } // TODO: Implement
+    guard let __concreteType = __concreteType, __concreteType != ._unknown else { return nil } // TODO: Unit Test
+    switch T.__type {
+    case .ConcreteType(let type):
+      guard __concreteType == type else { return nil } // TODO: Unit Test
+    case .Interface(let interface):
+      guard __concreteType.implements(interface) else { return nil } // TODO: Unit Test
+    }
+
     return T.init(data: data)
   }
+}
 
+extension DataContainer {
   func toFragment<T: SelectionSet>() -> T {
     return T.init(data: data)
   }

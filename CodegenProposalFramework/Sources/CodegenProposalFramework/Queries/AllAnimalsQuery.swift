@@ -32,6 +32,7 @@
 
 /// `Animal`
 struct Animal: SelectionSet, HasFragments {
+  static var __type: SelectionSetType { .Interface(.Animal) }
   let data: ResponseData
 
   var species: String { data["species"] }
@@ -41,7 +42,7 @@ struct Animal: SelectionSet, HasFragments {
   var asWarmBlooded: AsWarmBlooded? { asType() }
   var asPet: AsPet? { asType() }
 
-  struct Fragments: SelectionSet {
+  struct Fragments: DataContainer {
     let data: ResponseData
     
     var heightInMeters: HeightInMeters { toFragment() }
@@ -49,6 +50,7 @@ struct Animal: SelectionSet, HasFragments {
 
   /// `Animal.Height`
   struct Height: SelectionSet {
+    static var __type: SelectionSetType { .ConcreteType(.Height) }
     let data: ResponseData
 
     var feet: Int { data["feet"] }
@@ -62,6 +64,7 @@ struct Animal: SelectionSet, HasFragments {
 
   /// `Animal.Predators`
   struct Predators: SelectionSet {
+    static var __type: SelectionSetType { .Interface(.Animal) }
     let data: ResponseData
 
     var species: String { data["species"] }
@@ -70,6 +73,7 @@ struct Animal: SelectionSet, HasFragments {
 
     /// `AllAnimals.Predators.AsWarmBlooded`
     struct AsWarmBlooded: SelectionSet, HasFragments {
+      static var __type: SelectionSetType { .Interface(.WarmBlooded) }
       let data: ResponseData
 
       var bodyTemperature: Int { data["bodyTemperature"] }
@@ -81,12 +85,14 @@ struct Animal: SelectionSet, HasFragments {
       // not need an optional `TypeCondition` and can merge the fields up.
       // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
 
-      struct Fragments: SelectionSet {
+      struct Fragments: DataContainer {
         let data: ResponseData
+
         var warmBloodedDetails: WarmBloodedDetails { toFragment() }
       }
 
       struct Height: SelectionSet {
+        static var __type: SelectionSetType { .ConcreteType(.Height) }
         let data: ResponseData
 
         var meters: Int { data["meters"] }
@@ -104,6 +110,8 @@ struct Animal: SelectionSet, HasFragments {
   // See `Predators.AsWarmBlooded` for an example of this.
   /// `Animal.AsWarmBlooded`
   struct AsWarmBlooded: SelectionSet, HasFragments {
+    static var __type: SelectionSetType { .Interface(.WarmBlooded) }
+
     let data: ResponseData
 
     var species: String { data["species"] }
@@ -111,7 +119,7 @@ struct Animal: SelectionSet, HasFragments {
     var predators: [Predators]  { data["predators"] }
     var bodyTemperature: Int { data["bodyTemperature"] }
 
-    struct Fragments: SelectionSet {
+    struct Fragments: DataContainer {
       let data: ResponseData
 
       var heightInMeters: HeightInMeters { toFragment() }
@@ -119,6 +127,7 @@ struct Animal: SelectionSet, HasFragments {
     }
 
     struct Height: SelectionSet {
+      static var __type: SelectionSetType { .ConcreteType(.Height) }
       let data: ResponseData
 
       var feet: Int { data["feet"] }
@@ -130,6 +139,7 @@ struct Animal: SelectionSet, HasFragments {
 
   /// `Animal.AsPet`
   struct AsPet: SelectionSet, HasFragments {
+    static var __type: SelectionSetType { .Interface(.Pet) }
     let data: ResponseData
 
     var species: String { data["species"] }
@@ -140,7 +150,7 @@ struct Animal: SelectionSet, HasFragments {
 
     var asWarmBlooded: AsWarmBlooded? { asType() }
 
-    struct Fragments: SelectionSet {
+    struct Fragments: DataContainer {
       let data: ResponseData
 
       var heightInMeters: HeightInMeters { toFragment() }
@@ -148,6 +158,7 @@ struct Animal: SelectionSet, HasFragments {
     }
 
     struct Height: SelectionSet {
+      static var __type: SelectionSetType { .ConcreteType(.Height) }
       let data: ResponseData
 
       var feet: Int { data["feet"] }
@@ -158,6 +169,7 @@ struct Animal: SelectionSet, HasFragments {
 
     /// `Animal.AsPet.AsWarmBlooded`
     struct AsWarmBlooded: SelectionSet, HasFragments {
+      static var __type: SelectionSetType { .Interface(.WarmBlooded) }
       let data: ResponseData
 
       var species: String { data["species"] }
@@ -167,7 +179,7 @@ struct Animal: SelectionSet, HasFragments {
       var favoriteToy: String { data["favoriteToy"] }
       var bodyTemperature: Int { data["bodyTemperature"] }
 
-      struct Fragments: SelectionSet {
+      struct Fragments: DataContainer {
         let data: ResponseData
 
         var heightInMeters: HeightInMeters { toFragment() }
@@ -176,6 +188,7 @@ struct Animal: SelectionSet, HasFragments {
       }
 
       struct Height: SelectionSet {
+        static var __type: SelectionSetType { .ConcreteType(.Height) }
         let data: ResponseData
 
         var feet: Int { data["feet"] }
