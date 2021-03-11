@@ -13,6 +13,12 @@ protocol DataContainer {
   init(data: ResponseData)
 }
 
+extension DataContainer {
+  func toFragment<T: SelectionSet>() -> T {
+    return T.init(data: data)
+  }
+}
+
 enum SelectionSetType {
   case ConcreteType(Schema.ConcreteType)
   case Interface(Schema.Interface)
@@ -33,20 +39,14 @@ extension SelectionSet {
   var __typename: String { data["__typename"] }
 
   func asType<T: SelectionSet>() -> T? {
-    guard let __concreteType = __concreteType, __concreteType != ._unknown else { return nil } // TODO: Unit Test
+    guard case let __concreteType = __concreteType, __concreteType != ._unknown else { return nil } // TODO: Unit Test
     switch T.__type {
     case .ConcreteType(let type):
       guard __concreteType == type else { return nil } // TODO: Unit Test
     case .Interface(let interface):
-      guard __concreteType.implements(interface) else { return nil } // TODO: Unit Test
+      guard __concreteType.implements(interface) else { return nil }
     }
 
-    return T.init(data: data)
-  }
-}
-
-extension DataContainer {
-  func toFragment<T: SelectionSet>() -> T {
     return T.init(data: data)
   }
 }

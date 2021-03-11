@@ -11,11 +11,12 @@ import XCTest
 class SanityCheckTests: XCTestCase {
 
   var data: ResponseData!
+  var dataDict: [String: Any]!
 
   override func setUpWithError() throws {
     try super.setUpWithError()
 
-    data = ResponseData(data: [
+    dataDict = [
       "__typename": "Cat",
       "species": "Cat",
       "height": [
@@ -46,7 +47,9 @@ class SanityCheckTests: XCTestCase {
       "humanName": "Tiger Lily",
       "favoriteToy": "Shoelaces",
       "bodyTemperature": 98
-    ])
+    ]
+
+    data = ResponseData(data: dataDict)
   }
 
   override func tearDownWithError() throws {
@@ -119,6 +122,15 @@ class SanityCheckTests: XCTestCase {
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.fragments.heightInMeters.height.meters, 10)
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.fragments.warmBloodedDetails.height.meters, 10)
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.fragments.petDetails.favoriteToy, "Shoelaces")
+  }
+
+  func testAsTypeConditionForInterface_withConcreteTypeThatDoesNotImplementInterface() throws {
+    dataDict["__typename"] = Schema.ConcreteType.Fish.rawValue
+    data = ResponseData(data: dataDict)
+    let subject = Animal(data: data)
+
+    XCTAssertNil(subject.asWarmBlooded)
+    XCTAssertNotNil(subject.asPet)
   }
 
   func testListField() {
