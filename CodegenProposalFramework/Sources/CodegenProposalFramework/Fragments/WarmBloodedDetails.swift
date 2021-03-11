@@ -18,13 +18,13 @@ import Foundation
 ///   }
 /// }
 /// ```
-struct WarmBloodedDetails: FieldData, Fragment {
+struct WarmBloodedDetails: SelectionSet, Fragment {
   let data: ResponseData
 
   var bodyTemperature: Int { data["bodyTemperature"] }
   var height: Height  { data["height"] }
 
-  struct Height: FieldData {
+  struct Height: SelectionSet {
     let data: ResponseData
 
     var meters: Int { data["meters"] }

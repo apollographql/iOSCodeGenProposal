@@ -15,7 +15,7 @@ import Foundation
 ///  favoriteToy
 /// }
 /// ```
-struct PetDetails: FieldData, Fragment {
+struct PetDetails: SelectionSet, Fragment {
   let data: ResponseData
 
   var humanName: String { data["humanName"] }

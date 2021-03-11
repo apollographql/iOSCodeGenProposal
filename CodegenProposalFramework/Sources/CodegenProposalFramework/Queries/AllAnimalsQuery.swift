@@ -31,7 +31,7 @@
 // MARK: - Query Response Data Structs
 
 /// `Animal`
-struct Animal: FieldData, HasFragments {
+struct Animal: SelectionSet, HasFragments {
   let data: ResponseData
 
   var species: String { data["species"] }
@@ -41,14 +41,14 @@ struct Animal: FieldData, HasFragments {
   var asWarmBlooded: AsWarmBlooded? { asType() }
   var asPet: AsPet? { asType() }
 
-  struct Fragments: FieldData {
+  struct Fragments: SelectionSet {
     let data: ResponseData
     
     var heightInMeters: HeightInMeters { toFragment() }
   }
 
   /// `Animal.Height`
-  struct Height: FieldData {
+  struct Height: SelectionSet {
     let data: ResponseData
 
     var feet: Int { data["feet"] }
@@ -61,7 +61,7 @@ struct Animal: FieldData, HasFragments {
   }
 
   /// `Animal.Predators`
-  struct Predators: FieldData {
+  struct Predators: SelectionSet {
     let data: ResponseData
 
     var species: String { data["species"] }
@@ -69,7 +69,7 @@ struct Animal: FieldData, HasFragments {
     var asWarmBlooded: AsWarmBlooded? { asType() }
 
     /// `AllAnimals.Predators.AsWarmBlooded`
-    struct AsWarmBlooded: FieldData, HasFragments {
+    struct AsWarmBlooded: SelectionSet, HasFragments {
       let data: ResponseData
 
       var bodyTemperature: Int { data["bodyTemperature"] }
@@ -81,12 +81,12 @@ struct Animal: FieldData, HasFragments {
       // not need an optional `TypeCondition` and can merge the fields up.
       // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
 
-      struct Fragments: FieldData {
+      struct Fragments: SelectionSet {
         let data: ResponseData
         var warmBloodedDetails: WarmBloodedDetails { toFragment() }
       }
 
-      struct Height: FieldData {
+      struct Height: SelectionSet {
         let data: ResponseData
 
         var meters: Int { data["meters"] }
@@ -103,7 +103,7 @@ struct Animal: FieldData, HasFragments {
   // we would use a custom `TypeCondition` with the fragment type condition nested inside.
   // See `Predators.AsWarmBlooded` for an example of this.
   /// `Animal.AsWarmBlooded`
-  struct AsWarmBlooded: FieldData, HasFragments {
+  struct AsWarmBlooded: SelectionSet, HasFragments {
     let data: ResponseData
 
     var species: String { data["species"] }
@@ -111,14 +111,14 @@ struct Animal: FieldData, HasFragments {
     var predators: [Predators]  { data["predators"] }
     var bodyTemperature: Int { data["bodyTemperature"] }
 
-    struct Fragments: FieldData {
+    struct Fragments: SelectionSet {
       let data: ResponseData
 
       var heightInMeters: HeightInMeters { toFragment() }
       var warmBloodedDetails: WarmBloodedDetails  { toFragment() }
     }
 
-    struct Height: FieldData {
+    struct Height: SelectionSet {
       let data: ResponseData
 
       var feet: Int { data["feet"] }
@@ -129,7 +129,7 @@ struct Animal: FieldData, HasFragments {
   }
 
   /// `Animal.AsPet`
-  struct AsPet: FieldData, HasFragments {
+  struct AsPet: SelectionSet, HasFragments {
     let data: ResponseData
 
     var species: String { data["species"] }
@@ -140,14 +140,14 @@ struct Animal: FieldData, HasFragments {
 
     var asWarmBlooded: AsWarmBlooded? { asType() }
 
-    struct Fragments: FieldData {
+    struct Fragments: SelectionSet {
       let data: ResponseData
 
       var heightInMeters: HeightInMeters { toFragment() }
       var petDetails: PetDetails  { toFragment() }
     }
 
-    struct Height: FieldData {
+    struct Height: SelectionSet {
       let data: ResponseData
 
       var feet: Int { data["feet"] }
@@ -157,7 +157,7 @@ struct Animal: FieldData, HasFragments {
     }
 
     /// `Animal.AsPet.AsWarmBlooded`
-    struct AsWarmBlooded: FieldData, HasFragments {
+    struct AsWarmBlooded: SelectionSet, HasFragments {
       let data: ResponseData
 
       var species: String { data["species"] }
@@ -167,7 +167,7 @@ struct Animal: FieldData, HasFragments {
       var favoriteToy: String { data["favoriteToy"] }
       var bodyTemperature: Int { data["bodyTemperature"] }
 
-      struct Fragments: FieldData {
+      struct Fragments: SelectionSet {
         let data: ResponseData
 
         var heightInMeters: HeightInMeters { toFragment() }
@@ -175,7 +175,7 @@ struct Animal: FieldData, HasFragments {
         var warmBloodedDetails: WarmBloodedDetails  { toFragment() }
       }
 
-      struct Height: FieldData {
+      struct Height: SelectionSet {
         let data: ResponseData
 
         var feet: Int { data["feet"] }

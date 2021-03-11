@@ -16,12 +16,12 @@ import Foundation
 ///   }
 /// }
 /// ```
-struct HeightInMeters: FieldData, Fragment {
+struct HeightInMeters: SelectionSet, Fragment {
   let data: ResponseData
 
   var height: Height  { data["height"] }
 
-  struct Height: FieldData {
+  struct Height: SelectionSet {
     let data: ResponseData
 
     var meters: Int { data["meters"] }

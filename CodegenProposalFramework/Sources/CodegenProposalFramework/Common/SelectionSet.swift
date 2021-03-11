@@ -7,27 +7,27 @@
 
 import Foundation
 
-protocol FieldData: Equatable {
+protocol SelectionSet: Equatable {
 
   var data: ResponseData { get }
 
   init(data: ResponseData)
 }
 
-extension FieldData {
+extension SelectionSet {
   var __typename: String { data["__typename"] }
 
-  func asType<T: FieldData>() -> T? {
+  func asType<T: SelectionSet>() -> T? {
 //  guard T.possibleTypes.contains(__typename) else { return nil } // TODO: Implement
     return T.init(data: data)
   }
 
-  func toFragment<T: FieldData>() -> T {
+  func toFragment<T: SelectionSet>() -> T {
     return T.init(data: data)
   }
 }
 
-func ==<T: FieldData>(lhs: T, rhs: T) -> Bool {
+func ==<T: SelectionSet>(lhs: T, rhs: T) -> Bool {
   return true // TODO: Unit test & implement this
 }
 
@@ -39,12 +39,12 @@ struct ResponseData {
     data[key] as! T
   }
 
-  subscript<T: FieldData>(_ key: String) -> T {
+  subscript<T: SelectionSet>(_ key: String) -> T {
     let entityData = data[key] as! [String: Any]
     return T.init(data: ResponseData(data: entityData))
   }
 
-  subscript<T: FieldData>(_ key: String) -> [T] {
+  subscript<T: SelectionSet>(_ key: String) -> [T] {
     let entityData = data[key] as! [[String: Any]]
     return entityData.map { T.init(data: ResponseData(data: $0)) }
   }
