@@ -1,0 +1,28 @@
+query AllAnimals {
+  allAnimals {
+    height {
+      feet
+      inches
+    }
+    ...HeightInMeters
+    ...WarmBloodedDetails
+    species
+    ... on Pet {
+      ...PetDetails
+      ...WarmBloodedDetails
+      height {
+        centimeters
+      }
+    }
+    ... on Cat {
+      isJellicle
+    }
+    predators {
+      species
+      ... on WarmBlooded {
+        ...WarmBloodedDetails
+        hasFur
+      }
+    }
+  }
+}

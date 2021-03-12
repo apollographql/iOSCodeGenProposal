@@ -1,0 +1,70 @@
+type Query {
+  allAnimals: [Animal]
+  allPets: [Pet]
+}
+
+interface Animal {
+  species: String!
+  height: Height!
+  predators: [Animal!]!
+}
+
+interface Pet implements Animal {
+  species: String!
+  height: Height!
+  predators: [Animal!]!
+  humanName: String!
+  favoriteToy: String!
+}
+
+interface WarmBlooded implements Animal {
+  species: String!
+  height: Height!
+  predators: [Animal!]!
+  bodyTemperature: Int!
+  hasFur: Boolean!
+}
+
+type Height {
+  centimeters: Int!
+  meters: Int!
+  feet: Int!
+  inches: Int!
+  yards: Int!
+}
+
+type Cat implements Animal & Pet & WarmBlooded {
+  species: String!
+  height: Height!
+  predators: [Animal!]!
+  humanName: String!
+  favoriteToy: String!
+  bodyTemperature: Int!
+  hasFur: Boolean!
+  isJellicle: Boolean!
+}
+
+type Bird implements Animal & Pet & WarmBlooded {
+  species: String!
+  height: Height!
+  predators: [Animal!]!
+  humanName: String!
+  favoriteToy: String!
+  bodyTemperature: Int!
+  hasFur: Boolean!
+}
+
+type Fish implements Animal & Pet {
+  species: String!
+  height: Height!
+  predators: [Animal!]!
+  humanName: String!
+  favoriteToy: String!
+}
+
+type Crocodile implements Animal {
+  species: String!
+  height: Height!
+  predators: [Animal!]!
+  age: Int!
+}

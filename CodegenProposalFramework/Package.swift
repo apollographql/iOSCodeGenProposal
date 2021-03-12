@@ -11,19 +11,35 @@ let package = Package(
   ],
   products: [
     .library(name: "CodegenProposalFramework", targets: ["CodegenProposalFramework"]),
+    .executable(name: "RunCodeGen", targets: ["RunCodeGen"]),
   ],
   dependencies: [
     .package(name: "Apollo",
-             url: "https://github.com/apollographql/apollo-ios.git",
-             .upToNextMinor(from: "0.41.0")),
+             url: "https://github.com/apollographql/apollo-ios.git",             
+             .branch("new-codegen-frontend")),
   ],
   targets: [
     .target(
       name: "CodegenProposalFramework",
       dependencies: [
         .product(name: "Apollo", package: "Apollo"),
-        .product(name: "ApolloCodegenLib", package: "Apollo")
       ]
+    ),
+    .target(
+      name: "RunCodeGen",
+      dependencies: [
+        .product(name: "Apollo", package: "Apollo"),
+        .product(name: "ApolloCodegenLib", package: "Apollo"),
+        "AnimalsAPI"
+      ],
+      resources: [
+        .process("AnimalSchema.graphqls")
+      ]
+    ),
+    .target(
+      name: "AnimalsAPI",
+      dependencies: [],
+      resources: [.process("GraphQL")]
     ),
     .testTarget(
       name: "CodegenProposalFrameworkTests",

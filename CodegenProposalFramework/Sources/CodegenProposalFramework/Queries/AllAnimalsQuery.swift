@@ -15,7 +15,7 @@
 ///       }
 ///     }
 ///     ... on Cat {
-///       isJellical
+///       isJellicle
 ///     }
 ///     predators {
 ///       species
@@ -110,7 +110,7 @@ struct Animal: SelectionSet, HasFragments {
     static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Cat) }
     let data: ResponseData
 
-    var isJellical: Bool { data["isJellical"] }
+    var isJellicle: Bool { data["isJellicle"] }
   }
 
   // - NOTE:

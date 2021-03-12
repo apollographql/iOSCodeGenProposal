@@ -1,0 +1,4 @@
+fragment PetDetails on Pet {
+  humanName
+  favoriteToy
+}
