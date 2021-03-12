@@ -35,7 +35,7 @@
 
 /// `Animal`
 struct Animal: SelectionSet, HasFragments {
-  static var __type: SelectionSetType { .Interface(.Animal) }
+  static var __parentType: SelectionSetType { .Interface(.Animal) }
   let data: ResponseData
 
   var species: String { data["species"] }
@@ -54,7 +54,7 @@ struct Animal: SelectionSet, HasFragments {
 
   /// `Animal.Height`
   struct Height: SelectionSet {
-    static var __type: SelectionSetType { .ConcreteType(.Height) }
+    static var __parentType: SelectionSetType { .ObjectType(.Height) }
     let data: ResponseData
 
     var feet: Int { data["feet"] }
@@ -68,7 +68,7 @@ struct Animal: SelectionSet, HasFragments {
 
   /// `Animal.Predators`
   struct Predators: SelectionSet {
-    static var __type: SelectionSetType { .Interface(.Animal) }
+    static var __parentType: SelectionSetType { .Interface(.Animal) }
     let data: ResponseData
 
     var species: String { data["species"] }
@@ -77,7 +77,7 @@ struct Animal: SelectionSet, HasFragments {
 
     /// `AllAnimals.Predators.AsWarmBlooded`
     struct AsWarmBlooded: SelectionSet, HasFragments {
-      static var __type: SelectionSetType { .Interface(.WarmBlooded) }
+      static var __parentType: SelectionSetType { .Interface(.WarmBlooded) }
       let data: ResponseData
 
       var bodyTemperature: Int { data["bodyTemperature"] }
@@ -96,7 +96,7 @@ struct Animal: SelectionSet, HasFragments {
       }
 
       struct Height: SelectionSet {
-        static var __type: SelectionSetType { .ConcreteType(.Height) }
+        static var __parentType: SelectionSetType { .ObjectType(.Height) }
         let data: ResponseData
 
         var meters: Int { data["meters"] }
@@ -107,7 +107,7 @@ struct Animal: SelectionSet, HasFragments {
 
   /// `Animal.AsCat`
   struct AsCat: SelectionSet {
-    static var __type: SelectionSetType { .ConcreteType(.Cat) }
+    static var __parentType: SelectionSetType { .ObjectType(.Cat) }
     let data: ResponseData
 
     var isJellical: Bool { data["isJellical"] }
@@ -122,7 +122,7 @@ struct Animal: SelectionSet, HasFragments {
   // See `Predators.AsWarmBlooded` for an example of this.
   /// `Animal.AsWarmBlooded`
   struct AsWarmBlooded: SelectionSet, HasFragments {
-    static var __type: SelectionSetType { .Interface(.WarmBlooded) }
+    static var __parentType: SelectionSetType { .Interface(.WarmBlooded) }
 
     let data: ResponseData
 
@@ -139,7 +139,7 @@ struct Animal: SelectionSet, HasFragments {
     }
 
     struct Height: SelectionSet {
-      static var __type: SelectionSetType { .ConcreteType(.Height) }
+      static var __parentType: SelectionSetType { .ObjectType(.Height) }
       let data: ResponseData
 
       var feet: Int { data["feet"] }
@@ -151,7 +151,7 @@ struct Animal: SelectionSet, HasFragments {
 
   /// `Animal.AsPet`
   struct AsPet: SelectionSet, HasFragments {
-    static var __type: SelectionSetType { .Interface(.Pet) }
+    static var __parentType: SelectionSetType { .Interface(.Pet) }
     let data: ResponseData
 
     var species: String { data["species"] }
@@ -170,7 +170,7 @@ struct Animal: SelectionSet, HasFragments {
     }
 
     struct Height: SelectionSet {
-      static var __type: SelectionSetType { .ConcreteType(.Height) }
+      static var __parentType: SelectionSetType { .ObjectType(.Height) }
       let data: ResponseData
 
       var feet: Int { data["feet"] }
@@ -181,7 +181,7 @@ struct Animal: SelectionSet, HasFragments {
 
     /// `Animal.AsPet.AsWarmBlooded`
     struct AsWarmBlooded: SelectionSet, HasFragments {
-      static var __type: SelectionSetType { .Interface(.WarmBlooded) }
+      static var __parentType: SelectionSetType { .Interface(.WarmBlooded) }
       let data: ResponseData
 
       var species: String { data["species"] }
@@ -200,7 +200,7 @@ struct Animal: SelectionSet, HasFragments {
       }
 
       struct Height: SelectionSet {
-        static var __type: SelectionSetType { .ConcreteType(.Height) }
+        static var __parentType: SelectionSetType { .ObjectType(.Height) }
         let data: ResponseData
 
         var feet: Int { data["feet"] }

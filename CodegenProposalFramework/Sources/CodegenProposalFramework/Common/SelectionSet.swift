@@ -20,7 +20,7 @@ extension DataContainer {
 }
 
 enum SelectionSetType {
-  case ConcreteType(Schema.ConcreteType)
+  case ObjectType(Schema.ObjectType)
   case Interface(Schema.Interface)
 }
 
@@ -29,22 +29,22 @@ protocol SelectionSet: DataContainer, Equatable {
   /// The GraphQL type for the `SelectionSet`.
   ///
   /// This may be a concrete type (`ConcreteType`) or an abstract type (`Interface`).
-  static var __type: SelectionSetType { get }
+  static var __parentType: SelectionSetType { get }
 }
 
 extension SelectionSet {
 
-  var __concreteType: Schema.ConcreteType { Schema.ConcreteType(rawValue: __typename) ?? ._unknown }
+  var __objectType: Schema.ObjectType? { Schema.ObjectType(rawValue: __typename) }
 
   var __typename: String { data["__typename"] }
 
   func asType<T: SelectionSet>() -> T? {
-    guard case let __concreteType = __concreteType, __concreteType != ._unknown else { return nil } // TODO: Unit Test
-    switch T.__type {
-    case .ConcreteType(let type):
-      guard __concreteType == type else { return nil }
+    guard let __objectType = __objectType, __objectType != ._unknown else { return nil } // TODO: Unit Test
+    switch T.__parentType {
+    case .ObjectType(let type):
+      guard __objectType == type else { return nil }
     case .Interface(let interface):
-      guard __concreteType.implements(interface) else { return nil }
+      guard __objectType.implements(interface) else { return nil }
     }
 
     return T.init(data: data)

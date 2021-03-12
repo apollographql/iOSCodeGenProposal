@@ -1,7 +1,7 @@
 import Foundation
 
 struct Schema {
-  enum ConcreteType: String {
+  enum ObjectType: String {
     case Bird, Cat, Coyote, Crocodile, Fish, Height, _unknown
 
     var interfaces: [Interface] {
@@ -25,6 +25,6 @@ struct Schema {
   }
 
   enum Interface: String {
-    case Animal, Pet, WarmBlooded, _unknown
+    case Animal, Pet, WarmBlooded
   }
 }

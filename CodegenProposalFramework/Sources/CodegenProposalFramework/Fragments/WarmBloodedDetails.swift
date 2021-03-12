@@ -19,7 +19,7 @@ import Foundation
 /// }
 /// ```
 struct WarmBloodedDetails: SelectionSet, Fragment {
-  static var __type: SelectionSetType { .Interface(.WarmBlooded) }
+  static var __parentType: SelectionSetType { .Interface(.WarmBlooded) }
 
   let data: ResponseData
 
@@ -27,7 +27,7 @@ struct WarmBloodedDetails: SelectionSet, Fragment {
   var height: Height  { data["height"] }
 
   struct Height: SelectionSet {
-    static var __type: SelectionSetType { .ConcreteType(.Height) }
+    static var __parentType: SelectionSetType { .ObjectType(.Height) }
     let data: ResponseData
 
     var meters: Int { data["meters"] }
