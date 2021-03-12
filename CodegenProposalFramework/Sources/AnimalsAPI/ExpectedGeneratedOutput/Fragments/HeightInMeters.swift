@@ -1,11 +1,4 @@
-//
-//  HeightInMeters.swift
-//  CodegenProposalFramework
-//
-//  Created by Anthony Miller on 2/16/21.
-//
-
-import Foundation
+@testable import CodegenProposalFramework
 
 /// A response data object for a `HeightInMeters` fragment
 ///
@@ -18,13 +11,13 @@ import Foundation
 /// ```
 struct HeightInMeters: SelectionSet, Fragment {
   static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Animal) }
-  let data: ResponseData
+  let data: ResponseDict
 
   var height: Height  { data["height"] }
 
   struct Height: SelectionSet {
     static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
-    let data: ResponseData
+    let data: ResponseDict
 
     var meters: Int { data["meters"] }
   }

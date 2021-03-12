@@ -18,7 +18,7 @@ query AllAnimals {
     }
     ... on Cat {
       isJellicle
-    }
+    }    
     predators {
       species
       ... on WarmBlooded {

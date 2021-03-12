@@ -1,5 +1,5 @@
 /// A structure that wraps the underlying data dictionary used by `SelectionSet`s.
-struct ResponseData {
+struct ResponseDict {
 
   let data: [String: Any]
 
@@ -9,19 +9,19 @@ struct ResponseData {
 
   subscript<T: SelectionSet>(_ key: String) -> T {
     let entityData = data[key] as! [String: Any]
-    return T.init(data: ResponseData(data: entityData))
+    return T.init(data: ResponseDict(data: entityData))
   }
 
   subscript<T: SelectionSet>(_ key: String) -> [T] {
     let entityData = data[key] as! [[String: Any]]
-    return entityData.map { T.init(data: ResponseData(data: $0)) }
+    return entityData.map { T.init(data: ResponseDict(data: $0)) }
   }
 }
 
 protocol ResponseObject {
-  var data: ResponseData { get }
+  var data: ResponseDict { get }
 
-  init(data: ResponseData)
+  init(data: ResponseDict)
 }
 
 extension ResponseObject {

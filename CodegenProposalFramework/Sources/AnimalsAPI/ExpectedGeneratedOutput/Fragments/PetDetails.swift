@@ -1,11 +1,4 @@
-//
-//  PetDetails.swift
-//  CodegenProposalFramework
-//
-//  Created by Anthony Miller on 2/16/21.
-//
-
-import Foundation
+@testable import CodegenProposalFramework
 
 /// A response data object for a `PetDetails` fragment
 ///
@@ -17,7 +10,7 @@ import Foundation
 /// ```
 struct PetDetails: SelectionSet, Fragment {
   static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Pet) }
-  let data: ResponseData
+  let data: ResponseDict
 
   var humanName: String { data["humanName"] }
   var favoriteToy: String { data["favoriteToy"] }

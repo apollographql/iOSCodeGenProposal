@@ -1,6 +1,7 @@
 enum SelectionSetType<S: GraphQLSchema> {
   case ObjectType(S.ObjectType)
   case Interface(S.Interface)
+  case Union(S.Union)
 }
 
 protocol SelectionSet: ResponseObject, Equatable {
@@ -21,11 +22,16 @@ extension SelectionSet {
 
   func asType<T: SelectionSet>() -> T? where T.Schema == Schema {
     guard let __objectType = __objectType else { return nil } // TODO: Unit Test
+
     switch T.__parentType {
     case .ObjectType(let type):
       guard __objectType == type else { return nil }
+
     case .Interface(let interface):
       guard __objectType.implements(interface) else { return nil }
+
+    case .Union:
+      return nil // TODO: Implement and unit test this
     }
 
     return T.init(data: data)

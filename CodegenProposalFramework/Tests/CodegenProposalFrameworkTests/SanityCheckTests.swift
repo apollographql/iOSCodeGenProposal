@@ -7,10 +7,11 @@
 
 import XCTest
 @testable import CodegenProposalFramework
+@testable import AnimalsAPI
 
 class SanityCheckTests: XCTestCase {
 
-  var data: ResponseData!
+  var data: ResponseDict!
   var dataDict: [String: Any]!
 
   override func setUpWithError() throws {
@@ -50,7 +51,7 @@ class SanityCheckTests: XCTestCase {
       "isJellical": true
     ]
 
-    data = ResponseData(data: dataDict)
+    data = ResponseDict(data: dataDict)
   }
 
   override func tearDownWithError() throws {
@@ -127,7 +128,7 @@ class SanityCheckTests: XCTestCase {
 
   func testAsTypeConditionForInterface_withConcreteTypeThatDoesNotImplementInterface() throws {
     dataDict["__typename"] = AnimalSchema.ObjectType.Fish.rawValue
-    data = ResponseData(data: dataDict)
+    data = ResponseDict(data: dataDict)
     let subject = Animal(data: data)
 
     XCTAssertNil(subject.asWarmBlooded)
@@ -136,7 +137,7 @@ class SanityCheckTests: XCTestCase {
 
   func testAsTypeConditionForConcreteType_withDifferentConcreteType() throws {
     dataDict["__typename"] = AnimalSchema.ObjectType.Fish.rawValue
-    data = ResponseData(data: dataDict)
+    data = ResponseDict(data: dataDict)
     let subject = Animal(data: data)
 
     XCTAssertNil(subject.asCat)

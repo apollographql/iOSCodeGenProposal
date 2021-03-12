@@ -1,11 +1,4 @@
-//
-//  WarmBloodedDetails.swift
-//  CodegenProposalFramework
-//
-//  Created by Anthony Miller on 2/16/21.
-//
-
-import Foundation
+@testable import CodegenProposalFramework
 
 /// A response data object for a `WarmBloodedDetails` fragment
 ///
@@ -21,14 +14,14 @@ import Foundation
 struct WarmBloodedDetails: SelectionSet, Fragment {
   static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.WarmBlooded) }
 
-  let data: ResponseData
+  let data: ResponseDict
 
   var bodyTemperature: Int { data["bodyTemperature"] }
   var height: Height  { data["height"] }
 
   struct Height: SelectionSet {
     static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
-    let data: ResponseData
+    let data: ResponseDict
 
     var meters: Int { data["meters"] }
     var yards: Int { data["yards"] }

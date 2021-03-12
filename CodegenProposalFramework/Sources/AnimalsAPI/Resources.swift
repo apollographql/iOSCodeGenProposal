@@ -5,4 +5,9 @@ public struct Resources {
     forResourcesWithExtension: "graphql",
     subdirectory: nil
   )!
+
+  public static let Schema = Bundle.module.url(
+    forResource: "AnimalSchema",
+    withExtension: "graphqls"
+  )!
 }
