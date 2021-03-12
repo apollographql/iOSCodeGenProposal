@@ -17,13 +17,13 @@ import Foundation
 /// }
 /// ```
 struct HeightInMeters: SelectionSet, Fragment {
-  static var __parentType: SelectionSetType { .Interface(.Animal) }
+  static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Animal) }
   let data: ResponseData
 
   var height: Height  { data["height"] }
 
   struct Height: SelectionSet {
-    static var __parentType: SelectionSetType { .ObjectType(.Height) }
+    static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
     let data: ResponseData
 
     var meters: Int { data["meters"] }

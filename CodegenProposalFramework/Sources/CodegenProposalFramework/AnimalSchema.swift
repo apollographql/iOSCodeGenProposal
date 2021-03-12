@@ -1,7 +1,7 @@
 import Foundation
 
-struct Schema {
-  enum ObjectType: String {
+struct AnimalSchema: GraphQLSchema {
+  enum ObjectType: String, SchemaObjectType {
     case Bird, Cat, Coyote, Crocodile, Fish, Height, _unknown
 
     var interfaces: [Interface] {
@@ -24,7 +24,7 @@ struct Schema {
     }
   }
 
-  enum Interface: String {
+  enum Interface: String, SchemaTypeEnum {
     case Animal, Pet, WarmBlooded
   }
 }

@@ -16,7 +16,7 @@ import Foundation
 /// }
 /// ```
 struct PetDetails: SelectionSet, Fragment {
-  static var __parentType: SelectionSetType { .Interface(.Pet) }
+  static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Pet) }
   let data: ResponseData
 
   var humanName: String { data["humanName"] }

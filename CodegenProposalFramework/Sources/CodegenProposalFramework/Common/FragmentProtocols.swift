@@ -21,7 +21,7 @@ protocol Fragment: SelectionSet { }
 protocol HasFragments: SelectionSet {
 
   /// A type representing all of the fragments contained on the `ResponseObject`.
-  associatedtype Fragments: DataContainer
+  associatedtype Fragments: ResponseObject
 }
 
 extension HasFragments {

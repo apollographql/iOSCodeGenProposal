@@ -126,7 +126,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForInterface_withConcreteTypeThatDoesNotImplementInterface() throws {
-    dataDict["__typename"] = Schema.ObjectType.Fish.rawValue
+    dataDict["__typename"] = AnimalSchema.ObjectType.Fish.rawValue
     data = ResponseData(data: dataDict)
     let subject = Animal(data: data)
 
@@ -135,7 +135,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForConcreteType_withDifferentConcreteType() throws {
-    dataDict["__typename"] = Schema.ObjectType.Fish.rawValue
+    dataDict["__typename"] = AnimalSchema.ObjectType.Fish.rawValue
     data = ResponseData(data: dataDict)
     let subject = Animal(data: data)
 

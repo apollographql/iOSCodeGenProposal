@@ -1,35 +1,16 @@
-//
-//  FieldData.swift
-//  CodegenProposalFramework
-//
-//  Created by Anthony Miller on 2/17/21.
-//
-
-import Foundation
-
-protocol DataContainer {
-  var data: ResponseData { get }
-
-  init(data: ResponseData)
+enum SelectionSetType<S: GraphQLSchema> {
+  case ObjectType(S.ObjectType)
+  case Interface(S.Interface)
 }
 
-extension DataContainer {
-  func toFragment<T: SelectionSet>() -> T {
-    return T.init(data: data)
-  }
-}
+protocol SelectionSet: ResponseObject, Equatable {
 
-enum SelectionSetType {
-  case ObjectType(Schema.ObjectType)
-  case Interface(Schema.Interface)
-}
-
-protocol SelectionSet: DataContainer, Equatable {
+  associatedtype Schema: GraphQLSchema
 
   /// The GraphQL type for the `SelectionSet`.
   ///
   /// This may be a concrete type (`ConcreteType`) or an abstract type (`Interface`).
-  static var __parentType: SelectionSetType { get }
+  static var __parentType: SelectionSetType<Schema> { get }
 }
 
 extension SelectionSet {
@@ -38,8 +19,8 @@ extension SelectionSet {
 
   var __typename: String { data["__typename"] }
 
-  func asType<T: SelectionSet>() -> T? {
-    guard let __objectType = __objectType, __objectType != ._unknown else { return nil } // TODO: Unit Test
+  func asType<T: SelectionSet>() -> T? where T.Schema == Schema {
+    guard let __objectType = __objectType else { return nil } // TODO: Unit Test
     switch T.__parentType {
     case .ObjectType(let type):
       guard __objectType == type else { return nil }
@@ -55,26 +36,3 @@ func ==<T: SelectionSet>(lhs: T, rhs: T) -> Bool {
   return true // TODO: Unit test & implement this
 }
 
-struct ResponseData {
-
-  let data: [String: Any]
-
-  subscript<T: ScalarType>(_ key: String) -> T {
-    data[key] as! T
-  }
-
-  subscript<T: SelectionSet>(_ key: String) -> T {
-    let entityData = data[key] as! [String: Any]
-    return T.init(data: ResponseData(data: entityData))
-  }
-
-  subscript<T: SelectionSet>(_ key: String) -> [T] {
-    let entityData = data[key] as! [[String: Any]]
-    return entityData.map { T.init(data: ResponseData(data: $0)) }
-  }
-}
-
-protocol ScalarType {}
-extension String: ScalarType {}
-extension Int: ScalarType {}
-extension Bool: ScalarType {}
