@@ -1,37 +1,5 @@
-/// query AllAnimals {
-///   allAnimals {
-///     height {
-///       feet
-///       inches
-///     }
-///     ...HeightInMeters
-///     ...WarmBloodedDetails
-///     species
-///     ... on Pet {
-///       ...PetDetails
-///       ...WarmBloodedDetails
-///       height {
-///         centimeters
-///       }
-///     }
-///     ... on Cat {
-///       isJellicle
-///     }
-///     predators {
-///       species
-///       ... on WarmBlooded {
-///         ...WarmBloodedDetails
-///         hasFur
-///       }
-///     }
-///   }
-/// }
-///
-
 // TODO: Fragment with nested type condition
 // TODO: Figure out access control on everything
-
-// MARK: - Query Response Data Structs
 
 /// `Animal`
 struct Animal: SelectionSet, HasFragments {
@@ -176,7 +144,9 @@ struct Animal: SelectionSet, HasFragments {
       var feet: Int { data["feet"] }
       var inches: Int { data["inches"] }
       var meters: Int { data["meters"] }
-      var centimeters: Int { data["centimeters"] }
+      var centimeters: Int { data["centimeters"] } // - NOTE :
+      // Because we know that the `AsPet` is an `Animal` at this point, we can just merge the
+      // centimeters field. We don't need to create a `var asAnimal: Animal.AsPet.AsAnimal`.
     }
 
     /// `Animal.AsPet.AsWarmBlooded`

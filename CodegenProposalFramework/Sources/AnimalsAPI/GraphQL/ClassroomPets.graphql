@@ -1,0 +1,23 @@
+query ClassroomPets {
+  classroomPets {
+    ... on Animal {
+      species
+    }
+    ... on Pet {
+      humanName
+    }
+    ... on WarmBlooded {
+      hasFur
+    }
+    ... on Cat {
+      bodyTemperature
+      isJellicle
+    }
+    ... on Bird {
+      wingspan
+    }
+    ... on PetRock {
+      favoriteToy
+    }
+  }
+}

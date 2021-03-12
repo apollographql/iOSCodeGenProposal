@@ -1,6 +1,7 @@
 type Query {
   allAnimals: [Animal]
   allPets: [Pet]
+  classroomPets: [ClassroomPet]
 }
 
 interface Animal {
@@ -9,10 +10,7 @@ interface Animal {
   predators: [Animal!]!
 }
 
-interface Pet implements Animal {
-  species: String!
-  height: Height!
-  predators: [Animal!]!
+interface Pet {
   humanName: String!
   favoriteToy: String!
 }
@@ -52,9 +50,18 @@ type Bird implements Animal & Pet & WarmBlooded {
   favoriteToy: String!
   bodyTemperature: Int!
   hasFur: Boolean!
+  wingspan: Int!
 }
 
 type Fish implements Animal & Pet {
+  species: String!
+  height: Height!
+  predators: [Animal!]!
+  humanName: String!
+  favoriteToy: String!
+}
+
+type Rat implements Animal & Pet {
   species: String!
   height: Height!
   predators: [Animal!]!
@@ -68,3 +75,10 @@ type Crocodile implements Animal {
   predators: [Animal!]!
   age: Int!
 }
+
+type PetRock implements Pet {
+  humanName: String!
+  favoriteToy: String!
+}
+
+union ClassroomPet = Cat | Bird | Rat | PetRock

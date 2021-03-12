@@ -10,8 +10,10 @@ query AllAnimals {
     ... on Pet {
       ...PetDetails
       ...WarmBloodedDetails
-      height {
-        centimeters
+      ... on Animal {
+        height {
+          centimeters
+        }
       }
     }
     ... on Cat {
