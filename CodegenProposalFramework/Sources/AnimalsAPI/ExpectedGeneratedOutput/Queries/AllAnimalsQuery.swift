@@ -22,9 +22,9 @@ struct AllAnimalsQuery {
       var height: Height { data["height"] }
       var predators: [Predators] { data["predators"] }
 
-      var asCat: AsCat? { asType() }
-      var asWarmBlooded: AsWarmBlooded? { asType() }
-      var asPet: AsPet? { asType() }
+      var asCat: AsCat? { _asType() }
+      var asWarmBlooded: AsWarmBlooded? { _asType() }
+      var asPet: AsPet? { _asType() }
 
       struct Fragments: ResponseObject {
         let data: ResponseDict
@@ -53,7 +53,7 @@ struct AllAnimalsQuery {
 
         var species: String { data["species"] }
 
-        var asWarmBlooded: AsWarmBlooded? { asType() }
+        var asWarmBlooded: AsWarmBlooded? { _asType() }
 
         /// `AllAnimals.Predators.AsWarmBlooded`
         struct AsWarmBlooded: SelectionSet, HasFragments {
@@ -145,7 +145,7 @@ struct AllAnimalsQuery {
         var humanName: String { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }
 
-        var asWarmBlooded: AsWarmBlooded? { asType() }
+        var asWarmBlooded: AsWarmBlooded? { _asType() }
 
         struct Fragments: ResponseObject {
           let data: ResponseDict

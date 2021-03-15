@@ -16,12 +16,18 @@ protocol SelectionSet: ResponseObject, Equatable {
 
 extension SelectionSet {
 
-  var __objectType: Schema.ObjectType? { Schema.ObjectType(rawValue: __typename) }
+  var __objectType: Schema.ObjectType { Schema.ObjectType(rawValue: __typename) ?? .unknownCase }
 
   var __typename: String { data["__typename"] }
 
-  func asType<T: SelectionSet>() -> T? where T.Schema == Schema {
-    guard let __objectType = __objectType else { return nil } // TODO: Unit Test
+  /// Verifies if a `SelectionSet` may be converted to a different `SelectionSet` and performs
+  /// the conversion.
+  ///
+  /// - Warning: This function is not supported for use outside of generated call sites.
+  /// Generated call sites are guaranteed by the GraphQL compiler to be safe.
+  /// Unsupported usage may result in unintended consequences including crashes.
+  func _asType<T: SelectionSet>() -> T? where T.Schema == Schema {
+    guard case let __objectType = __objectType, __objectType != .unknownCase else { return nil }
 
     switch T.__parentType {
     case .ObjectType(let type):
@@ -30,8 +36,7 @@ extension SelectionSet {
     case .Interface(let interface):
       guard __objectType.implements(interface) else { return nil }
 
-    case .Union:
-      return nil // TODO: Implement and unit test this
+    default: return nil
     }
 
     return T.init(data: data)
@@ -41,4 +46,3 @@ extension SelectionSet {
 func ==<T: SelectionSet>(lhs: T, rhs: T) -> Bool {
   return true // TODO: Unit test & implement this
 }
-

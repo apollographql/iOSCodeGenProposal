@@ -21,3 +21,27 @@ query ClassroomPets {
     }
   }
 }
+
+query ClassroomPetsWithSubtypes {
+  classroomPets @generateSubtypeEnum {
+    ... on Animal {
+      species
+    }
+    ... on Pet {
+      humanName
+    }
+    ... on WarmBlooded {
+      hasFur
+    }
+    ... on Cat {
+      bodyTemperature
+      isJellicle
+    }
+    ... on Bird {
+      wingspan
+    }
+    ... on PetRock {
+      favoriteToy
+    }
+  }
+}

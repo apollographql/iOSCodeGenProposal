@@ -59,13 +59,13 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testSpecies() throws {
-    let cat = Animal(data: data)
+    let cat = AllAnimalsQuery.ResponseData.Animal(data: data)
 
     XCTAssertEqual(cat.species, "Cat")
   }
 
   func testAsTypeCondition_fieldOnTypeNested2TypeConditionsDeep() throws {
-    let subject = Animal(data: data)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
     XCTAssertEqual(subject.species, "Cat")
     XCTAssertEqual(subject.asPet?.species, "Cat")
@@ -73,7 +73,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditions_withDuplicateFieldOnParent() throws {
-    let subject = Animal(data: data)    
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
     XCTAssertEqual(subject.species, "Cat")
     XCTAssertEqual(subject.height.feet, 2)
@@ -111,7 +111,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeCondition_withFragmentsOnParent_convertToFragments() throws {
-    let subject = Animal(data: data)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
     XCTAssertEqual(subject.fragments.heightInMeters.height.meters, 10)
 
@@ -129,7 +129,7 @@ class SanityCheckTests: XCTestCase {
   func testAsTypeConditionForInterface_withConcreteTypeThatDoesNotImplementInterface() throws {
     dataDict["__typename"] = AnimalSchema.ObjectType.Fish.rawValue
     data = ResponseDict(data: dataDict)
-    let subject = Animal(data: data)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
     XCTAssertNil(subject.asWarmBlooded)
     XCTAssertNotNil(subject.asPet)
@@ -138,19 +138,19 @@ class SanityCheckTests: XCTestCase {
   func testAsTypeConditionForConcreteType_withDifferentConcreteType() throws {
     dataDict["__typename"] = AnimalSchema.ObjectType.Fish.rawValue
     data = ResponseDict(data: dataDict)
-    let subject = Animal(data: data)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
     XCTAssertNil(subject.asCat)
   }
 
   func testAsTypeConditionForConcreteType_withMatchingConcreteType() throws {
-    let subject = Animal(data: data)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
     XCTAssertNotNil(subject.asCat)
   }
 
-  func testListField() {
-    let subject = Animal(data: data)
+  func testListField() throws {
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
     let coyote = subject.predators[0]
     let crocodile = subject.predators[1]
 

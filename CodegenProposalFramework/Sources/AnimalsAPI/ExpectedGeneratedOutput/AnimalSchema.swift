@@ -4,9 +4,11 @@ struct AnimalSchema: GraphQLSchema {
   enum ObjectType: String, SchemaObjectType {
     case Bird, Cat, Coyote, Crocodile, Fish, Height, PetRock, Query, Rat, _unknown
 
+    static let unknownCase: ObjectType = ._unknown
+
     var interfaces: [Interface] {
       switch self {
-      case .Bird, .Cat:
+      case .Bird, .Cat, .Rat:
         return [.Animal, .Pet, .WarmBlooded]
       case .Coyote:
         return [.Animal, .WarmBlooded]
@@ -14,6 +16,8 @@ struct AnimalSchema: GraphQLSchema {
         return [.Animal]
       case .Fish:
         return [.Animal, .Pet]
+      case .PetRock:
+        return [.Pet]
       default:
         return []
       }

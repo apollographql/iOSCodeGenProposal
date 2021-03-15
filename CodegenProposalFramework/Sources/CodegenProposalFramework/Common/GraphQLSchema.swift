@@ -2,6 +2,9 @@ protocol SchemaTypeEnum: RawRepresentable where RawValue == String {}
 
 protocol SchemaObjectType: SchemaTypeEnum {
   associatedtype Interface
+
+  static var unknownCase: Self { get }
+
   func implements(_ interface: Interface) -> Bool
 }
 

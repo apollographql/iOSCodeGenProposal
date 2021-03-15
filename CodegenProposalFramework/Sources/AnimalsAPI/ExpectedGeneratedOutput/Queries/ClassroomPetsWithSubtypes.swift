@@ -1,6 +1,6 @@
 @testable import CodegenProposalFramework
 
-struct ClassroomPetsQuery {
+struct ClassroomPetsWithSubtypesQuery {
   let data: ResponseData
 
   struct ResponseData: SelectionSet {
@@ -20,6 +20,29 @@ struct ClassroomPetsQuery {
       var asCat: Cat? { _asType() }
       var asBird: Bird? { _asType() }
       var asPetRock: PetRock? { _asType() }
+      var asRat: Rat? { _asType() }
+
+      var subtype: SubType { SubType(data: data) }
+
+      enum SubType {
+        case bird(Bird)
+        case cat(Cat)
+        case rat(Rat)
+        case petRock(PetRock)
+        case other(ResponseDict)
+
+        init(data: ResponseDict) {
+          switch Schema.ObjectType(rawValue: data["__typename"]) {
+          case .Bird: self = .bird(Bird(data: data))
+          case .Cat: self = .cat(Cat(data: data))
+          case .Rat: self = .rat(Rat(data: data))
+          case .PetRock: self = .petRock(PetRock(data: data))
+
+          default:
+            self = .other(data)
+          }
+        }
+      }
 
       /// `ClassroomPet.AsAnimal`
       struct AsAnimal: SelectionSet {
@@ -69,6 +92,16 @@ struct ClassroomPetsQuery {
         var humanName: String { data["humanName"] }
         var hasFur: Bool { data["hasFur"] }
         var wingspan: Int { data["wingspan"] }
+      }
+
+      /// `ClassroomPet.Rat`
+      struct Rat: SelectionSet {
+        static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Rat) }
+        let data: ResponseDict
+
+        var species: String { data["species"] }
+        var humanName: String { data["humanName"] }
+        var hasFur: Bool { data["hasFur"] }
       }
 
       /// `ClassroomPet.PetRock`
