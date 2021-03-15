@@ -37,9 +37,7 @@ struct ClassroomPetsWithSubtypesQuery {
           case .Cat: self = .cat(Cat(data: data))
           case .Rat: self = .rat(Rat(data: data))
           case .PetRock: self = .petRock(PetRock(data: data))
-
-          default:
-            self = .other(data)
+          default: self = .other(data)
           }
         }
       }

@@ -1,29 +1,16 @@
 query ClassroomPets {
   classroomPets {
-    ... on Animal {
-      species
-    }
-    ... on Pet {
-      humanName
-    }
-    ... on WarmBlooded {
-      hasFur
-    }
-    ... on Cat {
-      bodyTemperature
-      isJellicle
-    }
-    ... on Bird {
-      wingspan
-    }
-    ... on PetRock {
-      favoriteToy
-    }
+    ...ClassroomPetDetails
   }
 }
 
 query ClassroomPetsWithSubtypes {
   classroomPets @generateSubtypeEnum {
+    ...ClassroomPetDetails
+  }
+}
+
+fragment ClassroomPetDetails on ClassroomPet {
     ... on Animal {
       species
     }
@@ -43,5 +30,4 @@ query ClassroomPetsWithSubtypes {
     ... on PetRock {
       favoriteToy
     }
-  }
 }
