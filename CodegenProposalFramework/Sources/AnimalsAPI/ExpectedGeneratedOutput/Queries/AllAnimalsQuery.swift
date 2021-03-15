@@ -43,7 +43,6 @@ struct AllAnimalsQuery {
         // This field is merged in from `HeightInMeters` fragment.
         // Because the fragment type identically matches the type it is queried on, we do
         // not need an optional `TypeCondition` and can merge the field up.
-        // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
       }
 
       /// `Animal.Predators`
@@ -67,7 +66,6 @@ struct AllAnimalsQuery {
           // These 2 fields are merged in from `WarmBloodedDetails` fragment.
           // Because the fragment type identically matches the type it is queried on, we do
           // not need an optional `TypeCondition` and can merge the fields up.
-          // TODO: We might be able to create something like `FieldJoiner` to make this cleaner?
 
           struct Fragments: ResponseObject {
             let data: ResponseDict
@@ -93,9 +91,22 @@ struct AllAnimalsQuery {
         var species: String { data["species"] }
         var height: Height { data["height"] }
         var predators: [Predators] { data["predators"] }
+        var humanName: String { data["humanName"] }
+        var favoriteToy: String { data["favoriteToy"] }
+        var bodyTemperature: Int { data["bodyTemperature"] }
         var isJellicle: Bool { data["isJellicle"] }
-        // TODO: Merge all fields from child types fetched at sibling level
-        // (Not just here, everywhere!)
+
+        struct Height: SelectionSet {
+          static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+          let data: ResponseDict
+
+          var feet: Int { data["feet"] }
+          var inches: Int { data["inches"] }
+          var meters: Int { data["meters"] }
+          var centimeters: Int { data["centimeters"] } // - NOTE :
+          // Because we know that the `Cat` is an `Animal` at this point, we can just merge the
+          // centimeters field. We don't need to create a `var asAnimal: Animal.AsCat.AsAnimal`.
+        }
       }
 
       // - NOTE:
