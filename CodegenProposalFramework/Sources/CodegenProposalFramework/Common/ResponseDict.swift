@@ -16,6 +16,11 @@ struct ResponseDict {
     let entityData = data[key] as! [[String: Any]]
     return entityData.map { T.init(data: ResponseDict(data: $0)) }
   }
+
+  subscript<T>(_ key: String) -> GraphQLEnum<T> {
+    let entityData = data[key] as! String
+    return GraphQLEnum(rawValue: entityData)
+  }
 }
 
 protocol ResponseObject {

@@ -45,6 +45,7 @@ class SanityCheckTests: XCTestCase {
           "species": "Crocodile",
         ]
       ],
+      "skinCovering": "FUR",
       "humanName": "Tiger Lily",
       "favoriteToy": "Shoelaces",
       "bodyTemperature": 98,
@@ -181,5 +182,62 @@ class SanityCheckTests: XCTestCase {
     XCTAssertEqual(coyote.asWarmBlooded?.laysEggs, false)
 
     XCTAssertEqual(crocodile.species, "Crocodile")
+  }
+
+  func testEnumField_withKnownValue() throws {
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertEqual(subject.skinCovering, GraphQLEnum(AnimalSchema.SkinCovering.FUR))
+    XCTAssertEqual(
+      subject.skinCovering,
+      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue)
+    )
+    XCTAssertEqual(
+      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue),
+      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue)
+    )
+    XCTAssertNotEqual(
+      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue),
+      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown("UNKNOWN")
+    )
+    XCTAssertEqual(subject.skinCovering.value, .FUR)
+    XCTAssertNotEqual(subject.skinCovering.value, .FEATHERS)
+    XCTAssertEqual(subject.skinCovering.rawValue, AnimalSchema.SkinCovering.FUR.rawValue)
+    XCTAssertTrue(subject.skinCovering == .FUR)
+    XCTAssertFalse(subject.skinCovering != .FUR)
+    XCTAssertFalse(subject.skinCovering == .FEATHERS)
+    XCTAssertTrue(subject.skinCovering != .FEATHERS)
+  }
+
+  func testEnumField_withUnknownValue() throws {
+    dataDict["skinCovering"] = "TEST_UNKNOWN"
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertNotEqual(subject.skinCovering, GraphQLEnum(AnimalSchema.SkinCovering.FUR))
+    XCTAssertNotEqual(
+      subject.skinCovering,
+      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue)
+    )
+    XCTAssertEqual(
+      subject.skinCovering,
+      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown("TEST_UNKNOWN")
+    )
+    XCTAssertNotEqual(
+      subject.skinCovering,
+      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown("OTHER_UNKNOWN")
+    )
+    XCTAssertNotEqual(
+      subject.skinCovering,
+      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue)
+    )
+
+    XCTAssertNil(subject.skinCovering.value)
+    XCTAssertEqual(subject.skinCovering.rawValue, "TEST_UNKNOWN")
+
+    XCTAssertFalse(subject.skinCovering == .FUR)
+    XCTAssertTrue(subject.skinCovering != .FUR)
+    XCTAssertFalse(subject.skinCovering == .FEATHERS)
+    XCTAssertTrue(subject.skinCovering != .FEATHERS)
   }
 }
