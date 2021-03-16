@@ -240,4 +240,20 @@ class SanityCheckTests: XCTestCase {
     XCTAssertFalse(subject.skinCovering == .FEATHERS)
     XCTAssertTrue(subject.skinCovering != .FEATHERS)
   }
+
+  func testOptionalScalarField_withNilValue() throws {
+    dataDict["humanName"] = nil
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertNil(subject.asPet?.humanName)
+  }
+
+  func testOptionalScalarField_withNullValue() throws {
+    dataDict["humanName"] = NSNull()
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertNil(subject.asPet?.humanName)
+  }
 }

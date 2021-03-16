@@ -94,7 +94,7 @@ struct AllAnimalsQuery {
         var height: Height { data["height"] }
         var predators: [Predators] { data["predators"] }
         var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
-        var humanName: String { data["humanName"] }
+        var humanName: String? { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }
         var bodyTemperature: Int { data["bodyTemperature"] }
         var isJellicle: Bool { data["isJellicle"] }
@@ -158,7 +158,7 @@ struct AllAnimalsQuery {
         var height: Height  { data["height"] }
         var predators: [Predators]  { data["predators"] }
         var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
-        var humanName: String { data["humanName"] }
+        var humanName: String? { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }
 
         var asWarmBlooded: AsWarmBlooded? { _asType() }
@@ -191,7 +191,7 @@ struct AllAnimalsQuery {
           var height: Height  { data["height"] }
           var predators: [Predators]  { data["predators"] }
           var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
-          var humanName: String { data["humanName"] }
+          var humanName: String? { data["humanName"] }
           var favoriteToy: String { data["favoriteToy"] }
           var bodyTemperature: Int { data["bodyTemperature"] }
 
@@ -225,7 +225,7 @@ struct AllAnimalsQuery {
         var height: Height { data["height"] }
         var predators: [Predators] { data["predators"] }
         var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
-        
+
         var asBird: AsBird? { _asType() }
 
         /// `Animal.AsClassroomPet.AsBird`
@@ -236,7 +236,7 @@ struct AllAnimalsQuery {
           var species: String { data["species"] }
           var height: Height { data["height"] }
           var predators: [Predators] { data["predators"] }
-          var humanName: String { data["humanName"] }
+          var humanName: String? { data["humanName"] }
           var favoriteToy: String { data["favoriteToy"] }
           var bodyTemperature: Int { data["bodyTemperature"] }
           var wingspan: Int { data["wingspan"] }

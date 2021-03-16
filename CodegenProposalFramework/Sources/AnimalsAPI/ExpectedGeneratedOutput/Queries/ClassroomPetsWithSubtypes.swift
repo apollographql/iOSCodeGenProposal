@@ -56,7 +56,7 @@ struct ClassroomPetsWithSubtypesQuery {
         let data: ResponseDict
 
         var species: String { data["species"] }
-        var humanName: String { data["humanName"] }
+        var humanName: String? { data["humanName"] }
       }
 
       /// `ClassroomPet.AsWarmBlooded`
@@ -74,7 +74,7 @@ struct ClassroomPetsWithSubtypesQuery {
         let data: ResponseDict
 
         var species: String { data["species"] }
-        var humanName: String { data["humanName"] }
+        var humanName: String? { data["humanName"] }
         var laysEggs: Bool { data["laysEggs"] }
         var bodyTemperature: Int { data["bodyTemperature"] }
         var isJellicle: Bool { data["isJellicle"] }
@@ -87,7 +87,7 @@ struct ClassroomPetsWithSubtypesQuery {
         let data: ResponseDict
 
         var species: String { data["species"] }
-        var humanName: String { data["humanName"] }
+        var humanName: String? { data["humanName"] }
         var laysEggs: Bool { data["laysEggs"] }
         var wingspan: Int { data["wingspan"] }
       }
@@ -98,7 +98,7 @@ struct ClassroomPetsWithSubtypesQuery {
         let data: ResponseDict
 
         var species: String { data["species"] }
-        var humanName: String { data["humanName"] }
+        var humanName: String? { data["humanName"] }
         var laysEggs: Bool { data["laysEggs"] }
       }
 
@@ -107,7 +107,7 @@ struct ClassroomPetsWithSubtypesQuery {
         static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.PetRock) }
         let data: ResponseDict
 
-        var humanName: String { data["humanName"] }
+        var humanName: String? { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }
       }
     }

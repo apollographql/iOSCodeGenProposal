@@ -7,6 +7,10 @@ struct ResponseDict {
     data[key] as! T
   }
 
+  subscript<T:ScalarType>(_ key: String) -> T? {
+    data[key] as? T
+  }
+
   subscript<T: SelectionSet>(_ key: String) -> T {
     let entityData = data[key] as! [String: Any]
     return T.init(data: ResponseDict(data: entityData))
