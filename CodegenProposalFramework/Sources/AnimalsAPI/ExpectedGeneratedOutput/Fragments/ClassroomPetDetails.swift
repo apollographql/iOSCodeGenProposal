@@ -9,9 +9,9 @@ struct ClassroomPetDetails: SelectionSet, Fragment {
     var asPet: AsPet? { _asType() }
     var asWarmBlooded: AsWarmBlooded? { _asType() }
 
-    var asCat: Cat? { _asType() }
-    var asBird: Bird? { _asType() }
-    var asPetRock: PetRock? { _asType() }
+    var asCat: AsCat? { _asType() }
+    var asBird: AsBird? { _asType() }
+    var asPetRock: AsPetRock? { _asType() }
 
     /// `ClassroomPet.AsAnimal`
     struct AsAnimal: SelectionSet {
@@ -39,8 +39,8 @@ struct ClassroomPetDetails: SelectionSet, Fragment {
       var hasFur: Bool { data["hasFur"] }
     }
 
-    /// `ClassroomPet.Cat`
-    struct Cat: SelectionSet {
+    /// `ClassroomPet.AsCat`
+    struct AsCat: SelectionSet {
       static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Cat) }
       let data: ResponseDict
 
@@ -51,8 +51,8 @@ struct ClassroomPetDetails: SelectionSet, Fragment {
       var isJellicle: Bool { data["isJellicle"] }
     }
 
-    /// `ClassroomPet.Bird`
-    struct Bird: SelectionSet {
+    /// `ClassroomPet.AsBird`
+    struct AsBird: SelectionSet {
       static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Bird) }
       let data: ResponseDict
 
@@ -62,8 +62,8 @@ struct ClassroomPetDetails: SelectionSet, Fragment {
       var wingspan: Int { data["wingspan"] }
     }
 
-    /// `ClassroomPet.PetRock`
-    struct PetRock: SelectionSet {
+    /// `ClassroomPet.AsPetRock`
+    struct AsPetRock: SelectionSet {
       static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.PetRock) }
       let data: ResponseDict
 

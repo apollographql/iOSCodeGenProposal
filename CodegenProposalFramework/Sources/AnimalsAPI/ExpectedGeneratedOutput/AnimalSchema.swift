@@ -6,7 +6,7 @@ struct AnimalSchema: GraphQLSchema {
 
     static let unknownCase: ObjectType = ._unknown
 
-    var interfaces: [Interface] {
+    var implementedInterfaces: [Interface] {
       switch self {
       case .Bird, .Cat, .Rat:
         return [.Animal, .Pet, .WarmBlooded]
@@ -22,17 +22,20 @@ struct AnimalSchema: GraphQLSchema {
         return []
       }
     }
-
-    func implements(_ interface: Interface) -> Bool {
-      interfaces.contains(interface)
-    }
   }
 
   enum Interface: String, SchemaTypeEnum {
     case Animal, Pet, WarmBlooded
   }
 
-  enum Union: String, SchemaTypeEnum {
+  enum Union: String, SchemaUnion {
     case ClassroomPet
+
+    var possibleTypes: [ObjectType] {
+      switch self {
+      case .ClassroomPet:
+        return [.Cat, .Bird, .Rat, .PetRock]
+      }
+    }
   }
 }

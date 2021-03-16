@@ -149,6 +149,26 @@ class SanityCheckTests: XCTestCase {
     XCTAssertNotNil(subject.asCat)
   }
 
+  func testAsTypeConditionForUnionType_withConcreteTypeMatchingAMemberType() throws {
+    dataDict["__typename"] = AnimalSchema.ObjectType.Bird.rawValue
+    dataDict["wingspan"] = 15
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    let asClassroomPet = subject.asClassroomPet
+    XCTAssertNotNil(asClassroomPet)
+    XCTAssertEqual(asClassroomPet?.asBird?.wingspan, 15)
+  }
+
+  func testAsTypeConditionForUnionType_withConcreteTypeNotMatchingAMemberType() throws {
+    dataDict["__typename"] = AnimalSchema.ObjectType.Crocodile.rawValue
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    let asClassroomPet = subject.asClassroomPet
+    XCTAssertNil(asClassroomPet)    
+  }
+
   func testListField() throws {
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
     let coyote = subject.predators[0]

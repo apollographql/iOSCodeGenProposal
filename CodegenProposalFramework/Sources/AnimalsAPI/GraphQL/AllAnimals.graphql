@@ -18,7 +18,12 @@ query AllAnimals {
     }
     ... on Cat {
       isJellicle
-    }    
+    }
+    ... on ClassroomPet {
+      ... on Bird {
+        wingspan
+      }
+    }
     predators {
       species
       ... on WarmBlooded {

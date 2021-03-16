@@ -17,26 +17,26 @@ struct ClassroomPetsWithSubtypesQuery {
       var asPet: AsPet? { _asType() }
       var asWarmBlooded: AsWarmBlooded? { _asType() }
 
-      var asCat: Cat? { _asType() }
-      var asBird: Bird? { _asType() }
-      var asPetRock: PetRock? { _asType() }
-      var asRat: Rat? { _asType() }
+      var asCat: AsCat? { _asType() }
+      var asBird: AsBird? { _asType() }
+      var asPetRock: AsPetRock? { _asType() }
+      var asRat: AsRat? { _asType() }
 
       var subtype: SubType { SubType(data: data) }
 
       enum SubType {
-        case bird(Bird)
-        case cat(Cat)
-        case rat(Rat)
-        case petRock(PetRock)
+        case bird(AsBird)
+        case cat(AsCat)
+        case rat(AsRat)
+        case petRock(AsPetRock)
         case other(ResponseDict)
 
         init(data: ResponseDict) {
           switch Schema.ObjectType(rawValue: data["__typename"]) {
-          case .Bird: self = .bird(Bird(data: data))
-          case .Cat: self = .cat(Cat(data: data))
-          case .Rat: self = .rat(Rat(data: data))
-          case .PetRock: self = .petRock(PetRock(data: data))
+          case .Bird: self = .bird(AsBird(data: data))
+          case .Cat: self = .cat(AsCat(data: data))
+          case .Rat: self = .rat(AsRat(data: data))
+          case .PetRock: self = .petRock(AsPetRock(data: data))
           default: self = .other(data)
           }
         }
@@ -68,8 +68,8 @@ struct ClassroomPetsWithSubtypesQuery {
         var hasFur: Bool { data["hasFur"] }
       }
 
-      /// `ClassroomPet.Cat`
-      struct Cat: SelectionSet {
+      /// `ClassroomPet.AsCat`
+      struct AsCat: SelectionSet {
         static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Cat) }
         let data: ResponseDict
 
@@ -81,8 +81,8 @@ struct ClassroomPetsWithSubtypesQuery {
       }
 
 
-      /// `ClassroomPet.Bird`
-      struct Bird: SelectionSet {
+      /// `ClassroomPet.AsBird`
+      struct AsBird: SelectionSet {
         static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Bird) }
         let data: ResponseDict
 
@@ -92,8 +92,8 @@ struct ClassroomPetsWithSubtypesQuery {
         var wingspan: Int { data["wingspan"] }
       }
 
-      /// `ClassroomPet.Rat`
-      struct Rat: SelectionSet {
+      /// `ClassroomPet.AsRat`
+      struct AsRat: SelectionSet {
         static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Rat) }
         let data: ResponseDict
 
@@ -102,8 +102,8 @@ struct ClassroomPetsWithSubtypesQuery {
         var hasFur: Bool { data["hasFur"] }
       }
 
-      /// `ClassroomPet.PetRock`
-      struct PetRock: SelectionSet {
+      /// `ClassroomPet.AsPetRock`
+      struct AsPetRock: SelectionSet {
         static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.PetRock) }
         let data: ResponseDict
 

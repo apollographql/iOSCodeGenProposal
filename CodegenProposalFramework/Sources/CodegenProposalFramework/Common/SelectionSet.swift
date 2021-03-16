@@ -36,7 +36,8 @@ extension SelectionSet {
     case .Interface(let interface):
       guard __objectType.implements(interface) else { return nil }
 
-    default: return nil
+    case .Union(let union):
+      guard union.possibleTypes.contains(__objectType) else { return nil }
     }
 
     return T.init(data: data)

@@ -25,6 +25,7 @@ struct AllAnimalsQuery {
       var asCat: AsCat? { _asType() }
       var asWarmBlooded: AsWarmBlooded? { _asType() }
       var asPet: AsPet? { _asType() }
+      var asClassroomPet: AsClassroomPet? { _asType() }
 
       struct Fragments: ResponseObject {
         let data: ResponseDict
@@ -207,6 +208,28 @@ struct AllAnimalsQuery {
             var centimeters: Int { data["centimeters"] }
             var yards: Int { data["yards"] }
           }
+        }
+      }
+
+      /// `Animal.AsClassroomPet`
+      struct AsClassroomPet: SelectionSet {
+        static var __parentType: SelectionSetType<AnimalSchema> { .Union(.ClassroomPet) }
+        let data: ResponseDict
+
+        var asBird: AsBird? { _asType() }
+
+        /// `Animal.AsClassroomPet.AsBird`
+        struct AsBird: SelectionSet {
+          static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Bird) }
+          let data: ResponseDict
+
+          var species: String { data["species"] }
+          var height: Height { data["height"] }
+          var predators: [Predators] { data["predators"] }
+          var humanName: String { data["humanName"] }
+          var favoriteToy: String { data["favoriteToy"] }
+          var bodyTemperature: Int { data["bodyTemperature"] }
+          var wingspan: Int { data["wingspan"] }
         }
       }
     }
