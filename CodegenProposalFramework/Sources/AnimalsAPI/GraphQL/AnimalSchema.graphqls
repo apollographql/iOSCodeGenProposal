@@ -1,14 +1,14 @@
 type Query {
-  allAnimals: [Animal]
-  allPets: [Pet]
-  classroomPets: [ClassroomPet]
+  allAnimals: [Animal!]!
+  allPets: [Pet!]!
+  classroomPets: [ClassroomPet!]!
 }
 
 interface Animal {
   species: String!
   height: Height!
   predators: [Animal!]!
-  skinCovering: SkinCovering
+  skinCovering: SkinCovering!
 }
 
 interface Pet {
@@ -21,7 +21,7 @@ interface WarmBlooded implements Animal {
   species: String!
   height: Height!
   predators: [Animal!]!
-  skinCovering: SkinCovering
+  skinCovering: SkinCovering!
   bodyTemperature: Int!
   laysEggs: Boolean!
 }
@@ -39,7 +39,7 @@ type Human implements Animal & WarmBlooded {
   species: String!
   height: Height!
   predators: [Animal!]!
-  skinCovering: SkinCovering
+  skinCovering: SkinCovering!
   bodyTemperature: Int!
   laysEggs: Boolean!
 }
@@ -48,7 +48,7 @@ type Cat implements Animal & Pet & WarmBlooded {
   species: String!
   height: Height!
   predators: [Animal!]!
-  skinCovering: SkinCovering
+  skinCovering: SkinCovering!
   humanName: String
   favoriteToy: String!
   owner: Human
@@ -61,7 +61,7 @@ type Bird implements Animal & Pet & WarmBlooded {
   species: String!
   height: Height!
   predators: [Animal!]!
-  skinCovering: SkinCovering
+  skinCovering: SkinCovering!
   humanName: String
   favoriteToy: String!
   owner: Human
@@ -74,7 +74,7 @@ type Fish implements Animal & Pet {
   species: String!
   height: Height!
   predators: [Animal!]!
-  skinCovering: SkinCovering
+  skinCovering: SkinCovering!
   humanName: String
   favoriteToy: String!
   owner: Human
@@ -84,7 +84,7 @@ type Rat implements Animal & Pet {
   species: String!
   height: Height!
   predators: [Animal!]!
-  skinCovering: SkinCovering
+  skinCovering: SkinCovering!
   humanName: String
   favoriteToy: String!
   owner: Human
@@ -94,7 +94,7 @@ type Crocodile implements Animal {
   species: String!
   height: Height!
   predators: [Animal!]!
-  skinCovering: SkinCovering
+  skinCovering: SkinCovering!
   age: Int!
 }
 
