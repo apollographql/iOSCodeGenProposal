@@ -49,7 +49,11 @@ class SanityCheckTests: XCTestCase {
       "humanName": "Tiger Lily",
       "favoriteToy": "Shoelaces",
       "bodyTemperature": 98,
-      "isJellical": true
+      "isJellical": true,
+      "owner": [
+        "__typename": "Human",
+        "firstName": "Hugh"
+      ]
     ]
 
     data = ResponseDict(data: dataDict)
@@ -241,6 +245,14 @@ class SanityCheckTests: XCTestCase {
     XCTAssertTrue(subject.skinCovering != .FEATHERS)
   }
 
+  func testOptionalScalarField_withValue() throws {
+    dataDict["humanName"] = "Anastasia"
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertEqual(subject.asPet?.humanName, "Anastasia")
+  }
+
   func testOptionalScalarField_withNilValue() throws {
     dataDict["humanName"] = nil
     data = ResponseDict(data: dataDict)
@@ -255,5 +267,32 @@ class SanityCheckTests: XCTestCase {
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
     XCTAssertNil(subject.asPet?.humanName)
+  }
+
+  func testOptionalNestedTypeField_withValue() throws {
+    dataDict["owner"] = [
+      "__typename": "Human",
+      "firstName": "Hugh"
+    ]
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertEqual(subject.asPet?.owner?.firstName, "Hugh")
+  }
+
+  func testOptionalNestedTypeField_withNilValue() throws {
+    dataDict["owner"] = nil
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertNil(subject.asPet?.owner)
+  }
+
+  func testOptionalNestedTypeField_withNullValue() throws {
+    dataDict["owner"] = NSNull()
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertNil(subject.asPet?.owner)
   }
 }

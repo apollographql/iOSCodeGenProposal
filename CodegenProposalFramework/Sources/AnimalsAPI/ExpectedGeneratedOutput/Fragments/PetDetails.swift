@@ -6,6 +6,9 @@
 /// fragment PetDetails on Pet {
 ///  humanName
 ///  favoriteToy
+///  owner {
+///    firstName
+///  }
 /// }
 /// ```
 struct PetDetails: SelectionSet, Fragment {
@@ -14,4 +17,12 @@ struct PetDetails: SelectionSet, Fragment {
 
   var humanName: String? { data["humanName"] }
   var favoriteToy: String { data["favoriteToy"] }
+  var owner: Human? { data["owner"] }
+
+  struct Human: SelectionSet {
+    static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Human) }
+    let data: ResponseDict
+
+    var firstName: String { data["firstName"] }
+  }
 }

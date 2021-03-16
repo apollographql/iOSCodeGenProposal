@@ -14,6 +14,7 @@ interface Animal {
 interface Pet {
   humanName: String
   favoriteToy: String!
+  owner: Human
 }
 
 interface WarmBlooded implements Animal {
@@ -33,6 +34,16 @@ type Height {
   yards: Int!
 }
 
+type Human implements Animal & WarmBlooded {
+  firstName: String!
+  species: String!
+  height: Height!
+  predators: [Animal!]!
+  skinCovering: SkinCovering
+  bodyTemperature: Int!
+  laysEggs: Boolean!
+}
+
 type Cat implements Animal & Pet & WarmBlooded {
   species: String!
   height: Height!
@@ -40,6 +51,7 @@ type Cat implements Animal & Pet & WarmBlooded {
   skinCovering: SkinCovering
   humanName: String
   favoriteToy: String!
+  owner: Human
   bodyTemperature: Int!
   laysEggs: Boolean!
   isJellicle: Boolean!
@@ -52,6 +64,7 @@ type Bird implements Animal & Pet & WarmBlooded {
   skinCovering: SkinCovering
   humanName: String
   favoriteToy: String!
+  owner: Human
   bodyTemperature: Int!
   laysEggs: Boolean!
   wingspan: Int!
@@ -64,6 +77,7 @@ type Fish implements Animal & Pet {
   skinCovering: SkinCovering
   humanName: String
   favoriteToy: String!
+  owner: Human
 }
 
 type Rat implements Animal & Pet {
@@ -73,6 +87,7 @@ type Rat implements Animal & Pet {
   skinCovering: SkinCovering
   humanName: String
   favoriteToy: String!
+  owner: Human
 }
 
 type Crocodile implements Animal {
@@ -86,6 +101,7 @@ type Crocodile implements Animal {
 type PetRock implements Pet {
   humanName: String
   favoriteToy: String!
+  owner: Human
 }
 
 union ClassroomPet = Cat | Bird | Rat | PetRock

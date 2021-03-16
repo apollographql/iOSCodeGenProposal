@@ -16,6 +16,11 @@ struct ResponseDict {
     return T.init(data: ResponseDict(data: entityData))
   }
 
+  subscript<T: SelectionSet>(_ key: String) -> T? {
+    guard let entityData = data[key] as? [String: Any] else { return nil }
+    return T.init(data: ResponseDict(data: entityData))
+  }
+
   subscript<T: SelectionSet>(_ key: String) -> [T] {
     let entityData = data[key] as! [[String: Any]]
     return entityData.map { T.init(data: ResponseDict(data: $0)) }

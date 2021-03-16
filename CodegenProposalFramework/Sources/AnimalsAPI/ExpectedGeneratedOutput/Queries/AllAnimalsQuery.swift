@@ -96,6 +96,9 @@ struct AllAnimalsQuery {
         var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
         var humanName: String? { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }
+        var owner: PetDetails.Human? { data["owner"] } // - NOTE:
+        // Because we don't fetch any additional fields on `owner` other than the fields fetched
+        // by the fragment, we can just use the fragments `Human` type here.
         var bodyTemperature: Int { data["bodyTemperature"] }
         var isJellicle: Bool { data["isJellicle"] }
 
@@ -160,6 +163,9 @@ struct AllAnimalsQuery {
         var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
         var humanName: String? { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }
+        var owner: PetDetails.Human? { data["owner"] } // - NOTE:
+        // Because we don't fetch any additional fields on `owner` other than the fields fetched
+        // by the fragment, we can just use the fragments `Human` type here.
 
         var asWarmBlooded: AsWarmBlooded? { _asType() }
 
@@ -179,7 +185,7 @@ struct AllAnimalsQuery {
           var meters: Int { data["meters"] }
           var centimeters: Int { data["centimeters"] } // - NOTE :
           // Because we know that the `AsPet` is an `Animal` at this point, we can just merge the
-          // centimeters field. We don't need to create a `var asAnimal: Animal.AsPet.AsAnimal`.
+          // `centimeters` field. We don't need to create a `var asAnimal: Animal.AsPet.AsAnimal`.
         }
 
         /// `Animal.AsPet.AsWarmBlooded`
@@ -193,6 +199,9 @@ struct AllAnimalsQuery {
           var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
           var humanName: String? { data["humanName"] }
           var favoriteToy: String { data["favoriteToy"] }
+          var owner: PetDetails.Human? { data["owner"] } // - NOTE:
+          // Because we don't fetch any additional fields on `owner` other than the fields fetched
+          // by the fragment, we can just use the fragments `Human` type here.
           var bodyTemperature: Int { data["bodyTemperature"] }
 
           struct Fragments: ResponseObject {
@@ -238,6 +247,9 @@ struct AllAnimalsQuery {
           var predators: [Predators] { data["predators"] }
           var humanName: String? { data["humanName"] }
           var favoriteToy: String { data["favoriteToy"] }
+          var owner: PetDetails.Human? { data["owner"] } // - NOTE:
+          // Because we don't fetch any additional fields on `owner` other than the fields fetched
+          // by the fragment, we can just use the fragments `Human` type here.
           var bodyTemperature: Int { data["bodyTemperature"] }
           var wingspan: Int { data["wingspan"] }
         }
