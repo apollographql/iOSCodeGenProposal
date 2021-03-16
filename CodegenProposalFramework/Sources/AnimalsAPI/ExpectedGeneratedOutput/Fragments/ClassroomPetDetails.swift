@@ -36,7 +36,7 @@ struct ClassroomPetDetails: SelectionSet, Fragment {
       let data: ResponseDict
 
       var species: String { data["species"] }
-      var hasFur: Bool { data["hasFur"] }
+      var laysEggs: Bool { data["laysEggs"] }
     }
 
     /// `ClassroomPet.AsCat`
@@ -46,7 +46,7 @@ struct ClassroomPetDetails: SelectionSet, Fragment {
 
       var species: String { data["species"] }
       var humanName: String { data["humanName"] }
-      var hasFur: Bool { data["hasFur"] }
+      var laysEggs: Bool { data["laysEggs"] }
       var bodyTemperature: Int { data["bodyTemperature"] }
       var isJellicle: Bool { data["isJellicle"] }
     }
@@ -58,7 +58,7 @@ struct ClassroomPetDetails: SelectionSet, Fragment {
 
       var species: String { data["species"] }
       var humanName: String { data["humanName"] }
-      var hasFur: Bool { data["hasFur"] }
+      var laysEggs: Bool { data["laysEggs"] }
       var wingspan: Int { data["wingspan"] }
     }
 

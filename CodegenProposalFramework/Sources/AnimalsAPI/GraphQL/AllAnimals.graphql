@@ -28,7 +28,7 @@ query AllAnimals {
       species
       ... on WarmBlooded {
         ...WarmBloodedDetails
-        hasFur
+        laysEggs
       }
     }
   }

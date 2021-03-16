@@ -65,7 +65,7 @@ struct ClassroomPetsWithSubtypesQuery {
         let data: ResponseDict
 
         var species: String { data["species"] }
-        var hasFur: Bool { data["hasFur"] }
+        var laysEggs: Bool { data["laysEggs"] }
       }
 
       /// `ClassroomPet.AsCat`
@@ -75,7 +75,7 @@ struct ClassroomPetsWithSubtypesQuery {
 
         var species: String { data["species"] }
         var humanName: String { data["humanName"] }
-        var hasFur: Bool { data["hasFur"] }
+        var laysEggs: Bool { data["laysEggs"] }
         var bodyTemperature: Int { data["bodyTemperature"] }
         var isJellicle: Bool { data["isJellicle"] }
       }
@@ -88,7 +88,7 @@ struct ClassroomPetsWithSubtypesQuery {
 
         var species: String { data["species"] }
         var humanName: String { data["humanName"] }
-        var hasFur: Bool { data["hasFur"] }
+        var laysEggs: Bool { data["laysEggs"] }
         var wingspan: Int { data["wingspan"] }
       }
 
@@ -99,7 +99,7 @@ struct ClassroomPetsWithSubtypesQuery {
 
         var species: String { data["species"] }
         var humanName: String { data["humanName"] }
-        var hasFur: Bool { data["hasFur"] }
+        var laysEggs: Bool { data["laysEggs"] }
       }
 
       /// `ClassroomPet.AsPetRock`

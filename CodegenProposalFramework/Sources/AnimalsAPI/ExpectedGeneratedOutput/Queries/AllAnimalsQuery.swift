@@ -62,7 +62,7 @@ struct AllAnimalsQuery {
 
           var bodyTemperature: Int { data["bodyTemperature"] }
           var height: Height { data["height"] }
-          var hasFur: Bool { data["hasFur"] }
+          var laysEggs: Bool { data["laysEggs"] }
           // - NOTE:
           // These 2 fields are merged in from `WarmBloodedDetails` fragment.
           // Because the fragment type identically matches the type it is queried on, we do

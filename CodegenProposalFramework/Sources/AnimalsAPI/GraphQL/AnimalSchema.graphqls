@@ -8,6 +8,7 @@ interface Animal {
   species: String!
   height: Height!
   predators: [Animal!]!
+  skinCovering: SkinCovering
 }
 
 interface Pet {
@@ -19,8 +20,9 @@ interface WarmBlooded implements Animal {
   species: String!
   height: Height!
   predators: [Animal!]!
+  skinCovering: SkinCovering
   bodyTemperature: Int!
-  hasFur: Boolean!
+  laysEggs: Boolean!
 }
 
 type Height {
@@ -35,10 +37,11 @@ type Cat implements Animal & Pet & WarmBlooded {
   species: String!
   height: Height!
   predators: [Animal!]!
+  skinCovering: SkinCovering
   humanName: String!
   favoriteToy: String!
   bodyTemperature: Int!
-  hasFur: Boolean!
+  laysEggs: Boolean!
   isJellicle: Boolean!
 }
 
@@ -46,10 +49,11 @@ type Bird implements Animal & Pet & WarmBlooded {
   species: String!
   height: Height!
   predators: [Animal!]!
+  skinCovering: SkinCovering
   humanName: String!
   favoriteToy: String!
   bodyTemperature: Int!
-  hasFur: Boolean!
+  laysEggs: Boolean!
   wingspan: Int!
 }
 
@@ -57,6 +61,7 @@ type Fish implements Animal & Pet {
   species: String!
   height: Height!
   predators: [Animal!]!
+  skinCovering: SkinCovering
   humanName: String!
   favoriteToy: String!
 }
@@ -65,6 +70,7 @@ type Rat implements Animal & Pet {
   species: String!
   height: Height!
   predators: [Animal!]!
+  skinCovering: SkinCovering
   humanName: String!
   favoriteToy: String!
 }
@@ -73,6 +79,7 @@ type Crocodile implements Animal {
   species: String!
   height: Height!
   predators: [Animal!]!
+  skinCovering: SkinCovering
   age: Int!
 }
 
@@ -82,3 +89,11 @@ type PetRock implements Pet {
 }
 
 union ClassroomPet = Cat | Bird | Rat | PetRock
+
+enum SkinCovering {
+  FUR
+  HAIR
+  FEATHERS
+  SCALES
+  NONE
+}

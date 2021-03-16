@@ -38,7 +38,7 @@ class SanityCheckTests: XCTestCase {
             "meters": 3,
             "yards": 1
           ],
-          "hasFur": true
+          "laysEggs": false
         ],
         [
           "__typename": "Crocodile",
@@ -178,9 +178,8 @@ class SanityCheckTests: XCTestCase {
     XCTAssertEqual(coyote.asWarmBlooded?.bodyTemperature, 96)
     XCTAssertEqual(coyote.asWarmBlooded?.height.meters, 3)
     XCTAssertEqual(coyote.asWarmBlooded?.height.yards, 1)
-    XCTAssertEqual(coyote.asWarmBlooded?.hasFur, true)
+    XCTAssertEqual(coyote.asWarmBlooded?.laysEggs, false)
 
     XCTAssertEqual(crocodile.species, "Crocodile")
   }
-
 }
