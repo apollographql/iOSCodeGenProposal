@@ -13,6 +13,7 @@ query AllAnimals {
       ...WarmBloodedDetails
       ... on Animal {
         height {
+          relativeSize
           centimeters
         }
       }

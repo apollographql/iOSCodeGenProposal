@@ -25,6 +25,7 @@ class SanityCheckTests: XCTestCase {
         "feet": 2,
         "inches": 7,
         "meters": 10,
+        "relativeSize": "SMALL",
         "centimeters": 1000,
         "yards": 3
       ],
@@ -100,6 +101,7 @@ class SanityCheckTests: XCTestCase {
     XCTAssertEqual(subject.asPet?.height.meters, 10)
     XCTAssertEqual(subject.asPet?.predators.count, 2)
     XCTAssertEqual(subject.asPet?.height.centimeters, 1000)
+    XCTAssertEqual(subject.asPet?.height.relativeSize, .case(.SMALL))
     XCTAssertEqual(subject.asPet?.humanName, "Tiger Lily")
     XCTAssertEqual(subject.asPet?.favoriteToy, "Shoelaces")
 

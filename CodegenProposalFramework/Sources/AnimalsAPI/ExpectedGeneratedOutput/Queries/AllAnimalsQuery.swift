@@ -109,9 +109,11 @@ struct AllAnimalsQuery {
           var feet: Int { data["feet"] }
           var inches: Int { data["inches"] }
           var meters: Int { data["meters"] }
-          var centimeters: Int { data["centimeters"] } // - NOTE :
+          var centimeters: Int { data["centimeters"] }
+          var relativeSize: GraphQLEnum<Schema.RelativeSize> { data["relativeSize"] }
+          // - NOTE :
           // Because we know that the `Cat` is an `Animal` at this point, we can just merge the
-          // centimeters field. We don't need to create a `var asAnimal: Animal.AsCat.AsAnimal`.
+          // centimeters and relativeSize fields. We don't need to create a `var asAnimal: Animal.AsCat.AsAnimal`.
         }
       }
 
@@ -183,9 +185,12 @@ struct AllAnimalsQuery {
           var feet: Int { data["feet"] }
           var inches: Int { data["inches"] }
           var meters: Int { data["meters"] }
-          var centimeters: Int { data["centimeters"] } // - NOTE :
+          var centimeters: Int { data["centimeters"] }
+          var relativeSize: GraphQLEnum<Schema.RelativeSize> { data["relativeSize"] }
+          // - NOTE :
           // Because we know that the `AsPet` is an `Animal` at this point, we can just merge the
-          // `centimeters` field. We don't need to create a `var asAnimal: Animal.AsPet.AsAnimal`.
+          // `centimeters` and `relativeSize` fields.
+          // We don't need to create a `var asAnimal: Animal.AsPet.AsAnimal`.
         }
 
         /// `Animal.AsPet.AsWarmBlooded`
@@ -220,6 +225,7 @@ struct AllAnimalsQuery {
             var inches: Int { data["inches"] }
             var meters: Int { data["meters"] }
             var centimeters: Int { data["centimeters"] }
+            var relativeSize: GraphQLEnum<Schema.RelativeSize> { data["relativeSize"] }
             var yards: Int { data["yards"] }
           }
         }
@@ -252,6 +258,17 @@ struct AllAnimalsQuery {
           // by the fragment, we can just use the fragments `Human` type here.
           var bodyTemperature: Int { data["bodyTemperature"] }
           var wingspan: Int { data["wingspan"] }
+
+          struct Height: SelectionSet {
+            static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+            let data: ResponseDict
+
+            var feet: Int { data["feet"] }
+            var inches: Int { data["inches"] }
+            var meters: Int { data["meters"] }
+            var centimeters: Int { data["centimeters"] }
+            var relativeSize: GraphQLEnum<Schema.RelativeSize> { data["relativeSize"] }            
+          }
         }
       }
     }

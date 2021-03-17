@@ -27,6 +27,7 @@ interface WarmBlooded implements Animal {
 }
 
 type Height {
+  relativeSize: RelativeSize!
   centimeters: Int!
   meters: Int!
   feet: Int!
@@ -105,6 +106,12 @@ type PetRock implements Pet {
 }
 
 union ClassroomPet = Cat | Bird | Rat | PetRock
+
+enum RelativeSize {
+  LARGE
+  AVERAGE
+  SMALL
+}
 
 enum SkinCovering {
   FUR
