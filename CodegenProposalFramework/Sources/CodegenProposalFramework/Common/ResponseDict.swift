@@ -30,6 +30,11 @@ struct ResponseDict {
     let entityData = data[key] as! String
     return GraphQLEnum(rawValue: entityData)
   }
+
+  subscript<T>(_ key: String) -> GraphQLEnum<T>? {
+    guard let entityData = data[key] as? String else { return nil }
+    return GraphQLEnum(rawValue: entityData)
+  }
 }
 
 protocol ResponseObject {

@@ -206,13 +206,13 @@ class SanityCheckTests: XCTestCase {
       GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue),
       GraphQLEnum<AnimalSchema.SkinCovering>.__unknown("UNKNOWN")
     )
-    XCTAssertEqual(subject.skinCovering.value, .FUR)
-    XCTAssertNotEqual(subject.skinCovering.value, .FEATHERS)
-    XCTAssertEqual(subject.skinCovering.rawValue, AnimalSchema.SkinCovering.FUR.rawValue)
-    XCTAssertTrue(subject.skinCovering == .FUR)
-    XCTAssertFalse(subject.skinCovering != .FUR)
-    XCTAssertFalse(subject.skinCovering == .FEATHERS)
-    XCTAssertTrue(subject.skinCovering != .FEATHERS)
+    XCTAssertEqual(subject.skinCovering?.value, .FUR)
+    XCTAssertNotEqual(subject.skinCovering?.value, .FEATHERS)
+    XCTAssertEqual(subject.skinCovering?.rawValue, AnimalSchema.SkinCovering.FUR.rawValue)
+    XCTAssertTrue(subject.skinCovering! == .FUR)
+    XCTAssertFalse(subject.skinCovering! != .FUR)
+    XCTAssertFalse(subject.skinCovering! == .FEATHERS)
+    XCTAssertTrue(subject.skinCovering! != .FEATHERS)
   }
 
   func testEnumField_withUnknownValue() throws {
@@ -238,13 +238,13 @@ class SanityCheckTests: XCTestCase {
       GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue)
     )
 
-    XCTAssertNil(subject.skinCovering.value)
-    XCTAssertEqual(subject.skinCovering.rawValue, "TEST_UNKNOWN")
+    XCTAssertNil(subject.skinCovering?.value)
+    XCTAssertEqual(subject.skinCovering?.rawValue, "TEST_UNKNOWN")
 
-    XCTAssertFalse(subject.skinCovering == .FUR)
-    XCTAssertTrue(subject.skinCovering != .FUR)
-    XCTAssertFalse(subject.skinCovering == .FEATHERS)
-    XCTAssertTrue(subject.skinCovering != .FEATHERS)
+    XCTAssertFalse(subject.skinCovering! == .FUR)
+    XCTAssertTrue(subject.skinCovering! != .FUR)
+    XCTAssertFalse(subject.skinCovering! == .FEATHERS)
+    XCTAssertTrue(subject.skinCovering! != .FEATHERS)
   }
 
   func testOptionalScalarField_withValue() throws {
@@ -296,5 +296,29 @@ class SanityCheckTests: XCTestCase {
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
     XCTAssertNil(subject.asPet?.owner)
+  }
+
+  func testOptionalEnumField_withValue() throws {
+    dataDict["skinCovering"] = "FUR"
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertEqual(subject.skinCovering, GraphQLEnum(AnimalSchema.SkinCovering.FUR))
+  }
+
+  func testOptionalEnumField_withNilValue() throws {
+    dataDict["skinCovering"] = nil
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertNil(subject.skinCovering)
+  }
+
+  func testOptionalEnumField_withNullValue() throws {
+    dataDict["skinCovering"] = NSNull()
+    data = ResponseDict(data: dataDict)
+    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+
+    XCTAssertNil(subject.skinCovering)
   }
 }

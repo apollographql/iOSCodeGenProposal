@@ -21,7 +21,7 @@ struct AllAnimalsQuery {
       var species: String { data["species"] }
       var height: Height { data["height"] }
       var predators: [Predators] { data["predators"] }
-      var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
+      var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
 
       var asCat: AsCat? { _asType() }
       var asWarmBlooded: AsWarmBlooded? { _asType() }
@@ -93,7 +93,7 @@ struct AllAnimalsQuery {
         var species: String { data["species"] }
         var height: Height { data["height"] }
         var predators: [Predators] { data["predators"] }
-        var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
+        var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
         var humanName: String? { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }
         var owner: PetDetails.Human? { data["owner"] } // - NOTE:
@@ -133,7 +133,7 @@ struct AllAnimalsQuery {
         var species: String { data["species"] }
         var height: Height  { data["height"] }
         var predators: [Predators]  { data["predators"] }
-        var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
+        var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
         var bodyTemperature: Int { data["bodyTemperature"] }
 
         struct Fragments: ResponseObject {
@@ -162,7 +162,7 @@ struct AllAnimalsQuery {
         var species: String { data["species"] }
         var height: Height  { data["height"] }
         var predators: [Predators]  { data["predators"] }
-        var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
+        var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
         var humanName: String? { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }
         var owner: PetDetails.Human? { data["owner"] } // - NOTE:
@@ -201,7 +201,7 @@ struct AllAnimalsQuery {
           var species: String { data["species"] }
           var height: Height  { data["height"] }
           var predators: [Predators]  { data["predators"] }
-          var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
+          var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
           var humanName: String? { data["humanName"] }
           var favoriteToy: String { data["favoriteToy"] }
           var owner: PetDetails.Human? { data["owner"] } // - NOTE:
@@ -239,7 +239,7 @@ struct AllAnimalsQuery {
         var species: String { data["species"] }
         var height: Height { data["height"] }
         var predators: [Predators] { data["predators"] }
-        var skinCovering: GraphQLEnum<Schema.SkinCovering> { data["skinCovering"] }
+        var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
 
         var asBird: AsBird? { _asType() }
 
@@ -251,6 +251,7 @@ struct AllAnimalsQuery {
           var species: String { data["species"] }
           var height: Height { data["height"] }
           var predators: [Predators] { data["predators"] }
+          var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
           var humanName: String? { data["humanName"] }
           var favoriteToy: String { data["favoriteToy"] }
           var owner: PetDetails.Human? { data["owner"] } // - NOTE:
@@ -267,7 +268,7 @@ struct AllAnimalsQuery {
             var inches: Int { data["inches"] }
             var meters: Int { data["meters"] }
             var centimeters: Int { data["centimeters"] }
-            var relativeSize: GraphQLEnum<Schema.RelativeSize> { data["relativeSize"] }            
+            var relativeSize: GraphQLEnum<Schema.RelativeSize> { data["relativeSize"] }
           }
         }
       }

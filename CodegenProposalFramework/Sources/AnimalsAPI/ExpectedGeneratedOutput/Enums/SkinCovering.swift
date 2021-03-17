@@ -3,7 +3,6 @@ extension AnimalSchema {
     case FUR
     case HAIR
     case FEATHERS
-    case SCALES
-    case NONE
+    case SCALES    
   }
 }
