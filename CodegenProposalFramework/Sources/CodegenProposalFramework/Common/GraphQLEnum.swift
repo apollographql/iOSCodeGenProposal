@@ -48,14 +48,6 @@ where T: RawRepresentable & CaseIterable, T.RawValue == String {
   }
 }
 
-func ~=<T>(lhs: T, rhs: GraphQLEnum<T>) -> Bool {
-  switch rhs {
-  case let .case(rhs) where rhs == lhs: return true
-  case let .__unknown(rhsRawValue) where rhsRawValue == lhs.rawValue: return true
-  default: return false
-  }
-}
-
 /// Equatable
 extension GraphQLEnum {
   static func ==(lhs: GraphQLEnum<T>, rhs: GraphQLEnum<T>) -> Bool {
@@ -79,4 +71,12 @@ where T.RawValue == String {
 func !=<T: RawRepresentable & CaseIterable>(lhs: GraphQLEnum<T>?, rhs: T) -> Bool
 where T.RawValue == String {
   return lhs?.rawValue != rhs.rawValue
+}
+
+func ~=<T>(lhs: T, rhs: GraphQLEnum<T>) -> Bool {
+  switch rhs {
+  case let .case(rhs) where rhs == lhs: return true
+  case let .__unknown(rhsRawValue) where rhsRawValue == lhs.rawValue: return true
+  default: return false
+  }
 }
