@@ -44,7 +44,13 @@ protocol ResponseObject {
 }
 
 extension ResponseObject {
-  func toFragment<T: SelectionSet>() -> T {
+
+  /// Converts a `SelectionSet` to a `Fragment` given a generic fragment type.
+  ///
+  /// - Warning: This function is not supported for use outside of generated call sites.
+  /// Generated call sites are guaranteed by the GraphQL compiler to be safe.
+  /// Unsupported usage may result in unintended consequences including crashes.
+  func _toFragment<T: Fragment>() -> T {
     return T.init(data: data)
   }
 }

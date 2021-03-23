@@ -31,7 +31,7 @@ struct AllAnimalsQuery {
       struct Fragments: ResponseObject {
         let data: ResponseDict
 
-        var heightInMeters: HeightInMeters { toFragment() }
+        var heightInMeters: HeightInMeters { _toFragment() }
       }
 
       /// `Animal.Height`
@@ -72,7 +72,7 @@ struct AllAnimalsQuery {
           struct Fragments: ResponseObject {
             let data: ResponseDict
 
-            var warmBloodedDetails: WarmBloodedDetails { toFragment() }
+            var warmBloodedDetails: WarmBloodedDetails { _toFragment() }
           }
 
           struct Height: SelectionSet {
@@ -139,8 +139,8 @@ struct AllAnimalsQuery {
         struct Fragments: ResponseObject {
           let data: ResponseDict
 
-          var heightInMeters: HeightInMeters { toFragment() }
-          var warmBloodedDetails: WarmBloodedDetails  { toFragment() }
+          var heightInMeters: HeightInMeters { _toFragment() }
+          var warmBloodedDetails: WarmBloodedDetails  { _toFragment() }
         }
 
         struct Height: SelectionSet {
@@ -174,8 +174,8 @@ struct AllAnimalsQuery {
         struct Fragments: ResponseObject {
           let data: ResponseDict
 
-          var heightInMeters: HeightInMeters { toFragment() }
-          var petDetails: PetDetails  { toFragment() }
+          var heightInMeters: HeightInMeters { _toFragment() }
+          var petDetails: PetDetails  { _toFragment() }
         }
 
         struct Height: SelectionSet {
@@ -212,9 +212,9 @@ struct AllAnimalsQuery {
           struct Fragments: ResponseObject {
             let data: ResponseDict
 
-            var heightInMeters: HeightInMeters { toFragment() }
-            var petDetails: PetDetails  { toFragment() }
-            var warmBloodedDetails: WarmBloodedDetails  { toFragment() }
+            var heightInMeters: HeightInMeters { _toFragment() }
+            var petDetails: PetDetails  { _toFragment() }
+            var warmBloodedDetails: WarmBloodedDetails  { _toFragment() }
           }
 
           struct Height: SelectionSet {
