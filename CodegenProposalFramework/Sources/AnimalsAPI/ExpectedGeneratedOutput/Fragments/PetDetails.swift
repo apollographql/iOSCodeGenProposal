@@ -11,7 +11,7 @@
 ///  }
 /// }
 /// ```
-struct PetDetails: SelectionSet, Fragment {
+struct PetDetails: SelectionSet {
   static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Pet) }
   let data: ResponseDict
 

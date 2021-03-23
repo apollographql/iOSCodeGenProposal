@@ -11,7 +11,7 @@
 ///   }
 /// }
 /// ```
-struct WarmBloodedDetails: SelectionSet, Fragment {
+struct WarmBloodedDetails: SelectionSet {
   static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.WarmBlooded) }
 
   let data: ResponseDict

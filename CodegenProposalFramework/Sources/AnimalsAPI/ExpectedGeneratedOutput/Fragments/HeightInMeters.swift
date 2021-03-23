@@ -9,7 +9,7 @@
 ///   }
 /// }
 /// ```
-struct HeightInMeters: SelectionSet, Fragment {
+struct HeightInMeters: SelectionSet {
   static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Animal) }
   let data: ResponseDict
 

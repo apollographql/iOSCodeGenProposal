@@ -1,7 +1,7 @@
 @testable import CodegenProposalFramework
 
 /// A response data object for a `ClassroomPetDetails` fragment
-struct ClassroomPetDetails: SelectionSet, Fragment {
+struct ClassroomPetDetails: SelectionSet {
   static var __parentType: SelectionSetType<AnimalSchema> { .Union(.ClassroomPet) }
   let data: ResponseDict
 

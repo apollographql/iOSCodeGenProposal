@@ -1,10 +1,3 @@
-//
-//  Tests_iOS.swift
-//  Tests iOS
-//
-//  Created by Anthony Miller on 1/25/21.
-//
-
 import XCTest
 @testable import CodegenProposalFramework
 @testable import AnimalsAPI
