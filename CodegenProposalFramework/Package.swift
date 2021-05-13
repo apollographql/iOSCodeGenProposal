@@ -15,8 +15,8 @@ let package = Package(
   ],
   dependencies: [
     .package(name: "Apollo",
-             url: "https://github.com/apollographql/apollo-ios.git",             
-             .branch("new-codegen-frontend")),
+             url: "https://github.com/apollographql/apollo-ios.git",
+             .upToNextMajor(from: "0.41.0")),
   ],
   targets: [
     .target(

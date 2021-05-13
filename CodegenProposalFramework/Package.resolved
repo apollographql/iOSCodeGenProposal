@@ -5,9 +5,9 @@
         "package": "Apollo",
         "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
         "state": {
-          "branch": "new-codegen-frontend",
-          "revision": "1def967b0a398096a3dde506df9ee5e0b96ab127",
-          "version": null
+          "branch": null,
+          "revision": "d41efb5e670ccc064e636f9b6f6def3abe517e79",
+          "version": "0.42.0"
         }
       },
       {

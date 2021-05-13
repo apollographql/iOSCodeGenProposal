@@ -1,10 +1,10 @@
-enum SelectionSetType<S: GraphQLSchema> {
+public enum SelectionSetType<S: GraphQLSchema> {
   case ObjectType(S.ObjectType)
   case Interface(S.Interface)
   case Union(S.Union)
 }
 
-protocol SelectionSet: ResponseObject, Equatable {
+public protocol SelectionSet: ResponseObject {
 
   associatedtype Schema: GraphQLSchema
 
@@ -44,6 +44,20 @@ extension SelectionSet {
   }
 }
 
-func ==<T: SelectionSet>(lhs: T, rhs: T) -> Bool {
-  return true // TODO: Unit test & implement this
+public protocol ResponseObject {
+  var data: ResponseDict { get }
+
+  init(data: ResponseDict)
+}
+
+extension ResponseObject {
+
+  /// Converts a `SelectionSet` to a `Fragment` given a generic fragment type.
+  ///
+  /// - Warning: This function is not supported for use outside of generated call sites.
+  /// Generated call sites are guaranteed by the GraphQL compiler to be safe.
+  /// Unsupported usage may result in unintended consequences including crashes.
+  func _toFragment<T: Fragment>() -> T {
+    return T.init(data: data)
+  }
 }

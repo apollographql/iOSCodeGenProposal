@@ -13,12 +13,12 @@
 /// any `Fragment` included in it's `Fragments` object via its `fragments` property.
 ///
 /// - SeeAlso: `HasFragments`, `ToFragments`
-protocol Fragment: SelectionSet { }
+public protocol Fragment: SelectionSet { }
 
 // MARK: - HasFragments
 
 /// A protocol that a `ResponseObject` that contains fragments should conform to.
-protocol HasFragments: SelectionSet {
+public protocol HasFragments: SelectionSet {
 
   /// A type representing all of the fragments contained on the `ResponseObject`.
   associatedtype Fragments: ResponseObject

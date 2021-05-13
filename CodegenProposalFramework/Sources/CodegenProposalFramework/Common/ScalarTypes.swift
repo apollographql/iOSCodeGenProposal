@@ -1,4 +1,4 @@
-protocol ScalarType {}
+public protocol ScalarType {}
 
 extension String: ScalarType {}
 extension Int: ScalarType {}

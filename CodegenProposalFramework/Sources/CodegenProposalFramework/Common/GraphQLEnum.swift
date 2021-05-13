@@ -3,7 +3,7 @@
 /// `GraphQLEnum` provides an `__unknown` case that is used when the response returns a value that
 /// is not recognized as a valid enum case. This is usually caused by future cases added to the enum
 /// on the schema after code generation.
-enum GraphQLEnum<T>: CaseIterable, Equatable, RawRepresentable
+public enum GraphQLEnum<T>: CaseIterable, Equatable, RawRepresentable
 where T: RawRepresentable & CaseIterable, T.RawValue == String {
   public typealias RawValue = String
 
@@ -14,11 +14,11 @@ where T: RawRepresentable & CaseIterable, T.RawValue == String {
   /// The associated value exposes the raw `String` data from the response.
   case __unknown(String)
 
-  init(_ caseValue: T) {
+  public init(_ caseValue: T) {
     self = .case(caseValue)
   }
 
-  init(rawValue: String) {
+  public init(rawValue: String) {
     guard let caseValue = T(rawValue: rawValue) else {
       self = .__unknown(rawValue)
       return
@@ -27,14 +27,14 @@ where T: RawRepresentable & CaseIterable, T.RawValue == String {
   }
 
   /// The underlying enum case. If the value is `__unknown`, this will be `nil`.
-  var value: T? {
+  public var value: T? {
     switch self {
     case .case(let value): return value
     default: return nil
     }
   }
 
-  var rawValue: String {
+  public var rawValue: String {
     switch self {
     case .case(let value): return value.rawValue
     case .__unknown(let value): return value
@@ -43,37 +43,37 @@ where T: RawRepresentable & CaseIterable, T.RawValue == String {
 
   /// A collection of all known values of the wrapped enum.
   /// This collection does not include the `__unknown` case.
-  static var allCases: [GraphQLEnum<T>] {
+  public static var allCases: [GraphQLEnum<T>] {
     return T.allCases.map { .case($0) }
   }
 }
 
 /// Equatable
 extension GraphQLEnum {
-  static func ==(lhs: GraphQLEnum<T>, rhs: GraphQLEnum<T>) -> Bool {
+  public static func ==(lhs: GraphQLEnum<T>, rhs: GraphQLEnum<T>) -> Bool {
     return lhs.rawValue == rhs.rawValue
   }
 
-  static func ==(lhs: GraphQLEnum<T>, rhs: T) -> Bool {
+  public static func ==(lhs: GraphQLEnum<T>, rhs: T) -> Bool {
     return lhs.rawValue == rhs.rawValue
   }
 
-  static func !=(lhs: GraphQLEnum<T>, rhs: T) -> Bool {
+  public static func !=(lhs: GraphQLEnum<T>, rhs: T) -> Bool {
     return lhs.rawValue != rhs.rawValue
   }
 }
 
-func ==<T: RawRepresentable & CaseIterable>(lhs: GraphQLEnum<T>?, rhs: T) -> Bool
+public func ==<T: RawRepresentable & CaseIterable>(lhs: GraphQLEnum<T>?, rhs: T) -> Bool
 where T.RawValue == String {
   return lhs?.rawValue == rhs.rawValue
 }
 
-func !=<T: RawRepresentable & CaseIterable>(lhs: GraphQLEnum<T>?, rhs: T) -> Bool
+public func !=<T: RawRepresentable & CaseIterable>(lhs: GraphQLEnum<T>?, rhs: T) -> Bool
 where T.RawValue == String {
   return lhs?.rawValue != rhs.rawValue
 }
 
-func ~=<T>(lhs: T, rhs: GraphQLEnum<T>) -> Bool {
+public func ~=<T>(lhs: T, rhs: GraphQLEnum<T>) -> Bool {
   switch rhs {
   case let .case(rhs) where rhs == lhs: return true
   case let .__unknown(rhsRawValue) where rhsRawValue == lhs.rawValue: return true
