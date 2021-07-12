@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
         "state": {
           "branch": null,
-          "revision": "d41efb5e670ccc064e636f9b6f6def3abe517e79",
-          "version": "0.42.0"
+          "revision": "84e28febb0a6cc3b4b08968c0d7043afd288004e",
+          "version": "0.45.0"
         }
       },
       {
@@ -48,11 +48,11 @@
       },
       {
         "package": "Starscream",
-        "repositoryURL": "https://github.com/daltoniam/Starscream",
+        "repositoryURL": "https://github.com/apollographql/Starscream",
         "state": {
           "branch": null,
-          "revision": "df8d82047f6654d8e4b655d1b1525c64e1059d21",
-          "version": "4.0.4"
+          "revision": "8cf77babe5901693396436f4f418a6db0f328b78",
+          "version": "3.1.2"
         }
       },
       {
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/stencilproject/Stencil.git",
         "state": {
           "branch": null,
-          "revision": "94197b3adbbf926348ad8765476a158aa4e54f8a",
-          "version": "0.14.0"
+          "revision": "973e190edf5d09274e4a6bc2e636c86899ed84c3",
+          "version": "0.14.1"
         }
       }
     ]
