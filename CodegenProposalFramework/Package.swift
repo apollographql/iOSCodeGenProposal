@@ -38,8 +38,12 @@ let package = Package(
     ),
     .target(
       name: "AnimalsAPI",
-      dependencies: ["CodegenProposalFramework"],
+      dependencies: ["AnimalSchema", "CodegenProposalFramework"],
       resources: [.process("GraphQL")]
+    ),
+    .target(
+      name: "AnimalSchema",
+      dependencies: ["CodegenProposalFramework"]
     ),
     .testTarget(
       name: "CodegenProposalFrameworkTests",

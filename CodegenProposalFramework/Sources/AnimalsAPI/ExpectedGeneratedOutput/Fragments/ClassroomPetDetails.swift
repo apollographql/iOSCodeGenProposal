@@ -1,4 +1,5 @@
 @testable import CodegenProposalFramework
+import AnimalSchema
 
 /// A response data object for a `ClassroomPetDetails` fragment
 struct ClassroomPetDetails: SelectionSet, Fragment {

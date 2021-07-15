@@ -1,4 +1,5 @@
 @testable import CodegenProposalFramework
+import AnimalSchema
 
 struct ClassroomPetsWithSubtypesQuery {
   let data: ResponseData
