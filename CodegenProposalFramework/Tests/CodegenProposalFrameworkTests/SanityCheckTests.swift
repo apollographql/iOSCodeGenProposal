@@ -322,4 +322,19 @@ class SanityCheckTests: XCTestCase {
 
     XCTAssertNil(subject.skinCovering)
   }
+
+  func test_birdPredatorsCovariance() throws {
+    let bird = Bird()
+    bird.predators = [Bird(), Bird()]
+    print(bird.predators)
+    XCTAssertEqual(bird.predators.count, 2)
+
+    let animal: Animal = bird
+    print(animal.predators)
+    XCTAssertEqual(animal.predators.count, 2)
+
+    let pet: Pet = bird
+    print(pet.predators)
+    XCTAssertEqual(pet.predators.count, 2)
+  }
 }
