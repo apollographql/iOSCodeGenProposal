@@ -25,6 +25,7 @@ interface HousePet implements Animal & Pet {
   humanName: String
   favoriteToy: String!
   owner: Human
+  bestFriend: Pet
 }
 
 interface WarmBlooded implements Animal {
@@ -78,6 +79,7 @@ type Dog implements Animal & Pet & HousePet & WarmBlooded {
   owner: Human
   bodyTemperature: Int!
   laysEggs: Boolean!
+  bestFriend: HousePet
 }
 
 type Bird implements Animal & Pet & WarmBlooded {

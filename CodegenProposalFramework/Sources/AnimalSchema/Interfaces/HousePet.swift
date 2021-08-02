@@ -1,6 +1,6 @@
 import CodegenProposalFramework
 
-protocol HousePet: Animal {
+protocol HousePet: Animal, Pet {
   var species: String? { get }
   var height: Height? { get }
   var predators: [HousePet] { get }
@@ -10,4 +10,5 @@ protocol HousePet: Animal {
   var owner: Human? { get }
   var bodyTemperature: Int? { get }
   var laysEggs: Bool? { get }
+  var bestFriend: Pet? { get }
 }

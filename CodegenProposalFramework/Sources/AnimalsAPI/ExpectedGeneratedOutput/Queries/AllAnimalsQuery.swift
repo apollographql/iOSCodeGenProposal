@@ -1,5 +1,7 @@
 @testable import CodegenProposalFramework
 import AnimalSchema
+@_exported import enum AnimalSchema.SkinCovering
+@_exported import enum AnimalSchema.RelativeSize
 
 // TODO: Fragment with nested type condition
 // TODO: Figure out access control on everything

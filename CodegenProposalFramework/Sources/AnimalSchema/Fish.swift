@@ -1,11 +1,11 @@
 import CodegenProposalFramework
 
-public final class Fish: Animal, Pet, CacheEntity {
-  @CacheField var species: String?
-  @CacheField var height: Height?
+public final class Fish: CacheEntity, Animal, Pet {
   @CacheList var predators: [Animal]
-  @CacheField var skinCovering: GraphQLEnum<SkinCovering>?
-  @CacheField var humanName: String?
-  @CacheField var favoriteToy: String?
-  @CacheField var owner: Human?
+  @CacheField("species") var species: String?
+  @CacheField("height") var height: Height?
+  @CacheField("skinCovering") var skinCovering: GraphQLEnum<SkinCovering>?
+  @CacheField("humanName") var humanName: String?
+  @CacheField("favoriteToy") var favoriteToy: String?
+  @CacheField("owner") var owner: Human?
 }

@@ -1,10 +1,10 @@
 import CodegenProposalFramework
 
 public final class Height: CacheEntity {
-  @CacheField var relativeSize: GraphQLEnum<RelativeSize>?
-  @CacheField var centimeters: Int?
-  @CacheField var meters: Int?
-  @CacheField var feet: Int?
-  @CacheField var inches: Int?
-  @CacheField var yards: Int?
+  @CacheField("relativeSize") var relativeSize: GraphQLEnum<RelativeSize>?
+  @CacheField("centimeters") var centimeters: Int?
+  @CacheField("meters") var meters: Int?
+  @CacheField("feet") var feet: Int?
+  @CacheField("inches") var inches: Int?
+  @CacheField("yards") var yards: Int?
 }

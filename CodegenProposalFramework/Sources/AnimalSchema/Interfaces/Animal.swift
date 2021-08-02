@@ -1,6 +1,6 @@
 import CodegenProposalFramework
 
-protocol Animal {
+protocol Animal: CacheEntity {
   var species: String? { get }
   var height: Height? { get }
   var predators: [Animal] { get }

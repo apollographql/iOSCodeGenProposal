@@ -1,14 +1,14 @@
 import CodegenProposalFramework
 
-public final class Bird: Animal, Pet, WarmBlooded, CacheEntity {
-  @CacheField var species: String?
-  @CacheField var height: Height?
-  @CacheList var predators: [Animal]
-  @CacheField var skinCovering: GraphQLEnum<SkinCovering>?
-  @CacheField var humanName: String?
-  @CacheField var favoriteToy: String?
-  @CacheField var owner: Human?
-  @CacheField var bodyTemperature: Int?
-  @CacheField var laysEggs: Bool?
-  @CacheField var wingspan: Int?
+public final class Bird: CacheEntity, Animal, Pet, WarmBlooded {
+  @CacheList  var predators: [Animal]
+  @CacheField("species") var species: String?
+  @CacheField("height") var height: Height?
+  @CacheField("skinCovering") var skinCovering: GraphQLEnum<SkinCovering>?
+  @CacheField("humanName") var humanName: String?
+  @CacheField("favoriteToy") var favoriteToy: String?
+  @CacheField("owner") var owner: Human?
+  @CacheField("bodyTemperature") var bodyTemperature: Int?
+  @CacheField("laysEggs") var laysEggs: Bool?
+  @CacheField("wingspan") var wingspan: Int?
 }

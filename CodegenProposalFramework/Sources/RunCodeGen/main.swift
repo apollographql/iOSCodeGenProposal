@@ -13,4 +13,4 @@ let animalOperations = try! generator.mergeDocuments(
 
 let AST = try! generator.compile(schema: animalSchema, document: animalOperations)
 
-print(AST)
+print("GraphQL Compiled Successfully")

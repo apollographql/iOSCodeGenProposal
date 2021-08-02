@@ -4,19 +4,19 @@
 /// to other types. This information is used to verify that a `SelectionSet` can be converted to
 /// a given type condition.
 public protocol GraphQLSchema {
-  associatedtype ObjectType: SchemaObjectType where ObjectType.Interface == Self.Interface
+  associatedtype ObjectType: SchemaObjectType
   associatedtype Union: SchemaUnion where Union.ObjectType == Self.ObjectType
-  associatedtype Interface
+  associatedtype Interface where ObjectType.Interface == Interface
 }
 
-public protocol SchemaTypeEnum: RawRepresentable, Equatable where RawValue == String {}
+public protocol SchemaTypeEnum: RawRepresentable, Hashable where RawValue == String {}
 
 public protocol SchemaObjectType: SchemaTypeEnum {
   associatedtype Interface: SchemaTypeEnum
 
   static var unknownCase: Self { get }
 
-  var implementedInterfaces: [Interface] { get }
+  var implementedInterfaces: Set<Interface> { get }
 }
 
 extension SchemaObjectType {
@@ -29,4 +29,8 @@ public protocol SchemaUnion: SchemaTypeEnum {
   associatedtype ObjectType
 
   var possibleTypes: [ObjectType] { get }
+}
+
+public protocol CacheSchema {
+  static var entityTypes: [String: CacheEntity.Type] { get }
 }

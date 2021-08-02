@@ -1,11 +1,6 @@
 import Foundation
 import CodegenProposalFramework
 
-protocol ReadTransaction {}
-protocol CacheEntity: AnyObject {
-//  associatedtype Schema: GraphQLSchema
-}
-
 @available(macOS 10.15.0, *)
 public final class RootQuery {
   let transaction: ReadTransaction

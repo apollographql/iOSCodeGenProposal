@@ -1,12 +1,15 @@
 @testable import CodegenProposalFramework
 
-public struct AnimalSchema: GraphQLSchema {
+public struct AnimalSchema: GraphQLSchema, CacheSchema {
+
+  public static let entityTypes: [String: CacheEntity.Type] = ["Dog": Dog.self]
+
   public enum ObjectType: String, SchemaObjectType {
     case Bird, Cat, Coyote, Crocodile, Fish, Height, Human, PetRock, Query, Rat, _unknown
 
     public static let unknownCase: ObjectType = ._unknown
 
-    public var implementedInterfaces: [Interface] {
+    public var implementedInterfaces: Set<Interface> {
       switch self {
       case .Bird, .Cat, .Rat:
         return [.Animal, .Pet, .WarmBlooded]
