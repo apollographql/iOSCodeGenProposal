@@ -1,4 +1,4 @@
-public enum SelectionSetType<S: GraphQLSchema> {
+public enum SelectionSetType<S: SchemaTypeMetadata> {
   case ObjectType(S.ObjectType)
   case Interface(S.Interface)
   case Union(S.Union)
@@ -6,7 +6,7 @@ public enum SelectionSetType<S: GraphQLSchema> {
 
 public protocol SelectionSet: ResponseObject {
 
-  associatedtype Schema: GraphQLSchema
+  associatedtype Schema: SchemaTypeMetadata
 
   /// The GraphQL type for the `SelectionSet`.
   ///

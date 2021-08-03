@@ -2,9 +2,7 @@
 
 public typealias ParentType = SelectionSetType<TypesUsed>
 
-public struct TypesUsed: GraphQLSchema, CacheSchema {
-
-  public static let entityTypes: [String: CacheEntity.Type] = ["Dog": Dog.self]
+public struct TypesUsed: SchemaTypeMetadata {
 
   public enum ObjectType: String, SchemaObjectType {
     case Bird, Cat, Crocodile, Dog, Fish, Height, Human, PetRock, Query, Rat, _unknown

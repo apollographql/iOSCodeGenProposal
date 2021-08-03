@@ -1,12 +1,16 @@
+public protocol CacheEntityFactory {
+  static func entityType(forTypename __typename: String) -> CacheEntity.Type?
+}
+
 public protocol ReadTransaction: AnyObject {
-  var schema: CacheSchema.Type { get }
+  var entityFactory: CacheEntityFactory.Type { get }
   func entity<T: CacheEntity>(withKey: String) -> T?
 }
 
 extension ReadTransaction {
   func entity(withData data: [String: Any]) -> CacheEntity? {
     guard let typename = data["__typename"] as? String,
-          let type = schema.entityTypes[typename] else {
+          let type = entityFactory.entityType(forTypename: typename) else {
       return nil
     }
 

@@ -32,8 +32,8 @@ class SanityCheckTests: XCTestCase {
       ],
       "predators": [
         [
-          "__typename": "Coyote",
-          "species": "Coyote",
+          "__typename": "Human",
+          "species": "Human",
           "bodyTemperature": 96,
           "height": [
             "__typename": "Height",
@@ -135,7 +135,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForInterface_withConcreteTypeThatDoesNotImplementInterface() throws {
-    dataDict["__typename"] = AnimalSchema.ObjectType.Fish.rawValue
+    dataDict["__typename"] = AnimalSchema.TypesUsed.ObjectType.Fish.rawValue
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
@@ -144,7 +144,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForConcreteType_withDifferentConcreteType() throws {
-    dataDict["__typename"] = AnimalSchema.ObjectType.Fish.rawValue
+    dataDict["__typename"] = AnimalSchema.TypesUsed.ObjectType.Fish.rawValue
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
@@ -158,7 +158,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForUnionType_withConcreteTypeMatchingAMemberType() throws {
-    dataDict["__typename"] = AnimalSchema.ObjectType.Bird.rawValue
+    dataDict["__typename"] = AnimalSchema.TypesUsed.ObjectType.Bird.rawValue
     dataDict["wingspan"] = 15
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
@@ -169,7 +169,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForUnionType_withConcreteTypeNotMatchingAMemberType() throws {
-    dataDict["__typename"] = AnimalSchema.ObjectType.Crocodile.rawValue
+    dataDict["__typename"] = AnimalSchema.TypesUsed.ObjectType.Crocodile.rawValue
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
@@ -179,14 +179,14 @@ class SanityCheckTests: XCTestCase {
 
   func testListField() throws {
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
-    let coyote = subject.predators[0]
+    let human = subject.predators[0]
     let crocodile = subject.predators[1]
 
-    XCTAssertEqual(coyote.species, "Coyote")
-    XCTAssertEqual(coyote.asWarmBlooded?.bodyTemperature, 96)
-    XCTAssertEqual(coyote.asWarmBlooded?.height.meters, 3)
-    XCTAssertEqual(coyote.asWarmBlooded?.height.yards, 1)
-    XCTAssertEqual(coyote.asWarmBlooded?.laysEggs, false)
+    XCTAssertEqual(human.species, "Human")
+    XCTAssertEqual(human.asWarmBlooded?.bodyTemperature, 96)
+    XCTAssertEqual(human.asWarmBlooded?.height.meters, 3)
+    XCTAssertEqual(human.asWarmBlooded?.height.yards, 1)
+    XCTAssertEqual(human.asWarmBlooded?.laysEggs, false)
 
     XCTAssertEqual(crocodile.species, "Crocodile")
   }
