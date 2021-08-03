@@ -11,14 +11,15 @@ struct AllAnimalsQuery {
   let data: ResponseData
 
   struct ResponseData: SelectionSet {
-    static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Query) }
+
+    static var __parentType: AnimalSchema.ParentType { .ObjectType(.Query) }
     let data: ResponseDict
 
     var allAnimals: [Animal] { data["allAnimals"] }
 
     /// `Animal`
     struct Animal: SelectionSet, HasFragments {
-      static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Animal) }
+      static var __parentType: AnimalSchema.ParentType { .Interface(.Animal) }
       let data: ResponseDict
 
       var species: String { data["species"] }
@@ -39,7 +40,7 @@ struct AllAnimalsQuery {
 
       /// `Animal.Height`
       struct Height: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+        static var __parentType: AnimalSchema.ParentType { .ObjectType(.Height) }
         let data: ResponseDict
 
         var feet: Int { data["feet"] }
@@ -52,7 +53,7 @@ struct AllAnimalsQuery {
 
       /// `Animal.Predators`
       struct Predators: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Animal) }
+        static var __parentType: AnimalSchema.ParentType { .Interface(.Animal) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -61,7 +62,7 @@ struct AllAnimalsQuery {
 
         /// `AllAnimals.Predators.AsWarmBlooded`
         struct AsWarmBlooded: SelectionSet, HasFragments {
-          static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.WarmBlooded) }
+          static var __parentType: AnimalSchema.ParentType { .Interface(.WarmBlooded) }
           let data: ResponseDict
 
           var bodyTemperature: Int { data["bodyTemperature"] }
@@ -79,7 +80,7 @@ struct AllAnimalsQuery {
           }
 
           struct Height: SelectionSet {
-            static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+            static var __parentType: AnimalSchema.ParentType { .ObjectType(.Height) }
             let data: ResponseDict
 
             var meters: Int { data["meters"] }
@@ -90,7 +91,7 @@ struct AllAnimalsQuery {
 
       /// `Animal.AsCat`
       struct AsCat: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Cat) }
+        static var __parentType: AnimalSchema.ParentType { .ObjectType(.Cat) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -106,7 +107,7 @@ struct AllAnimalsQuery {
         var isJellicle: Bool { data["isJellicle"] }
 
         struct Height: SelectionSet {
-          static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+          static var __parentType: ParentType { .ObjectType(.Height) }
           let data: ResponseDict
 
           var feet: Int { data["feet"] }
@@ -129,7 +130,7 @@ struct AllAnimalsQuery {
       // See `Predators.AsWarmBlooded` for an example of this.
       /// `Animal.AsWarmBlooded`
       struct AsWarmBlooded: SelectionSet, HasFragments {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.WarmBlooded) }
+        static var __parentType: AnimalSchema.ParentType { .Interface(.WarmBlooded) }
 
         let data: ResponseDict
 
@@ -147,7 +148,7 @@ struct AllAnimalsQuery {
         }
 
         struct Height: SelectionSet {
-          static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+          static var __parentType: AnimalSchema.ParentType { .ObjectType(.Height) }
           let data: ResponseDict
 
           var feet: Int { data["feet"] }
@@ -159,7 +160,7 @@ struct AllAnimalsQuery {
 
       /// `Animal.AsPet`
       struct AsPet: SelectionSet, HasFragments {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Pet) }
+        static var __parentType: AnimalSchema.ParentType { .Interface(.Pet) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -182,7 +183,7 @@ struct AllAnimalsQuery {
         }
 
         struct Height: SelectionSet {
-          static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+          static var __parentType: AnimalSchema.ParentType { .ObjectType(.Height) }
           let data: ResponseDict
 
           var feet: Int { data["feet"] }
@@ -198,7 +199,7 @@ struct AllAnimalsQuery {
 
         /// `Animal.AsPet.AsWarmBlooded`
         struct AsWarmBlooded: SelectionSet, HasFragments {
-          static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.WarmBlooded) }
+          static var __parentType: AnimalSchema.ParentType { .Interface(.WarmBlooded) }
           let data: ResponseDict
 
           var species: String { data["species"] }
@@ -221,7 +222,7 @@ struct AllAnimalsQuery {
           }
 
           struct Height: SelectionSet {
-            static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+            static var __parentType: AnimalSchema.ParentType { .ObjectType(.Height) }
             let data: ResponseDict
 
             var feet: Int { data["feet"] }
@@ -236,7 +237,7 @@ struct AllAnimalsQuery {
 
       /// `Animal.AsClassroomPet`
       struct AsClassroomPet: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Union(.ClassroomPet) }
+        static var __parentType: AnimalSchema.ParentType { .Union(.ClassroomPet) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -248,7 +249,7 @@ struct AllAnimalsQuery {
 
         /// `Animal.AsClassroomPet.AsBird`
         struct AsBird: SelectionSet {
-          static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Bird) }
+          static var __parentType: AnimalSchema.ParentType { .ObjectType(.Bird) }
           let data: ResponseDict
 
           var species: String { data["species"] }
@@ -264,7 +265,7 @@ struct AllAnimalsQuery {
           var wingspan: Int { data["wingspan"] }
 
           struct Height: SelectionSet {
-            static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+            static var __parentType: AnimalSchema.ParentType { .ObjectType(.Height) }
             let data: ResponseDict
 
             var feet: Int { data["feet"] }

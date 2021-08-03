@@ -11,13 +11,13 @@ import AnimalSchema
 /// }
 /// ```
 struct HeightInMeters: SelectionSet, Fragment {
-  static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Animal) }
+  static var __parentType: AnimalSchema.ParentType { .Interface(.Animal) }
   let data: ResponseDict
 
   var height: Height  { data["height"] }
 
   struct Height: SelectionSet {
-    static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+    static var __parentType: AnimalSchema.ParentType { .ObjectType(.Height) }
     let data: ResponseDict
 
     var meters: Int { data["meters"] }

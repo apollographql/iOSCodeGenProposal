@@ -1,12 +1,7 @@
 import Foundation
 import CodegenProposalFramework
 
-@available(macOS 10.15.0, *)
-public final class RootQuery {
-  let transaction: ReadTransaction
-  init(_ t: ReadTransaction) {
-    self.transaction = t
-  }
+public final class RootQuery: CacheEntity {
 
   var allAnimals: [Animal] = []
   var allPets: [Pet] = []

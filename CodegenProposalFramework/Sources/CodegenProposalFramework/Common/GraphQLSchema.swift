@@ -17,6 +17,8 @@ public protocol SchemaObjectType: SchemaTypeEnum {
   static var unknownCase: Self { get }
 
   var implementedInterfaces: Set<Interface> { get }
+
+//  var entityType: CacheEntity.Type { get }
 }
 
 extension SchemaObjectType {

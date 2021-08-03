@@ -13,7 +13,7 @@ import AnimalSchema
 /// }
 /// ```
 struct PetDetails: SelectionSet, Fragment {
-  static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Pet) }
+  static var __parentType: AnimalSchema.ParentType { .Interface(.Pet) }
   let data: ResponseDict
 
   var humanName: String? { data["humanName"] }
@@ -21,7 +21,7 @@ struct PetDetails: SelectionSet, Fragment {
   var owner: Human? { data["owner"] }
 
   struct Human: SelectionSet {
-    static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Human) }
+    static var __parentType: AnimalSchema.ParentType { .ObjectType(.Human) }
     let data: ResponseDict
 
     var firstName: String { data["firstName"] }
