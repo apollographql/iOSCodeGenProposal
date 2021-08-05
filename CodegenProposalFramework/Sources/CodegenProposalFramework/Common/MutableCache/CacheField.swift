@@ -1,7 +1,7 @@
 @propertyWrapper
 public struct CacheField<T> {
 
-  private let field: String
+  private let field: String // TODO: Use StaticString?
 
   public init(_ field: String) {
     self.field = field
@@ -33,13 +33,10 @@ public struct CacheField<T> {
     }
   }
 
-  @available(*, unavailable,
-      message: "This property wrapper can only be applied to classes"
-  )
-  public var wrappedValue: T? {
-      get { fatalError() }
-      set { fatalError() }
-  }
-
   public var projectedValue: CacheField { self }
+
+  @available(*, unavailable,
+      message: "This property wrapper can only be applied to CacheEntity objects."
+  )
+  public var wrappedValue: T? { get { fatalError() } set { fatalError() } }
 }

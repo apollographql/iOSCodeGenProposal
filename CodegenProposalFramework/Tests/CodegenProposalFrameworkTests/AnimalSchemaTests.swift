@@ -31,7 +31,7 @@ class AnimalSchemaTests: XCTestCase {
 
 }
 
-class MockTransaction: ReadTransaction {
+class MockTransaction: CacheTransaction {
 
   let entityFactory: CacheEntityFactory.Type = AnimalSchema.TypesUsed.self
 
