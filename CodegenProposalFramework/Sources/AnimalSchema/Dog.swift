@@ -11,7 +11,7 @@ public final class Dog: CacheEntity, Animal, Pet, HousePet, WarmBlooded {
   @CacheField("bodyTemperature") var bodyTemperature: Int?
   @CacheField("laysEggs") var laysEggs: Bool?
   @CacheField("isJellicle") var isJellicle: Bool?
-  @CacheField("bestFriend") var bestFriend: CacheReference<HousePet>? // TODO: Should this be optional?
+  @CacheRef("bestFriend") var bestFriend: CacheReference<HousePet>? // TODO: Should this be optional?
 }
 
 extension Animal where Self == Dog {
@@ -28,9 +28,9 @@ extension Animal where Self == Dog {
 //  }
 //}
 
-//extension HousePet where Self == Dog {
-//  var bestFriend: CacheReference<Pet> {
-//    get { (self.bestFriend as CacheReference<HousePet>) }
-////    set {  }
+//extension Dog {
+//  var bestFriendRef: SomeEntity<Pet>? {
+//    get { return SomeEntity<Pet>(wrapping: self.bestFriend) }
+//    set {  }
 //  }
 //}

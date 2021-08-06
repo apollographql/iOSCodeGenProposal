@@ -10,5 +10,5 @@ protocol HousePet: Animal, Pet {
   var owner: Human? { get }
   var bodyTemperature: Int? { get }
   var laysEggs: Bool? { get }
-//  var bestFriend: CacheReference<Pet> { get }
+//  var bestFriendRef: SomeEntity<Pet>? { get set }
 }

@@ -5,25 +5,25 @@ public protocol CacheEntityFactory {
 public protocol CacheTransaction: AnyObject {
   var entityFactory: CacheEntityFactory.Type { get }
 
-  func entity<T: CacheEntity>(withKey: String) -> T?
+  func entity<T>(withKey: String) -> T?
 
   func cacheKey(for: CacheEntity) -> CacheKey?
 }
 
 extension CacheTransaction {
-  func entity(withData data: [String: Any]) -> CacheEntity? {
+  func entity<T: CacheEntity>(withData data: [String: Any]) -> T {
     guard let typename = data["__typename"] as? String,
           let type = entityFactory.entityType(forTypename: typename) else {
-      return nil
+      fatalError()
     }
 
-    return type.init(in: self, data: data)
+    return type.init(in: self, data: data) as! T
   }
 }
 
-open class CacheEntity {
+open class CacheEntity: AnyCacheEntity {
   let _transaction: CacheTransaction
-  var data: [String: Any]
+  public var data: [String: Any]
 
   public required init(in transaction: CacheTransaction, data: [String: Any] = [:]) {
     self._transaction = transaction
@@ -33,37 +33,41 @@ open class CacheEntity {
 //  var cacheKey: String { "" } // TODO
 }
 
-protocol AnyCacheReference: AnyObject {
+protocol AnyCacheReference {
+  var cacheData: Any { get }
 }
 
-public class CacheReference<T>: AnyCacheReference { // TODO: can this be a struct? Maybe property wrapper, use transaction from enclosing self?
-  private let _transaction: CacheTransaction
-  private(set) var entity: T?
-  var cacheKey: CacheKey?
+//protocol CacheReferenceProtocol {
+//  associatedtype Entity
+//  func resolve() -> Entity?
+//}
 
-  init(entity: T) where T: CacheEntity {
-    self.entity = entity
-    _transaction = entity._transaction
+public enum CacheReference<T>: AnyCacheReference {
+  case ref(CacheKey, CacheTransaction)
+  case entity(T)
+
+  func resolve() -> T? {
+    switch self {
+    case let .ref(key, transaction):
+      return transaction.entity(withKey: key.key)
+    case let .entity(entity):
+      return entity
+    }
   }
 
-  init(key: CacheKey?, _ transaction: CacheTransaction) {
-    self.cacheKey = key
-    self._transaction = transaction
+  var cacheData: Any {
+    switch self {
+    case let .ref(key, _):
+      return key
+    case let .entity(entity as CacheEntity):
+      return entity.data
+    default:
+      fatalError() // TODO: Error Handling
+    }
   }
 }
 
-public struct SomeCacheReference<T> {
-//  private struct AnyCacheReference {
-//    let value: CacheReferenceProtocol
-//  }
 
-  private let wrapped: AnyCacheReference
-
-  init?<E>(wrapping reference: CacheReference<E>) where E: CacheEntity {
-    guard E.self is T else { return nil }
-    self.wrapped = reference
-  }
-}
 
 /// Represents a key that references a record in the cache.
 public struct CacheKey {
@@ -71,5 +75,71 @@ public struct CacheKey {
 
   public init(key: String) {
     self.key = key
+  }
+}
+
+//@propertyWrapper
+//public struct CacheReference<T> {
+//
+//  private let field: String // TODO: Use StaticString?
+//
+//  public init(_ field: String) {
+//    self.field = field
+//  }
+//
+//  public static subscript<E: CacheEntity>(
+//    _enclosingInstance instance: E,
+//    wrapped wrappedKeyPath: ReferenceWritableKeyPath<E, T?>,
+//    storage storageKeyPath: ReferenceWritableKeyPath<E, Self>
+//  ) -> T? {
+//    get {
+//      let field = instance[keyPath: storageKeyPath].field
+//      let data = instance.data[field]
+//      if let cacheKey = data as? CacheKey {
+//        return instance._transaction.entity(withKey: cacheKey.key)
+//
+//      } else if let dataDict = data as? [String: Any] {
+//        return instance._transaction.entity(withData: dataDict)
+//
+//      } else {
+//        return data as? T
+//      }
+//    }
+//    set {
+//      let field = instance[keyPath: storageKeyPath].field
+//
+//      switch newValue {
+//      case let entity as AnyCacheEntity:
+//        instance.data[field] = entity.data
+//
+//      default:
+//        break // TODO
+////        fatalError() // TODO
+//      }
+//    }
+//  }
+//
+//  public var projectedValue: CacheReference { self }
+//
+//  @available(*, unavailable,
+//      message: "This property wrapper can only be applied to CacheEntity objects."
+//  )
+//  public var wrappedValue: T? { get { fatalError() } set { fatalError() } }
+//}
+
+public protocol AnyCacheEntity {
+  var data: [String: Any] { get }
+}
+
+public class SomeEntity<T> {
+//  private struct AnyCacheReference {
+//    let value: CacheReferenceProtocol
+//  }
+
+  private let wrapped: T?
+
+  public init?(wrapping reference: AnyCacheEntity?) {
+    guard let ref = reference as? T else { return nil }
+    self.wrapped = ref
   }
 }
