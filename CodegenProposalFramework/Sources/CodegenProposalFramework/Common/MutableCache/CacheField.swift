@@ -1,9 +1,9 @@
 @propertyWrapper
 public struct CacheField<T> {
 
-  private let field: String // TODO: Use StaticString?
+  private let field: StaticString
 
-  public init(_ field: String) {
+  public init(_ field: StaticString) {
     self.field = field
   }
 
@@ -14,7 +14,7 @@ public struct CacheField<T> {
   ) -> T? {
     get {
       let field = instance[keyPath: storageKeyPath].field
-      let data = instance.data[field]
+      let data = instance.data[field.description]
       if let cacheKey = data as? CacheKey {
         return instance._transaction.entity(withKey: cacheKey.key) as? T
 
