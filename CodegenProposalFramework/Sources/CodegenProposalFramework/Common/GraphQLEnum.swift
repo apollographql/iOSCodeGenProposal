@@ -3,7 +3,7 @@
 /// `GraphQLEnum` provides an `__unknown` case that is used when the response returns a value that
 /// is not recognized as a valid enum case. This is usually caused by future cases added to the enum
 /// on the schema after code generation.
-public enum GraphQLEnum<T>: CaseIterable, Equatable, RawRepresentable
+public enum GraphQLEnum<T>: CaseIterable, Equatable, RawRepresentable, Cacheable
 where T: RawRepresentable & CaseIterable, T.RawValue == String {
   public typealias RawValue = String
 
@@ -24,6 +24,13 @@ where T: RawRepresentable & CaseIterable, T.RawValue == String {
       return
     }
     self = .case(caseValue)
+  }
+
+  public init(cacheData: Any, transaction _: CacheTransaction) throws {
+    guard let stringData = cacheData as? String else {
+      throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
+    }
+    self.init(rawValue: stringData)
   }
 
   /// The underlying enum case. If the value is `__unknown`, this will be `nil`.

@@ -1,10 +1,10 @@
 import CodegenProposalFramework
 
-protocol WarmBlooded: Animal {
-  var species: String? { get }
-    var height: Height? { get }
-    var predators: [Animal] { get }
-    var skinCovering: GraphQLEnum<SkinCovering>? { get }
-    var bodyTemperature: Int? { get }
-    var laysEggs: Bool? { get }
+public final class WarmBlooded: CacheInterface {
+  @CacheField("species") var species: String?
+  @CacheField("height") var height: CacheReference<Height>?
+//  @CacheField("predators") var predators: [CacheReference<Animal>]
+  @CacheField("skinCovering") var skinCovering: GraphQLEnum<SkinCovering>?
+  @CacheField("bodyTemperature") var bodyTemperature: Int?
+  @CacheField("laysEggs") var laysEggs: Bool?
 }

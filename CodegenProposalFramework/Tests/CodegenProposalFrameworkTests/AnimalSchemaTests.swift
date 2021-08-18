@@ -5,9 +5,13 @@ import XCTest
 
 class AnimalSchemaTests: XCTestCase {
 
+  private func makeDogReference() -> CacheReference<HousePet> {
+    .entity(Dog(in: MockTransaction()))
+  }
+
   func test_covariantInterfaceImplementation() throws {
     let dog = Dog(in: MockTransaction())
-    dog.predators = [Dog(in: MockTransaction()), Dog(in: MockTransaction())]
+    dog.predators = [makeDogReference(), makeDogReference()]
     XCTAssertEqual(dog.predators.count, 2)
 
     let animal: Animal = dog

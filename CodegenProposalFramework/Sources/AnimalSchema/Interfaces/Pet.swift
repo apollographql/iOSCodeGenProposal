@@ -1,7 +1,7 @@
 import CodegenProposalFramework
 
-protocol Pet: CacheEntity {
-  var humanName: String? { get }
-  var favoriteToy: String? { get }
-  var owner: Human? { get }
+public final class Pet: CacheInterface {
+  @CacheField("humanName") var humanName: String?
+  @CacheField("favoriteToy") var favoriteToy: String?
+  @CacheField("owner") var owner: CacheReference<Human>?
 }
