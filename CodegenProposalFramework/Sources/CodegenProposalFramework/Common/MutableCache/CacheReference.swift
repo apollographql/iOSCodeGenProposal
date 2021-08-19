@@ -1,51 +1,37 @@
-public protocol CacheEntityFactory {
-  static func entityType(forTypename __typename: String) -> CacheEntity.Type?
-}
-
-public protocol CacheTransaction: AnyObject {
-  var entityFactory: CacheEntityFactory.Type { get }
-
-  func entity<T>(withKey: CacheKey) -> T?
-
-  func cacheKey(for: CacheEntity) -> CacheKey?
-}
-
-extension CacheTransaction {
-  func entity<T>(withData data: [String: Any]) -> T {
-    guard let typename = data["__typename"] as? String,
-          let type = entityFactory.entityType(forTypename: typename),
-          type == T.self else {
-      fatalError()
-    }
-
-    return type.init(in: self, data: data) as! T
-  }
-}
-
-struct CacheReadError: Error {
-  enum Reason: Error {
-    case unrecognizedCacheData(_ data: Any, forType: Any.Type)
-  }
-  let reason: Reason
-  let field: String
-  let object: AnyCacheObject?
-}
-
 public protocol AnyCacheObject: AnyObject {
   var _transaction: CacheTransaction { get }
   var data: [String: Any] { get }
 }
 
-open class CacheEntity: AnyCacheObject {
+open class CacheEntity: AnyCacheObject, Cacheable {
   public let _transaction: CacheTransaction
   public var data: [String: Any]
 
-  public required init(in transaction: CacheTransaction, data: [String: Any] = [:]) {
+  final var __typename: String { data["__typename"] as! String }
+
+  public required init(transaction: CacheTransaction, data: [String: Any] = [:]) {
     self._transaction = transaction
     self.data = data
   }
 
-  final var __typename: String { data["__typename"] as! String }
+  public static func value(
+    with cacheData: Any,
+    in transaction: CacheTransaction
+  ) throws -> Self {
+    switch cacheData {
+    case let dataAsSelf as Self:
+      return dataAsSelf
+
+    case let key as CacheKey:
+      return transaction.entity(withKey: key) as! Self
+
+    case let data as [String: Any]:
+      return transaction.entity(withData: data) as! Self
+
+    default:
+      throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: Self.self) // TODO
+    }
+  }
 
   //  var cacheKey: String { "" } // TODO
 }
@@ -58,21 +44,40 @@ open class CacheInterface: AnyCacheObject {
   public final var _transaction: CacheTransaction { underlyingEntity._transaction }
   public final var data: [String: Any] { underlyingEntity.data }
 
-  init(entity: CacheEntity) {
+  public required init(entity: CacheEntity) {
     self.underlyingEntity = entity
   }
 
-//  func asUnderlyingType() -> CacheEntity {
-//    underlyingType.init(in: _transaction, data: data)
-//  }
-//
-//  func `as`<T: CacheEntity>(type: T.Type) -> T? {
-//    T.init(in: _transaction, data: data) // TODO: Type conversion checking
-//  }
-//
-//  func `as`<T: CacheInterface>(type: T.Type) -> T? {
-//    T.init(in: _transaction, data: data) // TODO: Type conversion checking
-//  }
+  public static func value(
+    with cacheData: Any,
+    in transaction: CacheTransaction
+  ) throws -> Self {
+    switch cacheData {
+    case let entity as CacheEntity:
+      return Self.init(entity: entity)
+
+    case let key as CacheKey:
+      return Self.init(entity: transaction.entity(withKey: key)!)
+
+    case let data as [String: Any]:
+      return Self.init(entity: transaction.entity(withData: data))
+
+    default:
+      throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: Self.self) // TODO
+    }
+  }
+
+  //  func asUnderlyingType() -> CacheEntity {
+  //    underlyingType.init(in: _transaction, data: data)
+  //  }
+  //
+  //  func `as`<T: CacheEntity>(type: T.Type) -> T? {
+  //    T.init(in: _transaction, data: data) // TODO: Type conversion checking
+  //  }
+  //
+  //  func `as`<T: CacheInterface>(type: T.Type) -> T? {
+  //    T.init(in: _transaction, data: data) // TODO: Type conversion checking
+  //  }
 }
 
 protocol AnyCacheReference {
@@ -88,12 +93,12 @@ public enum CacheReference<T>: AnyCacheReference, Cacheable { // TODO: experimen
   case ref(CacheKey, CacheTransaction)
   case entity(T)
 
-  public init(cacheData: Any, transaction: CacheTransaction) throws {
+  public static func value(with cacheData: Any, in transaction: CacheTransaction) throws -> CacheReference<T> {
     switch cacheData {
     case let key as CacheKey:
-      self = .ref(key, transaction)
+      return .ref(key, transaction)
     case let data as [String: Any]:
-      self = .entity(transaction.entity(withData: data))
+      return .entity(transaction.entity(withData: data) as! T)
     default:
       throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: T.self)
     }
@@ -102,7 +107,7 @@ public enum CacheReference<T>: AnyCacheReference, Cacheable { // TODO: experimen
   func resolve() -> T? {
     switch self {
     case let .ref(key, transaction):
-      return transaction.entity(withKey: key)
+      return (transaction.entity(withKey: key) as! T)
     case let .entity(entity):
       return entity
     }
@@ -121,7 +126,7 @@ public enum CacheReference<T>: AnyCacheReference, Cacheable { // TODO: experimen
 }
 
 /// Represents a key that references a record in the cache.
-public struct CacheKey {
+public struct CacheKey: Hashable {
   public let key: String
 
   public init(key: String) {
@@ -190,9 +195,9 @@ public protocol AnyCacheEntity {
 }
 
 public class SomeEntity<T> {
-//  private struct AnyCacheReference {
-//    let value: CacheReferenceProtocol
-//  }
+  //  private struct AnyCacheReference {
+  //    let value: CacheReferenceProtocol
+  //  }
 
   private let wrapped: T?
 

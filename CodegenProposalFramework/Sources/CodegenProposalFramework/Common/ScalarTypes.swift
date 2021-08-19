@@ -6,7 +6,7 @@ extension Bool: ScalarType {}
 extension Float: ScalarType {}
 
 extension ScalarType {
-  public init(cacheData: Any, transaction: CacheTransaction) throws {
-    self = cacheData as! Self
+  public static func value(with cacheData: Any, in transaction: CacheTransaction) throws -> Self {
+    return cacheData as! Self
   }
 }

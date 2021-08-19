@@ -35,9 +35,4 @@ public struct ResponseDict {
     guard let entityData = data[key] as? String else { return nil }
     return GraphQLEnum(rawValue: entityData)
   }
-
-  public subscript<T: CacheEntity>(_ key: String, transaction: CacheTransaction) -> T? {
-    guard let entityData = data[key] as? [String: Any] else { return nil }
-    return T.init(in: transaction, data: entityData)
-  }
 }

@@ -26,11 +26,11 @@ where T: RawRepresentable & CaseIterable, T.RawValue == String {
     self = .case(caseValue)
   }
 
-  public init(cacheData: Any, transaction _: CacheTransaction) throws {
+  public static func value(with cacheData: Any, in transaction: CacheTransaction) throws -> GraphQLEnum<T> {
     guard let stringData = cacheData as? String else {
       throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
     }
-    self.init(rawValue: stringData)
+    return self.init(rawValue: stringData)
   }
 
   /// The underlying enum case. If the value is `__unknown`, this will be `nil`.

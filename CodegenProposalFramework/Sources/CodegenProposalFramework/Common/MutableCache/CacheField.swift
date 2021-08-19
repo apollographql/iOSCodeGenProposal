@@ -15,10 +15,11 @@ public struct CacheField<T: Cacheable> {
     get {
       let field = instance[keyPath: storageKeyPath].field
       guard let data = instance.data[field.description],
-            let value = try? T.init(cacheData: data, transaction: instance._transaction) else {
+            let value = try? T.value(with: data, in: instance._transaction) else {
         return nil
       }
 
+      // instance.data[field.description] = value
       return value
     }
     set {
@@ -44,6 +45,7 @@ public struct CacheField<T: Cacheable> {
 }
 
 public protocol Cacheable {
-  init(cacheData: Any, transaction: CacheTransaction) throws
+  static func value(with cacheData: Any, in transaction: CacheTransaction) throws -> Self
+//  init(cacheData: Any, transaction: CacheTransaction) throws
   //  var cacheData: Any { get }
 }
