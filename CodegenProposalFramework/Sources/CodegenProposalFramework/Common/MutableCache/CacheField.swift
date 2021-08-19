@@ -14,13 +14,19 @@ public struct CacheField<T: Cacheable> {
   ) -> T? {
     get {
       let field = instance[keyPath: storageKeyPath].field
-      guard let data = instance.data[field.description],
-            let value = try? T.value(with: data, in: instance._transaction) else {
+      guard let data = instance.data[field.description] else {
         return nil
       }
 
-      // instance.data[field.description] = value
-      return value
+      do {
+        let value = try T.value(with: data, in: instance._transaction)
+        instance.mutateData { $0[field.description] = value }
+        return value
+
+      } catch {
+        instance._transaction.log(error: error)
+        return nil
+      }
     }
     set {
       //      let field = instance[keyPath: storageKeyPath].field

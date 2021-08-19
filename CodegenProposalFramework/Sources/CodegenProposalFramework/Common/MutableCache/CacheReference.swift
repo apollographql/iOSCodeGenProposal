@@ -1,6 +1,8 @@
 public protocol AnyCacheObject: AnyObject {
   var _transaction: CacheTransaction { get }
   var data: [String: Any] { get }
+
+  func mutateData(_: (inout [String: Any]) -> Void)
 }
 
 open class CacheEntity: AnyCacheObject, Cacheable {
@@ -33,19 +35,23 @@ open class CacheEntity: AnyCacheObject, Cacheable {
     }
   }
 
+  public func mutateData(_ mutation: (inout [String : Any]) -> Void) {
+    mutation(&data)
+  }
+
   //  var cacheKey: String { "" } // TODO
 }
 
-open class CacheInterface: AnyCacheObject {
+open class CacheInterface: AnyCacheObject, Cacheable {
 
-  final let underlyingEntity: CacheEntity
-  final var underlyingType: CacheEntity.Type { type(of: underlyingEntity) }
+  final let entity: CacheEntity
+  final var underlyingType: CacheEntity.Type { type(of: entity) }
 
-  public final var _transaction: CacheTransaction { underlyingEntity._transaction }
-  public final var data: [String: Any] { underlyingEntity.data }
+  public final var _transaction: CacheTransaction { entity._transaction }
+  public final var data: [String: Any] { entity.data }
 
   public required init(entity: CacheEntity) {
-    self.underlyingEntity = entity
+    self.entity = entity
   }
 
   public static func value(
@@ -65,6 +71,10 @@ open class CacheInterface: AnyCacheObject {
     default:
       throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: Self.self) // TODO
     }
+  }
+
+  public func mutateData(_ mutation: (inout [String : Any]) -> Void) {
+    mutation(&entity.data) // TODO: Unit test
   }
 
   //  func asUnderlyingType() -> CacheEntity {

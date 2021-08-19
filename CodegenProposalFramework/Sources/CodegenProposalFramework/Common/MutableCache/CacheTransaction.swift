@@ -9,6 +9,7 @@ public protocol CacheKeyResolver {
 public class CacheTransaction {
   let entityFactory: CacheEntityFactory.Type
   let keyResolver: CacheKeyResolver
+  private(set) var errors: [Error] = []
   private var fetchedEntities: [CacheKey: CacheEntity] = [:]
 
   init(
@@ -41,6 +42,10 @@ public class CacheTransaction {
     }
 
     return entity
+  }
+
+  func log(error: Error) {
+    errors.append(error)
   }
 
 //  func interface<T: CacheInterface>(withData data: [String: Any]) -> T {
