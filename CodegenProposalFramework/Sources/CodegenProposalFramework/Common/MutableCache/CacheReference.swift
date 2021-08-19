@@ -89,42 +89,6 @@ protocol AnyCacheReference {
 //  func resolve() -> Entity?
 //}
 
-public enum CacheReference<T>: AnyCacheReference, Cacheable { // TODO: experiment with dynamic member lookup that resolves the object?
-  case ref(CacheKey, CacheTransaction)
-  case entity(T)
-
-  public static func value(with cacheData: Any, in transaction: CacheTransaction) throws -> CacheReference<T> {
-    switch cacheData {
-    case let key as CacheKey:
-      return .ref(key, transaction)
-    case let data as [String: Any]:
-      return .entity(transaction.entity(withData: data) as! T)
-    default:
-      throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: T.self)
-    }
-  }
-
-  func resolve() -> T? {
-    switch self {
-    case let .ref(key, transaction):
-      return (transaction.entity(withKey: key) as! T)
-    case let .entity(entity):
-      return entity
-    }
-  }
-
-  var cacheData: Any {
-    switch self {
-    case let .ref(key, _):
-      return key
-    case let .entity(entity as CacheEntity):
-      return entity.data
-    default:
-      fatalError() // TODO: Error Handling
-    }
-  }
-}
-
 /// Represents a key that references a record in the cache.
 public struct CacheKey: Hashable {
   public let key: String

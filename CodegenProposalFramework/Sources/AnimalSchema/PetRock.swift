@@ -4,5 +4,5 @@ public final class PetRock: CacheEntity {
   // Pet
   @CacheField("humanName") var humanName: String?
   @CacheField("favoriteToy") var favoriteToy: String?
-  @CacheField("owner") var owner: CacheReference<Human>?
+  @CacheField("owner") var owner: Human?
 }
