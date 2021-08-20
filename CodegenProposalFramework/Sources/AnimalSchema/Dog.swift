@@ -1,7 +1,7 @@
 import CodegenProposalFramework
 
 public final class Dog: CacheEntity {
-  //, Animal, Pet, WarmBlooded
+  //, Animal, Pet, WarmBlooded, HousePet
   @CacheField("species") var species: String?
   @CacheField("height") var height: Height?
   @CacheList var predators: [HousePet]

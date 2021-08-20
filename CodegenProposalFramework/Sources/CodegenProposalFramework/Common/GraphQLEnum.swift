@@ -3,7 +3,7 @@
 /// `GraphQLEnum` provides an `__unknown` case that is used when the response returns a value that
 /// is not recognized as a valid enum case. This is usually caused by future cases added to the enum
 /// on the schema after code generation.
-public enum GraphQLEnum<T>: CaseIterable, Equatable, RawRepresentable, Cacheable
+public enum GraphQLEnum<T>: CaseIterable, Equatable, RawRepresentable
 where T: RawRepresentable & CaseIterable, T.RawValue == String {
   public typealias RawValue = String
 
@@ -24,13 +24,6 @@ where T: RawRepresentable & CaseIterable, T.RawValue == String {
       return
     }
     self = .case(caseValue)
-  }
-
-  public static func value(with cacheData: Any, in transaction: CacheTransaction) throws -> GraphQLEnum<T> {
-    guard let stringData = cacheData as? String else {
-      throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
-    }
-    return self.init(rawValue: stringData)
   }
 
   /// The underlying enum case. If the value is `__unknown`, this will be `nil`.
@@ -55,7 +48,19 @@ where T: RawRepresentable & CaseIterable, T.RawValue == String {
   }
 }
 
-/// Equatable
+// MARK: CustomScalarType
+extension GraphQLEnum: CustomScalarType {
+  public init(scalarData: Any) throws {
+    guard let stringData = scalarData as? String else {
+      throw CacheReadError.Reason.unrecognizedCacheData(scalarData, forType: Self.self)
+    }
+    self.init(rawValue: stringData)
+  }
+
+  public var jsonValue: Any { rawValue }
+}
+
+// MARK: Equatable
 extension GraphQLEnum {
   public static func ==(lhs: GraphQLEnum<T>, rhs: GraphQLEnum<T>) -> Bool {
     return lhs.rawValue == rhs.rawValue
@@ -69,6 +74,8 @@ extension GraphQLEnum {
     return lhs.rawValue != rhs.rawValue
   }
 }
+
+// MARK: Pattern Matching Helpers
 
 public func ==<T: RawRepresentable & CaseIterable>(lhs: GraphQLEnum<T>?, rhs: T) -> Bool
 where T.RawValue == String {

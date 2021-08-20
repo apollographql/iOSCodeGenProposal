@@ -10,3 +10,14 @@ extension ScalarType {
     return cacheData as! Self
   }
 }
+
+public protocol CustomScalarType: Cacheable {
+  init(scalarData: Any) throws
+  var jsonValue: Any { get }
+}
+
+extension CustomScalarType {
+  public static func value(with cacheData: Any, in: CacheTransaction) throws -> Self {
+    try Self.init(scalarData: cacheData)
+  }
+}
