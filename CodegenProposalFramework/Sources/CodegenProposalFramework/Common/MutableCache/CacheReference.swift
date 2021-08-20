@@ -2,7 +2,7 @@ public protocol AnyCacheObject: AnyObject {
   var _transaction: CacheTransaction { get }
   var data: [String: Any] { get }
 
-  func mutateData(_: (inout [String: Any]) -> Void)
+  func set(value: Cacheable?, forField field: String)
 }
 
 open class CacheEntity: AnyCacheObject, Cacheable {
@@ -35,8 +35,8 @@ open class CacheEntity: AnyCacheObject, Cacheable {
     }
   }
 
-  public func mutateData(_ mutation: (inout [String : Any]) -> Void) {
-    mutation(&data)
+  public func set(value: Cacheable?, forField field: String) {
+    data[field] = value
   }
 
   //  var cacheKey: String { "" } // TODO
@@ -73,8 +73,8 @@ open class CacheInterface: AnyCacheObject, Cacheable {
     }
   }
 
-  public func mutateData(_ mutation: (inout [String : Any]) -> Void) {
-    mutation(&entity.data) // TODO: Unit test
+  public func set(value: Cacheable?, forField field: String) {
+    entity.set(value: value, forField: field)
   }
 
   //  func asUnderlyingType() -> CacheEntity {

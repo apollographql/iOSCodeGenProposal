@@ -56,7 +56,7 @@ public struct CacheField<T: Cacheable> {
     case is CacheEntity where !(data is CacheEntity),
          is CacheInterface where instance is CacheInterface,
          is CustomScalarType:
-      instance.mutateData { $0[field.description] = parsedValue }
+      instance.set(value: parsedValue, forField: field)
 
     case is CacheInterface, is ScalarType: break
     default: break
