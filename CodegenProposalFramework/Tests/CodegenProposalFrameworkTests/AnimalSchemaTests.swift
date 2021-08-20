@@ -5,55 +5,65 @@ import XCTest
 
 class AnimalSchemaTests: XCTestCase {
 
-  private func makeDogReference() -> CacheReference<HousePet> {
-    .entity(Dog(in: MockTransaction()))
+  var transaction: MockTransaction!
+
+  override func setUp() {
+    super.setUp()
+    transaction = MockTransaction()
   }
 
-  func test_covariantInterfaceImplementation() throws {
-    let dog = Dog(in: MockTransaction())
-    dog.predators = [makeDogReference(), makeDogReference()]
-    XCTAssertEqual(dog.predators.count, 2)
-
-    let animal: Animal = dog
-    XCTAssertEqual(animal.predators.count, 2)
-
-//    animal.predators = [Dog(in: MockTransaction())]
-//    XCTAssertEqual(animal.predators.count, 1)
+  override func tearDown() {
+    transaction = nil
+    super.tearDown()
   }
 
-  func test_initCacheEntityFromNestedData() throws {
-    let dog = Dog(in: MockTransaction())
-    dog.data["bestFriend"] = [
-      "__typename": "Dog",
-      "Test": 1,
-      "bodyTemperature": 12
-    ]
+  func test_setCovariantFieldOnInterfaceToInvalidType() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = HousePet(entity: dog)
 
-    let bestFriend = dog.bestFriend?.resolve()
-    XCTAssertEqual(bestFriend?.data["Test"] as? Int, 1)
-    XCTAssertEqual(bestFriend?.bodyTemperature, 12)
+    let bird = Bird(transaction: transaction)
+    let birdAsPet = Pet(entity: bird)
+
+    asHousePet.bestFriend = birdAsPet
+
+    XCTAssert(transaction.errors.count == 1)
+    XCTAssertNil(dog.bestFriend)
+    XCTAssertNil(asHousePet.bestFriend)
   }
 
-  func test_initCacheEntityFromCacheKeyReference() throws {
-    // given
-    let key = CacheKey(key: "$123")
-    let transaction = MockTransaction()
-
-    let bestFriendData: [String: Any] = [
-      "__typename": "Dog",
-      "Test": 1
-    ]
-
-    transaction.cache[key.key] = bestFriendData
-
-    // when
-    let dog = Dog(in: MockTransaction())
-    dog.data["bestFriend"] = key
-
-    // then
+//  func test_initCacheEntityFromNestedData() throws {
+//    let dog = makeDog()
+//    dog.data["bestFriend"] = [
+//      "__typename": "Dog",
+//      "Test": 1,
+//      "bodyTemperature": 12
+//    ]
+//
 //    let bestFriend = dog.bestFriend?.resolve()
 //    XCTAssertEqual(bestFriend?.data["Test"] as? Int, 1)
-  }
+//    XCTAssertEqual(bestFriend?.bodyTemperature, 12)
+//  }
+//
+//  func test_initCacheEntityFromCacheKeyReference() throws {
+//    // given
+//    let key = CacheKey(key: "$123")
+//    let transaction = MockTransaction()
+//
+//    let bestFriendData: [String: Any] = [
+//      "__typename": "Dog",
+//      "Test": 1
+//    ]
+//
+//    transaction.cache[key.key] = bestFriendData
+//
+//    // when
+//    let dog = Dog(in: MockTransaction())
+//    dog.data["bestFriend"] = key
+//
+//    // then
+////    let bestFriend = dog.bestFriend?.resolve()
+////    XCTAssertEqual(bestFriend?.data["Test"] as? Int, 1)
+//  }
 
 }
 
@@ -61,15 +71,17 @@ class MockTransaction: CacheTransaction {
 
   var cache: [String: Any] = [:]
 
-  let entityFactory: CacheEntityFactory.Type = AnimalSchema.TypesUsed.self
-
-  init() {}
+  init() {
+    super.init(entityFactory: AnimalSchema.TypesUsed.self, keyResolver: MockCacheKeyResolver())
+  }
 
   func entity<T>(withKey: String) -> T? {
     return nil
   }
+}
 
-  func cacheKey(for: CacheEntity) -> CacheKey? {
+struct MockCacheKeyResolver: CacheKeyResolver {
+  func cacheKey(for: [String : Any]) -> CacheKey? {
     return nil
   }
 }
