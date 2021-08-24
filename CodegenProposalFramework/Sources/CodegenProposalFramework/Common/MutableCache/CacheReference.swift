@@ -3,13 +3,38 @@ public protocol AnyCacheObject: AnyObject {
   var data: [String: Any] { get }
 
   func set(value: Cacheable?, forField field: String) throws
+
+  func propertyType(forField field: String) -> Cacheable.Type?
+}
+
+/// A type that can be the value of a `@CacheField` property. In other words, a `Cacheable` type
+/// can be the value of a field on a `CacheEntity` or `CacheInterface`
+///
+/// # Conforming Types:
+/// - `CacheEntity`
+/// - `CacheInterface`
+/// - `ScalarType` (`String`, `Int`, `Bool`, `Float`)
+/// - `CustomScalarType`
+/// - `GraphQLEnum` (via `CustomScalarType`)
+public protocol Cacheable {
+  static func value(with cacheData: Any, in transaction: CacheTransaction) throws -> Self
 }
 
 open class CacheEntity: AnyCacheObject, Cacheable {
-  public let _transaction: CacheTransaction
-  public var data: [String: Any]
+  public final let _transaction: CacheTransaction
+  public final var data: [String: Any]
 
   final var __typename: String { data["__typename"] as! String }
+
+  public struct Metadata {
+    let implementedInterfaces: [CacheInterface.Type]
+
+    public init(interfaces: [CacheInterface.Type]) {
+      self.implementedInterfaces = interfaces
+    }
+  }
+
+  open class var __metadata: Metadata { fatalError("Subclasses must override this property.") }
 
   public required init(transaction: CacheTransaction, data: [String: Any] = [:]) {
     self._transaction = transaction
@@ -31,29 +56,54 @@ open class CacheEntity: AnyCacheObject, Cacheable {
       return transaction.entity(withData: data) as! Self
 
     default:
-      throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: Self.self) // TODO
+      throw MockError.mock// TODO
     }
   }
 
-  public func set(value: Cacheable?, forField field: String) throws {
-    data[field] = value
+  public final func set(value: Cacheable?, forField field: String) throws {
+    guard let value = value else {
+      data[field] = nil
+      return
+    }
+
+    switch propertyType(forField: field) {
+    case let interface as CacheInterface.Type:
+      data[field] = try interface.value(with: value, in: _transaction)
+
+    default: break // TODO: throw error
+    }
   }
 
-  func cacheField(named: String) -> CacheField<String>? {
-    return nil
+  open func propertyType(forField field: String) -> Cacheable.Type? {
+    fatalError("Subclasses must override this function.")
   }
+}
+
+enum MockError: Error {
+  case mock // TODO
 }
 
 open class CacheInterface: AnyCacheObject, Cacheable {
 
   final let entity: CacheEntity
-  final var underlyingType: CacheEntity.Type { type(of: entity) }
+  final var underlyingType: CacheEntity.Type { Swift.type(of: entity) }
+
+  public static var fields: [String : Cacheable.Type] { [:] }
 
   public final var _transaction: CacheTransaction { entity._transaction }
   public final var data: [String: Any] { entity.data }
 
-  public required init(entity: CacheEntity) {
+  public required init(entity: CacheEntity) throws {
+    let validInterfaces = type(of: entity).__metadata.implementedInterfaces
+    guard validInterfaces.contains(where: {$0 == Self.self}) else {
+      throw MockError.mock
+    }
+
     self.entity = entity
+  }
+
+  public required convenience init(interface: CacheInterface) throws {
+    try self.init(entity: interface.entity)
   }
 
   public static func value(
@@ -62,13 +112,16 @@ open class CacheInterface: AnyCacheObject, Cacheable {
   ) throws -> Self {
     switch cacheData {
     case let entity as CacheEntity:
-      return Self.init(entity: entity)
+      return try Self(entity: entity)
 
     case let key as CacheKey:
-      return Self.init(entity: transaction.entity(withKey: key)!)
+      return try Self(entity: transaction.entity(withKey: key)!)
 
     case let data as [String: Any]:
-      return Self.init(entity: transaction.entity(withData: data))
+      return try Self(entity: transaction.entity(withData: data))
+
+    case let interface as CacheInterface:
+      return try Self(interface: interface)
 
     default:
       throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: Self.self) // TODO
@@ -77,6 +130,10 @@ open class CacheInterface: AnyCacheObject, Cacheable {
 
   public func set(value: Cacheable?, forField field: String) throws {
     try entity.set(value: value, forField: field)
+  }
+
+  open func propertyType(forField field: String) -> Cacheable.Type? {
+    return nil
   }
 
   //  func asUnderlyingType() -> CacheEntity {

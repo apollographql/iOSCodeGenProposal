@@ -12,4 +12,9 @@ public final class Bird: CacheEntity {
   @CacheField("bodyTemperature") var bodyTemperature: Int?
   @CacheField("laysEggs") var laysEggs: Bool?
   @CacheField("wingspan") var wingspan: Int?
+
+  override public class var __metadata: Metadata { _metadata }
+  private static let _metadata: Metadata = Metadata(
+    interfaces: [Animal.self, Pet.self, WarmBlooded.self]
+  )
 }

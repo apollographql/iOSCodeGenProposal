@@ -29,12 +29,13 @@ public struct CacheField<T: Cacheable> {
       }
     }
     set {
-//      let field = instance[keyPath: storageKeyPath].field.description
+      let field = instance[keyPath: storageKeyPath].field.description
+      do {
 //
 //      switch newValue {
 //      // case .none: // TODO
 //      case is ScalarType:
-//        instance.set(value: newValue, forField: field)
+        try instance.set(value: newValue, forField: field)
 ////      case let entity as CacheEntity:
 //
 //
@@ -42,6 +43,9 @@ public struct CacheField<T: Cacheable> {
 //      default:
 //        break // TODO
 //      }
+      } catch {
+        instance._transaction.log(error: error)
+      }
     }
   }
 
@@ -76,17 +80,4 @@ public struct CacheField<T: Cacheable> {
   message: "This property wrapper can only be applied to AnyCacheObjects."
   )
   public var wrappedValue: T? { get { fatalError() } set { fatalError() } }
-}
-
-/// A type that can be the value of a `@CacheField` property. In other words, a `Cacheable` type
-/// can be the value of a field on a `CacheEntity` or `CacheInterface`
-///
-/// # Conforming Types:
-/// - `CacheEntity`
-/// - `CacheInterface`
-/// - `ScalarType` (`String`, `Int`, `Bool`, `Float`)
-/// - `CustomScalarType`
-/// - `GraphQLEnum` (via `CustomScalarType`)
-public protocol Cacheable {
-  static func value(with cacheData: Any, in transaction: CacheTransaction) throws -> Self
 }
