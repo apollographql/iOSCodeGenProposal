@@ -20,7 +20,7 @@ public struct CacheField<T: Cacheable> {
 
       do {
         let value = try T.value(with: data, in: instance._transaction)
-        replace(data: data, with: value, for: field, on: instance)
+        try replace(data: data, with: value, for: field, on: instance)
         return value
 
       } catch {
@@ -29,16 +29,19 @@ public struct CacheField<T: Cacheable> {
       }
     }
     set {
-      //      let field = instance[keyPath: storageKeyPath].field
-      //
-      //      switch newValue {
-      //      case let reference as AnyCacheReference:
-      //        instance.data[field] = reference.cacheData
-      //
-      //      default:
-      //        break // TODO
-      ////        fatalError() // TODO
-      //      }
+//      let field = instance[keyPath: storageKeyPath].field.description
+//
+//      switch newValue {
+//      // case .none: // TODO
+//      case is ScalarType:
+//        instance.set(value: newValue, forField: field)
+////      case let entity as CacheEntity:
+//
+//
+//
+//      default:
+//        break // TODO
+//      }
     }
   }
 
@@ -46,24 +49,28 @@ public struct CacheField<T: Cacheable> {
     data: Any,
     with parsedValue: T,
     for field: String,
-    on instance: AnyCacheObject)
-  {
+    on instance: AnyCacheObject
+  ) throws {
     /// Only need to do this for CacheEntity, Enums, and custom scalars.
     /// DO NOT DO THIS when value is a CacheInterface ON a CacheInterface instance
     /// For ScalarTypes, its redundant
     /// TODO: Write tests for this.
     switch (parsedValue) {
     case is CacheEntity where !(data is CacheEntity),
-         is CacheInterface where instance is CacheInterface,
+         is CacheInterface where instance is CacheEntity,
          is CustomScalarType:
-      instance.set(value: parsedValue, forField: field)
+      try instance.set(value: parsedValue, forField: field)
+
+    case let interface as CacheInterface where instance is CacheInterface:
+      try instance.set(value: interface.entity, forField: field)
+      break // TODO
 
     case is CacheInterface, is ScalarType: break
     default: break
     }
   }
 
-  public var projectedValue: CacheField { self }
+//  public var projectedValue: CacheField { self }
 
   @available(*, unavailable,
   message: "This property wrapper can only be applied to AnyCacheObjects."
