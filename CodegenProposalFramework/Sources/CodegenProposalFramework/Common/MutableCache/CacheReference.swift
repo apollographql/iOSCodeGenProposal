@@ -93,7 +93,7 @@ open class CacheInterface: AnyCacheObject, Cacheable {
   public final var _transaction: CacheTransaction { entity._transaction }
   public final var data: [String: Any] { entity.data }
 
-  public required init(entity: CacheEntity) throws {
+  public required init(_ entity: CacheEntity) throws {
     let validInterfaces = type(of: entity).__metadata.implementedInterfaces
     guard validInterfaces.contains(where: {$0 == Self.self}) else {
       throw MockError.mock
@@ -102,8 +102,8 @@ open class CacheInterface: AnyCacheObject, Cacheable {
     self.entity = entity
   }
 
-  public required convenience init(interface: CacheInterface) throws {
-    try self.init(entity: interface.entity)
+  public required convenience init(_ interface: CacheInterface) throws {
+    try self.init(interface.entity)
   }
 
   public static func value(
@@ -112,16 +112,16 @@ open class CacheInterface: AnyCacheObject, Cacheable {
   ) throws -> Self {
     switch cacheData {
     case let entity as CacheEntity:
-      return try Self(entity: entity)
+      return try Self(entity)
 
     case let key as CacheKey:
-      return try Self(entity: transaction.entity(withKey: key)!)
+      return try Self(transaction.entity(withKey: key)!)
 
     case let data as [String: Any]:
-      return try Self(entity: transaction.entity(withData: data))
+      return try Self(transaction.entity(withData: data))
 
     case let interface as CacheInterface:
-      return try Self(interface: interface)
+      return try Self(interface)
 
     default:
       throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: Self.self) // TODO

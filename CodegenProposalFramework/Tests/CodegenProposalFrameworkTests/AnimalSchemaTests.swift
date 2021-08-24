@@ -1,4 +1,5 @@
 import XCTest
+import Nimble
 @testable import CodegenProposalFramework
 @testable import AnimalsAPI
 @testable import AnimalSchema
@@ -19,27 +20,27 @@ class AnimalSchemaTests: XCTestCase {
 
   func test_setCovariantFieldOnInterfaceToInvalidType() throws {
     let dog = Dog(transaction: transaction)
-    let asHousePet = try HousePet(entity: dog)
+    let asHousePet = try HousePet(dog)
 
     let bird = Bird(transaction: transaction)
-    let birdAsPet = try Pet(entity: bird)
+    let birdAsPet = try Pet(bird)
 
     asHousePet.bestFriend = birdAsPet
 
-    XCTAssert(transaction.errors.count == 1)
+    expect(self.transaction.errors).toNot(beEmpty())  // TODO: verify actual error
     XCTAssertNil(dog.bestFriend)
     XCTAssertNil(asHousePet.bestFriend)
   }
 
   func test_setCovariantFieldOnInterfaceToValidType() throws {
     let dog = Dog(transaction: transaction)
-    let asHousePet = try HousePet(entity: dog)
+    let asHousePet = try HousePet(dog)
 
-    let bestFriendAsDog = try Pet(entity: Dog(transaction: transaction))
+    let bestFriendAsDog = try Pet(Dog(transaction: transaction))
 
     asHousePet.bestFriend = bestFriendAsDog
 
-    XCTAssert(transaction.errors.count == 0)
+    expect(self.transaction.errors).to(beEmpty())
     XCTAssertIdentical(dog.bestFriend?.entity, bestFriendAsDog.entity)
     XCTAssertIdentical(asHousePet.bestFriend?.entity, bestFriendAsDog.entity)
   }

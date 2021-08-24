@@ -17,6 +17,9 @@ let package = Package(
     .package(name: "Apollo",
              url: "https://github.com/apollographql/apollo-ios.git",
              .upToNextMajor(from: "0.41.0")),
+    .package(name: "Nimble",
+             url: "https://github.com/Quick/Nimble.git",
+             .upToNextMajor(from: "9.2.0")),
   ],
   targets: [
     .target(
@@ -47,6 +50,6 @@ let package = Package(
     ),
     .testTarget(
       name: "CodegenProposalFrameworkTests",
-      dependencies: ["CodegenProposalFramework", "AnimalsAPI"]),
+      dependencies: ["CodegenProposalFramework", "AnimalsAPI", "Nimble"]),
   ]
 )
