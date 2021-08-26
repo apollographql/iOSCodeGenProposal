@@ -9,7 +9,7 @@ public protocol CacheKeyResolver {
 public class CacheTransaction {
   let entityFactory: CacheEntityFactory.Type
   let keyResolver: CacheKeyResolver
-  private(set) var errors: [Error] = []
+  private(set) var errors: [CacheError] = []
   private var fetchedEntities: [CacheKey: CacheEntity] = [:]
 
   init(
@@ -44,8 +44,12 @@ public class CacheTransaction {
     return entity
   }
 
-  func log(error: Error) {
+  func log(_ error: CacheError) {
     errors.append(error)
+  }
+
+  func log(_ error: Error) {
+    // TODO
   }
 
 //  func interface<T: CacheInterface>(withData data: [String: Any]) -> T {
@@ -53,11 +57,18 @@ public class CacheTransaction {
 //  }
 }
 
-struct CacheReadError: Error {
+struct CacheError: Error {
   enum Reason: Error {
     case unrecognizedCacheData(_ data: Any, forType: Any.Type)
+    case invalidEntityType(_ type: CacheEntity.Type, forInterface: CacheInterface.Type)
   }
+
+  enum `Type` {
+    case read, write
+  }
+
   let reason: Reason
+  let type: Type
   let field: String
   let object: AnyCacheObject?
 }

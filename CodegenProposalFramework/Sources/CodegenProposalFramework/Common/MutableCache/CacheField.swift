@@ -24,7 +24,7 @@ public struct CacheField<T: Cacheable> {
         return value
 
       } catch {
-        instance._transaction.log(error: error)
+        instance._transaction.log(error)
         return nil
       }
     }
@@ -43,8 +43,17 @@ public struct CacheField<T: Cacheable> {
 //      default:
 //        break // TODO
 //      }
+      } catch let error as CacheError.Reason {
+        let error = CacheError(
+          reason: error,
+          type: .write,
+          field: field,
+          object: entity(for: instance)
+        )
+        instance._transaction.log(error)
+
       } catch {
-        instance._transaction.log(error: error)
+        instance._transaction.log(error)
       }
     }
   }
@@ -71,6 +80,14 @@ public struct CacheField<T: Cacheable> {
 
     case is CacheInterface, is ScalarType: break
     default: break
+    }
+  }
+
+  private static func entity(for instance: AnyCacheObject) -> CacheEntity {
+    switch instance {
+    case let entity as CacheEntity: return entity
+    case let interface as CacheInterface: return interface.entity
+    default: fatalError("AnyCacheObject can only be a CacheEntity or a CacheInterface.")
     }
   }
 

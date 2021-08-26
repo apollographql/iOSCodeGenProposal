@@ -86,7 +86,7 @@ enum MockError: Error {
 open class CacheInterface: AnyCacheObject, Cacheable {
 
   final let entity: CacheEntity
-  final var underlyingType: CacheEntity.Type { Swift.type(of: entity) }
+  final var underlyingType: CacheEntity.Type { Swift.type(of: entity) } // TODO: Delete?
 
   public static var fields: [String : Cacheable.Type] { [:] }
 
@@ -94,9 +94,10 @@ open class CacheInterface: AnyCacheObject, Cacheable {
   public final var data: [String: Any] { entity.data }
 
   public required init(_ entity: CacheEntity) throws {
-    let validInterfaces = type(of: entity).__metadata.implementedInterfaces
-    guard validInterfaces.contains(where: {$0 == Self.self}) else {
-      throw MockError.mock
+    let entityType = type(of: entity)
+    let validInterfaces = entityType.__metadata.implementedInterfaces
+    guard validInterfaces.contains(where: { $0 == Self.self }) else {
+      throw CacheError.Reason.invalidEntityType(entityType, forInterface: Self.self)
     }
 
     self.entity = entity
@@ -124,7 +125,7 @@ open class CacheInterface: AnyCacheObject, Cacheable {
       return try Self(interface)
 
     default:
-      throw CacheReadError.Reason.unrecognizedCacheData(cacheData, forType: Self.self) // TODO
+      throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self) // TODO
     }
   }
 
@@ -149,93 +150,11 @@ open class CacheInterface: AnyCacheObject, Cacheable {
   //  }
 }
 
-protocol AnyCacheReference {
-  var cacheData: Any { get }
-}
-
-//protocol CacheReferenceProtocol {
-//  associatedtype Entity
-//  func resolve() -> Entity?
-//}
-
 /// Represents a key that references a record in the cache.
 public struct CacheKey: Hashable {
   public let key: String
 
-  public init(key: String) {
+  public init(_ key: String) {
     self.key = key
-  }
-}
-
-//extension CacheEntity {
-//  @propertyWrapper
-//  public struct CacheRef<R: CacheEntity> {
-//
-//    private let field: StaticString
-//
-//    public init(_ field: StaticString) {
-//      self.field = field
-//    }
-//
-//    public static subscript<E: CacheEntity, R>(
-//      _enclosingInstance instance: E,
-//      wrapped wrappedKeyPath: ReferenceWritableKeyPath<E, CacheReference<R>?>,
-//      storage storageKeyPath: ReferenceWritableKeyPath<E, Self>
-//    ) -> CacheReference<R>? {
-//      get {
-//        let field = instance[keyPath: storageKeyPath].field
-//        let data = instance.data[field.description]
-//
-//        if let _ = data as? CacheKey {
-//          fatalError()
-//          //        return CacheReference.entity(instance._transaction.entity(withKey: cacheKey.key)) as? T
-//
-//        } else if let dataDict = data as? [String: Any] {
-////          let entity: R = instance._transaction.entity(withData: dataDict) as! R
-////          return CacheReference.entity(entity)
-//                  fatalError()
-//
-//        } else {
-//          fatalError()
-//        }
-//      }
-//      set {
-//        //      let field = instance[keyPath: storageKeyPath].field
-//        //
-//        //      switch newValue {
-//        //      case let reference as AnyCacheReference:
-//        //        instance.data[field] = reference.cacheData
-//        //
-//        //      default:
-//        //        break // TODO
-//        ////        fatalError() // TODO
-//        //      }
-//      }
-//    }
-//
-//    public var projectedValue: CacheRef { self }
-//
-//    @available(*, unavailable,
-//    message: "This property wrapper can only be applied to CacheEntity objects."
-//    )
-//    public var wrappedValue: CacheReference<R>? { get { fatalError() } set { fatalError() } }
-//  }
-//}
-
-
-public protocol AnyCacheEntity {
-  var data: [String: Any] { get }
-}
-
-public class SomeEntity<T> {
-  //  private struct AnyCacheReference {
-  //    let value: CacheReferenceProtocol
-  //  }
-
-  private let wrapped: T?
-
-  public init?(wrapping reference: AnyCacheEntity?) {
-    guard let ref = reference as? T else { return nil }
-    self.wrapped = ref
   }
 }

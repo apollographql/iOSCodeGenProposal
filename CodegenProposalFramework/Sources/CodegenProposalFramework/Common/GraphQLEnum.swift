@@ -52,7 +52,7 @@ where T: RawRepresentable & CaseIterable, T.RawValue == String {
 extension GraphQLEnum: CustomScalarType {
   public init(scalarData: Any) throws {
     guard let stringData = scalarData as? String else {
-      throw CacheReadError.Reason.unrecognizedCacheData(scalarData, forType: Self.self)
+      throw CacheError.Reason.unrecognizedCacheData(scalarData, forType: Self.self)
     }
     self.init(rawValue: stringData)
   }
