@@ -34,7 +34,7 @@ open class CacheEntity: AnyCacheObject, Cacheable {
       self.typeForField = typeForField
     }
 
-    func propertyType(forField field: String) -> Cacheable.Type? {
+    func fieldType(forField field: String) -> Cacheable.Type? {
       typeForField(field)
     }
 
@@ -58,6 +58,12 @@ open class CacheEntity: AnyCacheObject, Cacheable {
     case let dataAsSelf as Self:
       return dataAsSelf
 
+    case let interface as CacheInterface:
+      guard let entity = interface.entity as? Self else {
+        throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
+      }
+      return entity
+
     case let key as CacheKey:
       return transaction.entity(withKey: key) as! Self
 
@@ -65,7 +71,7 @@ open class CacheEntity: AnyCacheObject, Cacheable {
       return transaction.entity(withData: data) as! Self
 
     default:
-      throw MockError.mock// TODO
+      throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
     }
   }
 
@@ -75,12 +81,27 @@ open class CacheEntity: AnyCacheObject, Cacheable {
       return
     }
 
-    switch Self.__metadata.propertyType(forField: field) {
-    case let interface as CacheInterface.Type:
-      data[field] = try interface.value(with: value, in: _transaction)
+    do {
+      switch Self.__metadata.fieldType(forField: field) {
+      case let interfaceType as CacheInterface.Type:
+        data[field] = try interfaceType.value(with: value, in: _transaction)
 
-    default: break // TODO: throw error
+      case let entityType as CacheEntity.Type:
+        data[field] = try entityType.value(with: value, in: _transaction)
+
+      default: break // TODO: throw error
+      }
+
+    } catch let error as CacheError.Reason {
+      switch error {
+      case let .invalidEntityType(_, forInterface: fieldType as AnyCacheObject.Type),
+           let .unrecognizedCacheData(_, forType: fieldType as AnyCacheObject.Type):
+        throw CacheError.Reason.invalidValue(value, forCovariantFieldOfType: fieldType)
+
+      default: throw error
+      }
     }
+
   }
 }
 

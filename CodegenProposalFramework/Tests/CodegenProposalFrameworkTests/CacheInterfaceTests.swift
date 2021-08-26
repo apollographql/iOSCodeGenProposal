@@ -57,7 +57,7 @@ class CacheInterfaceTests: XCTestCase {
 
   // MARK: Covariant Fields
 
-  func test_setCovariantField_toInvalidType_throwsInvalidEntityTypeError() throws {
+  func test_setCovariantField_withInterfaceType_toInvalidType_throwsInvalidEntityTypeError() throws {
     let dog = Dog(transaction: transaction)
     let asHousePet = try HousePet(dog)
 
@@ -65,7 +65,7 @@ class CacheInterfaceTests: XCTestCase {
     let birdAsPet = try Pet(bird)
 
     let expectedError = CacheError(
-      reason: .invalidEntityType(Bird.self, forInterface: HousePet.self),
+      reason: .invalidValue(birdAsPet, forCovariantFieldOfType: HousePet.self),
       type: .write,
       field: "bestFriend",
       object: dog
@@ -73,12 +73,12 @@ class CacheInterfaceTests: XCTestCase {
 
     asHousePet.bestFriend = birdAsPet
 
-    expect(self.transaction.errors.first).to(matchError(expectedError))
+    expect(self.transaction.errors.first).to(equal(expectedError))
     expect(dog.bestFriend).to(beNil())
     expect(asHousePet.bestFriend).to(beNil())
   }
 
-  func test_setCovariantField_toValidType_setsFieldOnEntity() throws {
+  func test_setCovariantField_withInterfaceType_toValidType_setsFieldOnEntity() throws {
     let dog = Dog(transaction: transaction)
     let asHousePet = try HousePet(dog)
 

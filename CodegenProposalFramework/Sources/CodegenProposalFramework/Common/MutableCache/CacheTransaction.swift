@@ -1,3 +1,5 @@
+import Foundation
+
 public protocol CacheEntityFactory {
   static func entityType(forTypename __typename: String) -> CacheEntity.Type?
 }
@@ -57,10 +59,11 @@ public class CacheTransaction {
 //  }
 }
 
-struct CacheError: Error {
+struct CacheError: Error, Equatable {
   enum Reason: Error {
     case unrecognizedCacheData(_ data: Any, forType: Any.Type)
     case invalidEntityType(_ type: CacheEntity.Type, forInterface: CacheInterface.Type)
+    case invalidValue(_ value: Cacheable?, forCovariantFieldOfType: AnyCacheObject.Type)
   }
 
   enum `Type` {
@@ -71,4 +74,22 @@ struct CacheError: Error {
   let type: Type
   let field: String
   let object: AnyCacheObject?
+
+  var message: String {
+        switch self.reason {
+    case let .unrecognizedCacheData(data, type):
+      return "Cache data '\(data)' was unrecognized for conversion to type '\(type)'."
+    case let .invalidEntityType(type, forInterface: interface):
+      return "Entity of type '\(type)' does not implement interface '\(interface)'."
+    case let .invalidValue(value, forCovariantFieldOfType: fieldType):
+      return """
+        Value '\(value ?? "nil")' is not a valid value for covariant field '\(field)'.
+        Object of type '\(Swift.type(of: object))' expects value of type '\(fieldType)'.
+        """
+    }
+  }
+
+  static func ==(lhs: CacheError, rhs: CacheError) -> Bool {
+    lhs.message == rhs.message
+  }
 }

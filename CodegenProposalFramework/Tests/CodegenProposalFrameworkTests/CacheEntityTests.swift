@@ -52,4 +52,40 @@ class CacheEntityTests: XCTestCase {
       // then
       expect(dog.bestFriend?.entity).to(beIdenticalTo(bestFriend))
     }
+
+  // MARK: Covariant Fields
+
+  func test_setCovariantField_withEntityType_toInvalidType_throwsInvalidEntityTypeError() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = try HousePet(dog)
+
+    let bird = Bird(transaction: transaction)
+    let birdAsPet = try Pet(bird)
+
+    let expectedError = CacheError(
+      reason: .invalidValue(birdAsPet, forCovariantFieldOfType: Cat.self),
+      type: .write,
+      field: "rival",
+      object: dog
+    )
+
+    asHousePet.rival = birdAsPet
+
+    expect(self.transaction.errors.first).to(matchError(expectedError))
+    expect(dog.bestFriend).to(beNil())
+    expect(asHousePet.bestFriend).to(beNil())
+  }
+
+  func test_setCovariantField_withEntityType_toValidType_setsFieldOnEntity() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = try HousePet(dog)
+
+    let rivalAsPet = try Pet(Cat(transaction: transaction))
+
+    asHousePet.rival = rivalAsPet
+
+    expect(self.transaction.errors).to(beEmpty())
+    expect(dog.rival).to(beIdenticalTo(rivalAsPet.entity))
+    expect(asHousePet.rival?.entity).to(beIdenticalTo(rivalAsPet.entity))
+  }
 }
