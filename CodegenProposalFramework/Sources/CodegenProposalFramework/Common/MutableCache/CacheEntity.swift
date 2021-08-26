@@ -25,17 +25,21 @@ open class CacheEntity: AnyCacheObject, Cacheable {
   final var __typename: String { data["__typename"] as! String }
 
   public struct Metadata {
-    let implementedInterfaces: [CacheInterface.Type]
+    private let implementedInterfaces: [CacheInterface.Type]
     private let typeForField: (String) -> Cacheable.Type?
 
-    public init(interfaces: [CacheInterface.Type],
+    public init(implements: [CacheInterface.Type],
                 typeForField: @escaping (String) -> Cacheable.Type?) {
-      self.implementedInterfaces = interfaces
+      self.implementedInterfaces = implements
       self.typeForField = typeForField
     }
 
     func propertyType(forField field: String) -> Cacheable.Type? {
       typeForField(field)
+    }
+
+    func implements(_ interface: CacheInterface.Type) -> Bool {
+      implementedInterfaces.contains(where: { $0 == interface })
     }
   }
 
@@ -95,9 +99,8 @@ open class CacheInterface: AnyCacheObject, Cacheable {
   public final var data: [String: Any] { entity.data }
 
   public required init(_ entity: CacheEntity) throws {
-    let entityType = type(of: entity)
-    let validInterfaces = entityType.__metadata.implementedInterfaces
-    guard validInterfaces.contains(where: { $0 == Self.self }) else {
+    let entityType = type(of: entity)    
+    guard entityType.__metadata.implements(Self.self) else {
       throw CacheError.Reason.invalidEntityType(entityType, forInterface: Self.self)
     }
 

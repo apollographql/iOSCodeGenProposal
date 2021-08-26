@@ -1,7 +1,6 @@
 import CodegenProposalFramework
 
-public final class Bird: CacheEntity {
-  // Animal, Pet, WarmBlooded
+public final class Bird: CacheEntity {  
   @CacheList  var predators: [Animal]
   @CacheField("species") var species: String?
   @CacheField("height") var height: Height?
@@ -15,12 +14,14 @@ public final class Bird: CacheEntity {
 
   override public class var __metadata: Metadata { _metadata }
   private static let _metadata: Metadata = Metadata(
-    interfaces: [Animal.self, Pet.self, WarmBlooded.self],
+    implements: [Animal.self, Pet.self, WarmBlooded.self],
     typeForField: { switch $0 {
     case "species", "humanName", "favoriteToy": return String.self
-    case "height": return Height.self
     case "bodyTemperature", "wingspan": return Int.self
     case "laysEggs": return Bool.self
+    case "skinCovering": return GraphQLEnum<SkinCovering>.self
+//    case "predators": return [Animal].self
+    case "height": return Height.self
     default: return nil
     } }
   )

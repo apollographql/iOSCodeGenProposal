@@ -5,7 +5,7 @@
 /// a given type condition.
 public protocol SchemaTypeMetadata: CacheEntityFactory {
   associatedtype ObjectType: SchemaObjectType
-  associatedtype Union: SchemaUnion where Union.ObjectType == Self.ObjectType
+  associatedtype Union: SchemaUnion
   associatedtype Interface where ObjectType.Interface == Interface
 }
 
@@ -27,14 +27,6 @@ public protocol SchemaObjectType: SchemaTypeEnum {
   var entityType: CacheEntity.Type? { get }
 }
 
-extension SchemaObjectType {
-  func implements(_ interface: Interface) -> Bool {
-    implementedInterfaces.contains(interface)
-  }
-}
-
 public protocol SchemaUnion: SchemaTypeEnum {
-  associatedtype ObjectType
-
-  var possibleTypes: [ObjectType] { get }
+  var possibleTypes: [CacheEntity.Type] { get }
 }

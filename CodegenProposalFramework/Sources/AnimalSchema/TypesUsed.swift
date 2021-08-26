@@ -52,10 +52,10 @@ public struct TypesUsed: SchemaTypeMetadata {
   public enum Union: String, SchemaUnion {
     case ClassroomPet
 
-    public var possibleTypes: [ObjectType] {
+    public var possibleTypes: [CacheEntity.Type] {
       switch self {
       case .ClassroomPet:
-        return [.Cat, .Bird, .Rat, .PetRock]
+        return [Cat.self, Bird.self, Rat.self, PetRock.self]
       }
     }
   }

@@ -13,7 +13,7 @@ import AnimalSchema
 /// }
 /// ```
 struct WarmBloodedDetails: SelectionSet, Fragment {
-  static var __parentType: AnimalSchema.ParentType { .Interface(.WarmBlooded) }
+  static var __parentType: AnimalSchema.ParentType { .Interface(AnimalSchema.WarmBlooded.self) }
 
   let data: ResponseDict
 
@@ -21,7 +21,7 @@ struct WarmBloodedDetails: SelectionSet, Fragment {
   var height: Height  { data["height"] }
 
   struct Height: SelectionSet {
-    static var __parentType: AnimalSchema.ParentType { .ObjectType(.Height) }
+    static var __parentType: AnimalSchema.ParentType { .ObjectType(AnimalSchema.Height.self) }
     let data: ResponseDict
 
     var meters: Int { data["meters"] }
