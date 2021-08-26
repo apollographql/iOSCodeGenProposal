@@ -135,7 +135,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForInterface_withConcreteTypeThatDoesNotImplementInterface() throws {
-    dataDict["__typename"] = AnimalSchema.TypesUsed.ObjectType.Fish.rawValue
+    dataDict["__typename"] = Fish.__typename
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
@@ -144,7 +144,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForConcreteType_withDifferentConcreteType() throws {
-    dataDict["__typename"] = AnimalSchema.TypesUsed.ObjectType.Fish.rawValue
+    dataDict["__typename"] = Fish.__typename
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
@@ -158,7 +158,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForUnionType_withConcreteTypeMatchingAMemberType() throws {
-    dataDict["__typename"] = AnimalSchema.TypesUsed.ObjectType.Bird.rawValue
+    dataDict["__typename"] = Bird.__typename
     dataDict["wingspan"] = 15
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
@@ -169,7 +169,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForUnionType_withConcreteTypeNotMatchingAMemberType() throws {
-    dataDict["__typename"] = AnimalSchema.TypesUsed.ObjectType.Crocodile.rawValue
+    dataDict["__typename"] = Crocodile.__typename
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 

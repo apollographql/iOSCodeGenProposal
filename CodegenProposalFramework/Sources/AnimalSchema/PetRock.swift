@@ -1,6 +1,8 @@
 import CodegenProposalFramework
 
 public final class PetRock: CacheEntity {
+  public static let __typename: String = "PetRock"
+  
   @CacheField("humanName") var humanName: String?
   @CacheField("favoriteToy") var favoriteToy: String?
   @CacheField("owner") var owner: Human?

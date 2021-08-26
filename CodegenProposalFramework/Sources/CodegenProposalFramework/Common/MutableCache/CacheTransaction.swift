@@ -1,21 +1,17 @@
 import Foundation
 
-public protocol CacheEntityFactory {
-  static func entityType(forTypename __typename: String) -> CacheEntity.Type?
-}
-
 public protocol CacheKeyResolver {
   func cacheKey(for: [String: Any]) -> CacheKey?
 }
 
 public class CacheTransaction {
-  let entityFactory: CacheEntityFactory.Type
+  let entityFactory: SchemaTypeFactory.Type
   let keyResolver: CacheKeyResolver
   private(set) var errors: [CacheError] = []
   private var fetchedEntities: [CacheKey: CacheEntity] = [:]
 
   init(
-    entityFactory: CacheEntityFactory.Type,
+    entityFactory: SchemaTypeFactory.Type,
     keyResolver: CacheKeyResolver
   ) {
     self.entityFactory = entityFactory

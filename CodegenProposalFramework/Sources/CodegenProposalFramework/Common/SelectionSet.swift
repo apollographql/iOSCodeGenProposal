@@ -1,17 +1,17 @@
-public enum SelectionSetType<S: SchemaTypeMetadata> {
+public enum ParentType {
   case ObjectType(CacheEntity.Type)
   case Interface(CacheInterface.Type)
-  case Union(S.Union)
+  case Union(SchemaUnion)
 }
 
 public protocol SelectionSet: ResponseObject {
 
-  associatedtype Schema: SchemaTypeMetadata
+  associatedtype Schema: SchemaTypeFactory
 
   /// The GraphQL type for the `SelectionSet`.
   ///
   /// This may be a concrete type (`ConcreteType`) or an abstract type (`Interface`, or `Union`).
-  static var __parentType: SelectionSetType<Schema> { get }
+  static var __parentType: ParentType { get }
 }
 
 extension SelectionSet {

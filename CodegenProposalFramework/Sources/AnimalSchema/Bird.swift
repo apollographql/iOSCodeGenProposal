@@ -1,6 +1,8 @@
 import CodegenProposalFramework
 
-public final class Bird: CacheEntity {  
+public final class Bird: CacheEntity {
+  public static let __typename: String = "Bird"
+
   @CacheList  var predators: [Animal]
   @CacheField("species") var species: String?
   @CacheField("height") var height: Height?

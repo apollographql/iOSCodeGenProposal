@@ -2,6 +2,7 @@ import Foundation
 import CodegenProposalFramework
 
 public final class RootQuery: CacheEntity {
+  public static let __typename: String = "ROOT_QUERY" // tODO: or "QUERY? or what?
 
   var allAnimals: [Animal] = []
   var allPets: [Pet] = []

@@ -7,7 +7,7 @@ public struct ResponseDict {
     data[key] as! T
   }
 
-  public subscript<T:ScalarType>(_ key: String) -> T? {
+  public subscript<T: ScalarType>(_ key: String) -> T? {
     data[key] as? T
   }
 

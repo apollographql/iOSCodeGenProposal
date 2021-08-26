@@ -12,16 +12,16 @@ import AnimalSchema
 ///  }
 /// }
 /// ```
-struct PetDetails: SelectionSet, Fragment {
-  static var __parentType: AnimalSchema.ParentType { .Interface(AnimalSchema.Pet.self) }
+struct PetDetails: AnimalSchema.SelectionSet, Fragment {
+  static var __parentType: ParentType { .Interface(AnimalSchema.Pet.self) }
   let data: ResponseDict
 
   var humanName: String? { data["humanName"] }
   var favoriteToy: String { data["favoriteToy"] }
   var owner: Human? { data["owner"] }
 
-  struct Human: SelectionSet {
-    static var __parentType: AnimalSchema.ParentType { .ObjectType(AnimalSchema.Human.self) }
+  struct Human: AnimalSchema.SelectionSet {
+    static var __parentType: ParentType { .ObjectType(AnimalSchema.Human.self) }
     let data: ResponseDict
 
     var firstName: String { data["firstName"] }

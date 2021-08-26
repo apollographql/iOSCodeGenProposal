@@ -10,14 +10,14 @@ import AnimalSchema
 ///   }
 /// }
 /// ```
-struct HeightInMeters: SelectionSet, Fragment {
-  static var __parentType: AnimalSchema.ParentType { .Interface(AnimalSchema.Animal.self) }
+struct HeightInMeters: AnimalSchema.SelectionSet, Fragment {
+  static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
   let data: ResponseDict
 
   var height: Height  { data["height"] }
 
-  struct Height: SelectionSet {
-    static var __parentType: AnimalSchema.ParentType { .ObjectType(AnimalSchema.Height.self) }
+  struct Height: AnimalSchema.SelectionSet {
+    static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
     let data: ResponseDict
 
     var meters: Int { data["meters"] }
