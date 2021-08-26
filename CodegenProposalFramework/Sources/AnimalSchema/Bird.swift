@@ -15,6 +15,13 @@ public final class Bird: CacheEntity {
 
   override public class var __metadata: Metadata { _metadata }
   private static let _metadata: Metadata = Metadata(
-    interfaces: [Animal.self, Pet.self, WarmBlooded.self]
+    interfaces: [Animal.self, Pet.self, WarmBlooded.self],
+    typeForField: { switch $0 {
+    case "species", "humanName", "favoriteToy": return String.self
+    case "height": return Height.self
+    case "bodyTemperature", "wingspan": return Int.self
+    case "laysEggs": return Bool.self
+    default: return nil
+    } }
   )
 }

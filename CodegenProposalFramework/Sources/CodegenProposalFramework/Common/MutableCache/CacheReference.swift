@@ -3,8 +3,6 @@ public protocol AnyCacheObject: AnyObject {
   var data: [String: Any] { get }
 
   func set(value: Cacheable?, forField field: String) throws
-
-  func propertyType(forField field: String) -> Cacheable.Type?
 }
 
 /// A type that can be the value of a `@CacheField` property. In other words, a `Cacheable` type
@@ -28,9 +26,16 @@ open class CacheEntity: AnyCacheObject, Cacheable {
 
   public struct Metadata {
     let implementedInterfaces: [CacheInterface.Type]
+    private let typeForField: (String) -> Cacheable.Type?
 
-    public init(interfaces: [CacheInterface.Type]) {
+    public init(interfaces: [CacheInterface.Type],
+                typeForField: @escaping (String) -> Cacheable.Type?) {
       self.implementedInterfaces = interfaces
+      self.typeForField = typeForField
+    }
+
+    func propertyType(forField field: String) -> Cacheable.Type? {
+      typeForField(field)
     }
   }
 
@@ -66,16 +71,12 @@ open class CacheEntity: AnyCacheObject, Cacheable {
       return
     }
 
-    switch propertyType(forField: field) {
+    switch Self.__metadata.propertyType(forField: field) {
     case let interface as CacheInterface.Type:
       data[field] = try interface.value(with: value, in: _transaction)
 
     default: break // TODO: throw error
     }
-  }
-
-  open func propertyType(forField field: String) -> Cacheable.Type? {
-    fatalError("Subclasses must override this function.")
   }
 }
 
