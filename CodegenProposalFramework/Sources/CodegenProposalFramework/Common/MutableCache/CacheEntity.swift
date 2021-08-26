@@ -65,35 +65,42 @@ open class CacheEntity: AnyCacheObject, Cacheable {
 
     switch T.self {
     case is AnyCacheObject.Type:
-      do {
-        // Check for field covariance
-        switch Self.__metadata.fieldTypeIfCovariant(forField: fieldName) ?? T.self {
-        case let interfaceType as CacheInterface.Type:
-          data[fieldName] = try interfaceType.value(with: value, in: _transaction)
+      // Check for field covariance
+      if let covariantFieldType = Self.__metadata.fieldTypeIfCovariant(forField: fieldName) {
+        try set(value: value, forCovariantField: fieldName, convertingToType: covariantFieldType)
 
-        case let entityType as CacheEntity.Type:
-          data[fieldName] = try entityType.value(with: value, in: _transaction)
-
-        default: break // TODO: throw error
-        }
-
-      } catch let error as CacheError.Reason {
-        switch error {
-        case let .invalidEntityType(_, forInterface: fieldType as AnyCacheObject.Type),
-             let .unrecognizedCacheData(_, forType: fieldType as AnyCacheObject.Type):
-          throw CacheError.Reason.invalidValue(value, forCovariantFieldOfType: fieldType)
-
-        default: throw error
-        }
+      } else {
+        //        data[fieldName] = value // TODO: write tests
       }
 
-//    case is ScalarType.Type:
-//    break
-//    case is CustomScalarType.Type:
-//    break
-//    case is GraphQLEnum.Type:
-//    break
+    //    case is ScalarType.Type:
+    //    break
+    //    case is CustomScalarType.Type:
+    //    break
+    //    case is GraphQLEnum.Type:
+    //    break
     default: break
+    }
+  }
+
+  private func set(
+    value: Cacheable,
+    forCovariantField fieldName: String,
+    convertingToType covariantFieldType: AnyCacheObject.Type
+  ) throws {
+    do {
+      switch covariantFieldType {
+      case let interfaceType as CacheInterface.Type:
+        data[fieldName] = try interfaceType.value(with: value, in: _transaction)
+
+      case let entityType as CacheEntity.Type:
+        data[fieldName] = try entityType.value(with: value, in: _transaction)
+
+      default: break // TODO: throw error or fatal error?
+      }
+
+    } catch {
+      throw CacheError.Reason.invalidValue(value, forCovariantFieldOfType: covariantFieldType)
     }
   }
 }
@@ -101,17 +108,17 @@ open class CacheEntity: AnyCacheObject, Cacheable {
 extension CacheEntity {
   public struct Metadata {
     private let implementedInterfaces: [CacheInterface.Type]?
-    private let covariantFields: [String: Cacheable.Type]?
+    private let covariantFields: [String: AnyCacheObject.Type]?
 
     fileprivate static let Empty = Metadata()
 
     public init(implements: [CacheInterface.Type]? = nil,
-                covariantFields: [String: Cacheable.Type]? = nil) {
+                covariantFields: [String: AnyCacheObject.Type]? = nil) {
       self.implementedInterfaces = implements
       self.covariantFields = covariantFields
     }
 
-    func fieldTypeIfCovariant(forField field: String) -> Cacheable.Type? {
+    func fieldTypeIfCovariant(forField field: String) -> AnyCacheObject.Type? {
       covariantFields?[field]
     }
 
@@ -172,10 +179,6 @@ open class CacheInterface: AnyCacheObject, Cacheable {
 
   public final func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws {
     try entity.set(value: value, forField: field)
-  }
-
-  open func propertyType(forField field: String) -> Cacheable.Type? {
-    return nil
   }
 
   //  func asUnderlyingType() -> CacheEntity {
