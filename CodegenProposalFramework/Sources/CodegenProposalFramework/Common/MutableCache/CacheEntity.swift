@@ -1,8 +1,8 @@
-public protocol AnyCacheObject: AnyObject {
+public protocol AnyCacheObject: AnyObject, Cacheable {
   var _transaction: CacheTransaction { get }
   var data: [String: Any] { get }
 
-  func set(value: Cacheable?, forField field: String) throws
+  func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws
 }
 
 /// A type that can be the value of a `@CacheField` property. In other words, a `Cacheable` type
@@ -21,29 +21,9 @@ public protocol Cacheable {
 open class CacheEntity: AnyCacheObject, Cacheable {
   public final let _transaction: CacheTransaction
   public final var data: [String: Any]
+  open class var __metadata: Metadata { Metadata.Empty }
 
-  final var __typename: String { data["__typename"] as! String }
-
-  public struct Metadata {
-    private let implementedInterfaces: [CacheInterface.Type]
-    private let typeForField: (String) -> Cacheable.Type?
-
-    public init(implements: [CacheInterface.Type],
-                typeForField: @escaping (String) -> Cacheable.Type?) {
-      self.implementedInterfaces = implements
-      self.typeForField = typeForField
-    }
-
-    func fieldType(forField field: String) -> Cacheable.Type? {
-      typeForField(field)
-    }
-
-    func implements(_ interface: CacheInterface.Type) -> Bool {
-      implementedInterfaces.contains(where: { $0 == interface })
-    }
-  }
-
-  open class var __metadata: Metadata { fatalError("Subclasses must override this property.") }
+  final var __typename: String { data["__typename"] as! String } // TODO: delete?
 
   public required init(transaction: CacheTransaction, data: [String: Any] = [:]) {
     self._transaction = transaction
@@ -75,33 +55,69 @@ open class CacheEntity: AnyCacheObject, Cacheable {
     }
   }
 
-  public final func set(value: Cacheable?, forField field: String) throws {
+  public final func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws {
+    let fieldName = field.field.description
+
     guard let value = value else {
-      data[field] = nil
+      data[fieldName] = nil
       return
     }
 
-    do {
-      switch Self.__metadata.fieldType(forField: field) {
-      case let interfaceType as CacheInterface.Type:
-        data[field] = try interfaceType.value(with: value, in: _transaction)
+    switch T.self {
+    case is AnyCacheObject.Type:
+      do {
+        // Check for field covariance
+        switch Self.__metadata.fieldTypeIfCovariant(forField: fieldName) ?? T.self {
+        case let interfaceType as CacheInterface.Type:
+          data[fieldName] = try interfaceType.value(with: value, in: _transaction)
 
-      case let entityType as CacheEntity.Type:
-        data[field] = try entityType.value(with: value, in: _transaction)
+        case let entityType as CacheEntity.Type:
+          data[fieldName] = try entityType.value(with: value, in: _transaction)
 
-      default: break // TODO: throw error
+        default: break // TODO: throw error
+        }
+
+      } catch let error as CacheError.Reason {
+        switch error {
+        case let .invalidEntityType(_, forInterface: fieldType as AnyCacheObject.Type),
+             let .unrecognizedCacheData(_, forType: fieldType as AnyCacheObject.Type):
+          throw CacheError.Reason.invalidValue(value, forCovariantFieldOfType: fieldType)
+
+        default: throw error
+        }
       }
 
-    } catch let error as CacheError.Reason {
-      switch error {
-      case let .invalidEntityType(_, forInterface: fieldType as AnyCacheObject.Type),
-           let .unrecognizedCacheData(_, forType: fieldType as AnyCacheObject.Type):
-        throw CacheError.Reason.invalidValue(value, forCovariantFieldOfType: fieldType)
+//    case is ScalarType.Type:
+//    break
+//    case is CustomScalarType.Type:
+//    break
+//    case is GraphQLEnum.Type:
+//    break
+    default: break
+    }
+  }
+}
 
-      default: throw error
-      }
+extension CacheEntity {
+  public struct Metadata {
+    private let implementedInterfaces: [CacheInterface.Type]?
+    private let covariantFields: [String: Cacheable.Type]?
+
+    fileprivate static let Empty = Metadata()
+
+    public init(implements: [CacheInterface.Type]? = nil,
+                covariantFields: [String: Cacheable.Type]? = nil) {
+      self.implementedInterfaces = implements
+      self.covariantFields = covariantFields
     }
 
+    func fieldTypeIfCovariant(forField field: String) -> Cacheable.Type? {
+      covariantFields?[field]
+    }
+
+    func implements(_ interface: CacheInterface.Type) -> Bool {
+      implementedInterfaces?.contains(where: { $0 == interface }) ?? false
+    }
   }
 }
 
@@ -154,7 +170,7 @@ open class CacheInterface: AnyCacheObject, Cacheable {
     }
   }
 
-  public func set(value: Cacheable?, forField field: String) throws {
+  public final func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws {
     try entity.set(value: value, forField: field)
   }
 

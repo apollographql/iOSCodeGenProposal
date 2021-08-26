@@ -1,7 +1,7 @@
 @propertyWrapper
 public struct CacheField<T: Cacheable> {
 
-  private let field: StaticString
+  let field: StaticString
 
   public init(_ field: StaticString) {
     self.field = field
@@ -13,14 +13,15 @@ public struct CacheField<T: Cacheable> {
     storage storageKeyPath: ReferenceWritableKeyPath<E, Self>
   ) -> T? {
     get {
-      let field = instance[keyPath: storageKeyPath].field.description
+      let wrapper = instance[keyPath: storageKeyPath]
+      let field = wrapper.field.description
       guard let data = instance.data[field] else {
         return nil
       }
 
       do {
         let value = try T.value(with: data, in: instance._transaction)
-        try replace(data: data, with: value, for: field, on: instance)
+        try wrapper.replace(data: data, with: value, on: instance)
         return value
 
       } catch {
@@ -29,13 +30,14 @@ public struct CacheField<T: Cacheable> {
       }
     }
     set {
-      let field = instance[keyPath: storageKeyPath].field.description
+      let wrapper = instance[keyPath: storageKeyPath]
+      let field = wrapper.field.description
       do {
 //
 //      switch newValue {
 //      // case .none: // TODO
 //      case is ScalarType:
-        try instance.set(value: newValue, forField: field)
+        try instance.set(value: newValue, forField: wrapper)
 ////      case let entity as CacheEntity:
 //
 //
@@ -58,10 +60,9 @@ public struct CacheField<T: Cacheable> {
     }
   }
 
-  private static func replace(
+  private func replace(
     data: Any,
     with parsedValue: T,
-    for field: String,
     on instance: AnyCacheObject
   ) throws {
     /// Only need to do this for CacheEntity, Enums, and custom scalars.
@@ -72,11 +73,11 @@ public struct CacheField<T: Cacheable> {
     case is CacheEntity where !(data is CacheEntity),
          is CacheInterface where instance is CacheEntity,
          is CustomScalarType:
-      try instance.set(value: parsedValue, forField: field)
+      try instance.set(value: parsedValue, forField: self)
 
-    case let interface as CacheInterface where instance is CacheInterface:
-      try instance.set(value: interface.entity, forField: field)
-      break // TODO
+//    case let interface as CacheInterface where instance is CacheInterface:
+//      try instance.set(value: entity, forField: self)
+//      break // TODO
 
     case is CacheInterface, is ScalarType: break
     default: break

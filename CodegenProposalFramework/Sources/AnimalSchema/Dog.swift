@@ -16,14 +16,6 @@ public final class Dog: CacheEntity {
   override public class var __metadata: Metadata { _metadata }
   private static let _metadata: Metadata = Metadata(
     implements: [Animal.self, Pet.self, WarmBlooded.self, HousePet.self],
-    typeForField: { switch $0 {
-    case "species", "humanName", "favoriteToy": return String.self
-    case "height": return Height.self
-    case "bodyTemperature": return Int.self
-    case "laysEggs": return Bool.self
-    case "bestFriend": return HousePet.self
-    case "rival": return Cat.self
-    default: return nil
-    } }
+    covariantFields: ["bestFriend": HousePet.self, "rival": Cat.self]
   )
 }

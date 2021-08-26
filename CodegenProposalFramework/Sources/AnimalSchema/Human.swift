@@ -1,7 +1,6 @@
 import CodegenProposalFramework
 
 public final class Human: CacheEntity {
-  // Animal, WarmBlooded
   @CacheList var predators: [Animal]
   @CacheField("firstName") var firstName: String?
   @CacheField("species") var species: String?
@@ -9,4 +8,9 @@ public final class Human: CacheEntity {
   @CacheField("skinCovering") var skinCovering: GraphQLEnum<SkinCovering>?
   @CacheField("bodyTemperature") var bodyTemperature: Int?
   @CacheField("laysEggs") var laysEggs: Bool?
+
+  override public class var __metadata: Metadata { _metadata }
+  private static let _metadata: Metadata = Metadata(
+    implements: [Animal.self, WarmBlooded.self]
+  )
 }
