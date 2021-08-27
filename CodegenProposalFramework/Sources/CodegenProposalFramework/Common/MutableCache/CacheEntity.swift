@@ -45,17 +45,25 @@ open class CacheEntity: AnyCacheObject, Cacheable {
     case let dataAsSelf as Self:
       return dataAsSelf
 
-    case let interface as CacheInterface:
-      guard let entity = interface.entity as? Self else {
-        throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
-      }
-      return entity
-
     case let key as CacheKey:
       return transaction.entity(withKey: key) as! Self
 
     case let data as [String: Any]:
       return transaction.entity(withData: data) as! Self
+
+    case let interface as CacheInterface:
+      guard let entity = interface.entity as? Self else {
+        throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
+        // TODO: wrong error type
+      }
+      return entity
+
+    case let union as AnyUnion:
+      guard let entity = union.entity as? Self else {
+        throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
+        // TODO: wrong error type
+      }
+      return entity
 
     default:
       throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)

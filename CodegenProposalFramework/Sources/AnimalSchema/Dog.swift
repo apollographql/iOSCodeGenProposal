@@ -20,6 +20,6 @@ public final class Dog: CacheEntity {
   override public class var __metadata: Metadata { _metadata }
   private static let _metadata: Metadata = Metadata(
     implements: [Animal.self, Pet.self, WarmBlooded.self, HousePet.self],
-    covariantFields: ["bestFriend": HousePet.self, "rival": Cat.self]
+    covariantFields: ["bestFriend": HousePet.self, "rival": Cat.self, "livesWith": Bird.self]
   )
 }

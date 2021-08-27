@@ -1,5 +1,6 @@
-protocol AnyUnion: Cacheable {}
-extension Union: AnyUnion {}
+protocol AnyUnion: AnyCacheObject {
+  var entity: CacheEntity { get }
+}
 
 public protocol UnionType: Equatable {
   var entity: CacheEntity { get }
@@ -11,7 +12,7 @@ public func ==<T: UnionType>(lhs: T, rhs: T) -> Bool {
   lhs.entity === rhs.entity
 }
 
-public enum Union<T: UnionType>: Cacheable, Equatable {
+public enum Union<T: UnionType>: AnyUnion, Equatable {
 
   case `case`(T)
   case __unknown(CacheEntity)
@@ -67,6 +68,12 @@ public enum Union<T: UnionType>: Cacheable, Equatable {
     }
   }
 
+  public var _transaction: CacheTransaction { entity._transaction }
+  public var data: [String : Any] { entity.data }
+
+  public func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws {
+    try entity.set(value: value, forField: field)
+  }
 }
 
 // MARK: Equatable

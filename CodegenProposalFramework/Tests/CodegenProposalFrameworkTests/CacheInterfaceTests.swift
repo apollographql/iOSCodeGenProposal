@@ -125,38 +125,38 @@ class CacheInterfaceTests: XCTestCase {
     expect(asHousePet.rival?.entity).to(beIdenticalTo(rivalAsPet.entity))
   }
 
-//  func test_setCovariantField_withUnionType_toInvalidType_throwsInvalidEntityTypeError() throws {
-//    let dog = Dog(transaction: transaction)
-//    let asHousePet = try HousePet(dog)
-//
-//    let cat = Cat(transaction: transaction)
-//    let catAsClassroomPet = ClassroomPet.Cat(cat)
-//
-//    let expectedError = CacheError(
-//      reason: .invalidValue(catAsClassroomPet, forCovariantFieldOfType: Bird.self),
-//      type: .write,
-//      field: "livesWith",
-//      object: dog
-//    )
-//
-//    asHousePet.livesWith = catAsClassroomPet
-//
-//    expect(self.transaction.errors.first).to(matchError(expectedError))
-//    expect(dog.livesWith).to(beNil())
-//    expect(asHousePet.livesWith).to(beNil())
-//  }
-//
-//  func test_setCovariantField_withUniontType_toValidType_setsFieldOnEntity() throws {
-//    let dog = Dog(transaction: transaction)
-//    let asHousePet = try HousePet(dog)
-//
-//    let bird = Bird(transaction: transaction)
-//    let birdAsClassroomPet = ClassroomPet.Bird(bird)
-//
-//    asHousePet.livesWith = birdAsClassroomPet
-//
-//    expect(self.transaction.errors).to(beEmpty())
-//    expect(dog.livesWith).to(beIdenticalTo(bird))
-//    expect(asHousePet.livesWith?.entity).to(beIdenticalTo(bird))
-//  }
+  func test_setCovariantField_withUnionType_toInvalidType_throwsInvalidEntityTypeError() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = try HousePet(dog)
+
+    let cat = Cat(transaction: transaction)
+    let catAsClassroomPet = try Union<ClassroomPet>(cat)
+
+    let expectedError = CacheError(
+      reason: .invalidValue(catAsClassroomPet, forCovariantFieldOfType: Bird.self),
+      type: .write,
+      field: "livesWith",
+      object: dog
+    )
+
+    asHousePet.livesWith = catAsClassroomPet
+
+    expect(self.transaction.errors.first).to(matchError(expectedError))
+    expect(dog.livesWith).to(beNil())
+    expect(asHousePet.livesWith).to(beNil())
+  }
+
+  func test_setCovariantField_withUnionType_toValidType_setsFieldOnEntity() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = try HousePet(dog)
+
+    let bird = Bird(transaction: transaction)
+    let birdAsClassroomPet = try Union<ClassroomPet>(bird)
+
+    asHousePet.livesWith = birdAsClassroomPet
+
+    expect(self.transaction.errors).to(beEmpty())
+    expect(dog.livesWith).to(beIdenticalTo(bird))
+    expect(asHousePet.livesWith?.entity).to(beIdenticalTo(bird))
+  }
 }
