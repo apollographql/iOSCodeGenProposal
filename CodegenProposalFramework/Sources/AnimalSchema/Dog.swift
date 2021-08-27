@@ -14,6 +14,7 @@ public final class Dog: CacheEntity {
   @CacheField("laysEggs") var laysEggs: Bool?
   @CacheField("bestFriend") var bestFriend: HousePet?
   @CacheField("rival") var rival: Cat?
+  @CacheField("livesWith") var livesWith: Bird?
 
   // MARK: - Metadata
   override public class var __metadata: Metadata { _metadata }

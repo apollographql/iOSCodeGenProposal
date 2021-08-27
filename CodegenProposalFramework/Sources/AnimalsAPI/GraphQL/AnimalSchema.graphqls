@@ -27,6 +27,7 @@ interface HousePet implements Animal & Pet {
   owner: Human
   bestFriend: Pet
   rival: Pet
+  livesWith: ClassroomPet
 }
 
 interface WarmBlooded implements Animal {
@@ -82,6 +83,7 @@ type Dog implements Animal & Pet & HousePet & WarmBlooded {
   laysEggs: Boolean!
   bestFriend: HousePet
   rival: Cat
+  livesWith: Bird
 }
 
 type Bird implements Animal & Pet & WarmBlooded {

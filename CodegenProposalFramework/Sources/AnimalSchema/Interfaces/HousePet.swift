@@ -12,4 +12,5 @@ public final class HousePet: CacheInterface {
   @CacheField("laysEggs") var laysEggs: Bool?
   @CacheField("bestFriend") var bestFriend: Pet?
   @CacheField("rival") var rival: Pet?
+  @CacheField("livesWith") var livesWith: Union<ClassroomPet>?
 }

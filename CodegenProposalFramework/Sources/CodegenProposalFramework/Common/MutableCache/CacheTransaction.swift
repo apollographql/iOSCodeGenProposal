@@ -58,7 +58,8 @@ public class CacheTransaction {
 struct CacheError: Error, Equatable {
   enum Reason: Error {
     case unrecognizedCacheData(_ data: Any, forType: Any.Type)
-    case invalidEntityType(_ type: CacheEntity.Type, forInterface: CacheInterface.Type)
+    case invalidEntityType(_ type: CacheEntity.Type, forAbstractType: Cacheable.Type)
+//    case invalidEntityType(_ type: CacheEntity.Type, forUnion: Any.Type)
     case invalidValue(_ value: Cacheable?, forCovariantFieldOfType: AnyCacheObject.Type)
   }
 
@@ -75,8 +76,17 @@ struct CacheError: Error, Equatable {
         switch self.reason {
     case let .unrecognizedCacheData(data, type):
       return "Cache data '\(data)' was unrecognized for conversion to type '\(type)'."
-    case let .invalidEntityType(type, forInterface: interface):
-      return "Entity of type '\(type)' does not implement interface '\(interface)'."
+
+    case let .invalidEntityType(type, forAbstractType: abstractType):
+      switch abstractType {
+      case is CacheInterface.Type:
+        return "Entity of type '\(type)' does not implement interface '\(abstractType)'."
+      case is AnyUnion.Type:
+        return "Entity of type '\(type)' is not a valid type for union '\(abstractType)'."
+      default:
+        return "Entity of type '\(type)' is not a valid type for '\(abstractType)'."
+      }
+
     case let .invalidValue(value, forCovariantFieldOfType: fieldType):
       return """
         Value '\(value ?? "nil")' is not a valid value for covariant field '\(field)'.

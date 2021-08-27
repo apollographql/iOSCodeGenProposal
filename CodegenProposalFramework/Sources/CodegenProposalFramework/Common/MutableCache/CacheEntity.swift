@@ -1,4 +1,4 @@
-public protocol AnyCacheObject: AnyObject, Cacheable {
+public protocol AnyCacheObject: Cacheable {
   var _transaction: CacheTransaction { get }
   var data: [String: Any] { get }
 
@@ -128,7 +128,7 @@ extension CacheEntity {
   }
 }
 
-enum MockError: Error {
+public enum MockError: Error {
   case mock // TODO
 }
 
@@ -145,7 +145,7 @@ open class CacheInterface: AnyCacheObject, Cacheable {
   public required init(_ entity: CacheEntity) throws {
     let entityType = type(of: entity)    
     guard entityType.__metadata.implements(Self.self) else {
-      throw CacheError.Reason.invalidEntityType(entityType, forInterface: Self.self)
+      throw CacheError.Reason.invalidEntityType(entityType, forAbstractType: Self.self)
     }
 
     self.entity = entity

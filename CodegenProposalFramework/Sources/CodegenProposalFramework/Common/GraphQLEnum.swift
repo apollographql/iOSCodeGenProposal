@@ -29,15 +29,15 @@ where T: RawRepresentable & CaseIterable, T.RawValue == String {
   /// The underlying enum case. If the value is `__unknown`, this will be `nil`.
   public var value: T? {
     switch self {
-    case .case(let value): return value
+    case let .case(value): return value
     default: return nil
     }
   }
 
   public var rawValue: String {
     switch self {
-    case .case(let value): return value.rawValue
-    case .__unknown(let value): return value
+    case let .case(value): return value.rawValue
+    case let .__unknown(value): return value
     }
   }
 
