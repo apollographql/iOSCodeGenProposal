@@ -11,6 +11,7 @@ public protocol UnionType {
 }
 
 public enum Union<T: UnionType>: AnyUnion, Equatable {
+  // TODO: Union that includes interface type
 
   case `case`(T)
   case __unknown(CacheEntity)
@@ -18,6 +19,7 @@ public enum Union<T: UnionType>: AnyUnion, Equatable {
   init(_ entity: CacheEntity) throws {
     guard let value = T.init(entity) else {
       guard entity.__typename != CacheEntity.UnknownTypeName else {
+        // TODO: Unknown types with a known type name should be supported?
         self = .__unknown(entity)
         return
       }
