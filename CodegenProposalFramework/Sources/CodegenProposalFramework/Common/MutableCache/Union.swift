@@ -18,6 +18,11 @@ public enum Union<T: UnionType>: Cacheable, Equatable {
 
   init(_ entity: CacheEntity) throws {
     guard let value = T.init(entity) else {
+      guard entity.__typename != CacheEntity.UnknownTypeName else {
+        self = .__unknown(entity)
+        return
+      }
+
       throw CacheError.Reason.invalidEntityType(type(of: entity), forAbstractType: Self.self)
     }
 

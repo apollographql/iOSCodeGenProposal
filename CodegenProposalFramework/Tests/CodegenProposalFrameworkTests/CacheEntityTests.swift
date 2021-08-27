@@ -18,38 +18,69 @@ class CacheEntityTests: XCTestCase {
     super.tearDown()
   }
 
-  // MARK: Cache Entity Field
+  // MARK: Init Tests
 
-    func test_getCacheEntityField_fromNestedData_createsEntityWithData() throws {
-      // given
-      let dog = Dog(transaction: transaction)
-      dog.data["height"] = [
-        "__typename": "Height",
-        "meters": 1,
-        "feet": 3
-      ]
+  func test__init__dataWithTypeName_retainsTypename() throws {
+    // given
+    let data = [
+      "__typename": "Dog",
+    ]
 
-      // when
-      let heightEntity = dog.height
+    // when
+    let dog = Dog(transaction: transaction, data: data)
 
-      // then
-      expect(heightEntity?.meters).to(equal(1))
-      expect(heightEntity?.feet).to(equal(3))
-    }
+    // then
+    expect(dog.data["__typename"] as? String).to(equal("Dog"))
+  }
 
-    func test_getCacheEntityField_fromCacheKeyReference_getsEntityWithKeyFromCache() throws {
-      // given
-      let key = CacheKey("123")
-      let dog = Dog(transaction: transaction)
+  func test__init__dataMissingTypeName_setsTypenameToDefaultTypename() throws {
+    // when
+    let dog = Dog(transaction: transaction, data: [:])
 
-      let bestFriend = Dog(transaction: transaction)
+    // then
+    expect(dog.data["__typename"] as? String).to(equal("Dog"))
+  }
 
-      transaction.cache[key.key] = bestFriend
+  func test__init__dataMissingTypeName_forUnknownEntity_setsTypenameToUnknownTypeName() throws {
+    // when
+    let dog = CacheEntity(transaction: transaction, data: [:])
 
-      // when
-      dog.data["bestFriend"] = key
+    // then
+    expect(dog.data["__typename"] as? String).to(equal(CacheEntity.UnknownTypeName))
+  }
 
-      // then
-      expect(dog.bestFriend?.entity).to(beIdenticalTo(bestFriend))
-    }
+  // MARK: Cache Entity Field Tests
+
+  func test_getCacheEntityField_fromNestedData_createsEntityWithData() throws {
+    // given
+    let dog = Dog(transaction: transaction)
+    dog.data["height"] = [
+      "__typename": "Height",
+      "meters": 1,
+      "feet": 3
+    ]
+
+    // when
+    let heightEntity = dog.height
+
+    // then
+    expect(heightEntity?.meters).to(equal(1))
+    expect(heightEntity?.feet).to(equal(3))
+  }
+
+  func test_getCacheEntityField_fromCacheKeyReference_getsEntityWithKeyFromCache() throws {
+    // given
+    let key = CacheKey("123")
+    let dog = Dog(transaction: transaction)
+
+    let bestFriend = Dog(transaction: transaction)
+
+    transaction.cache[key.key] = bestFriend
+
+    // when
+    dog.data["bestFriend"] = key
+
+    // then
+    expect(dog.bestFriend?.entity).to(beIdenticalTo(bestFriend))
+  }
 }

@@ -20,14 +20,21 @@ public protocol Cacheable {
 
 open class CacheEntity: AnyCacheObject, Cacheable {
   public final let _transaction: CacheTransaction
-  public final var data: [String: Any]
+  public internal(set) final var data: [String: Any]
   open class var __metadata: Metadata { Metadata.Empty }
+  open class var __typename: String { UnknownTypeName }
+
+  static let UnknownTypeName: String = "∅__UnknownType"
 
   final var __typename: String { data["__typename"] as! String } // TODO: delete?
 
   public required init(transaction: CacheTransaction, data: [String: Any] = [:]) {
     self._transaction = transaction
     self.data = data
+
+    if self.data["__typename"] == nil {
+      self.data["__typename"] = Self.__typename
+    }
   }
 
   public static func value(

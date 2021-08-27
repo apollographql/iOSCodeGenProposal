@@ -88,7 +88,7 @@ class UnionTests: XCTestCase {
     expect(classroomPet).to(equal(.case(.Cat(cat))))
   }
 
-  func test__init__givenEntityOfInvalidType_throws() throws {
+  func test__init__givenEntityOfInvalidType_throwsInvalidEntityTypeError() throws {
     // given
     let dog = Dog(transaction: transaction)
 
@@ -101,18 +101,16 @@ class UnionTests: XCTestCase {
       .to(throwError(expectedError))
   }
 
-//  func test__init__givenEntityOfTypeUnknownToSchema_throws() throws {
-//    // given
-//    let unknownEntity = CacheEntity(transaction: transaction, data: ["__typename": ])
-//
-//    let expectedError = CacheError.Reason
-//      .invalidEntityType(Dog.self, forAbstractType: Union<ClassroomPet>.self)
-//
-//    // when
-//    expect(try Union<ClassroomPet>(dog))
-//      // then
-//      .to(throwError(expectedError))
-//  }
+  func test__init__givenUnknownEntity_returnsUnknownCase() throws {
+    // given
+    let unknownEntity = CacheEntity(transaction: transaction)
+
+    // when
+    let classroomPet = try Union<ClassroomPet>(unknownEntity)
+
+    // then
+    expect(classroomPet).to(equal(.__unknown(unknownEntity)))
+  }
 
   // MARK: valueWithCacheDataInTransaction Tests
 

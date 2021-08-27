@@ -1,7 +1,7 @@
 import CodegenProposalFramework
 
 public final class Bird: CacheEntity {
-  public static let __typename: String = "Bird"
+  override public class var __typename: String { "Bird" }
 
   @CacheList  var predators: [Animal]
   @CacheField("species") var species: String?

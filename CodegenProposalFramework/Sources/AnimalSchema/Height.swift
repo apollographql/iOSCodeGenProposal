@@ -1,7 +1,7 @@
 import CodegenProposalFramework
 
 public final class Height: CacheEntity {
-  public static let __typename: String = "Height"
+  override public class var __typename: String { "Height" }
 
   @CacheField("relativeSize") var relativeSize: GraphQLEnum<RelativeSize>?
   @CacheField("centimeters") var centimeters: Int?
