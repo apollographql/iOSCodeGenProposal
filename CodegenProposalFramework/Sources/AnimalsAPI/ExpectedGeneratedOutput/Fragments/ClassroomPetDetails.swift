@@ -3,7 +3,7 @@ import AnimalSchema
 
 /// A response data object for a `ClassroomPetDetails` fragment
 struct ClassroomPetDetails: AnimalSchema.SelectionSet, Fragment {
-  static var __parentType: ParentType { .Union(TypesUsed.Union.ClassroomPet) }
+  static var __parentType: ParentType { .Union(AnimalSchema.ClassroomPet.self) }
   let data: ResponseDict
 
   var asAnimal: AsAnimal? { _asType() }

@@ -12,7 +12,7 @@ struct AllAnimalsQuery {
 
   struct ResponseData: AnimalSchema.SelectionSet {
 
-    static var __parentType: ParentType { .ObjectType(AnimalSchema.RootQuery.self) }
+    static var __parentType: ParentType { .ObjectType(AnimalSchema.Query.self) }
     let data: ResponseDict
 
     var allAnimals: [Animal] { data["allAnimals"] }
@@ -237,7 +237,7 @@ struct AllAnimalsQuery {
 
       /// `Animal.AsClassroomPet`
       struct AsClassroomPet: AnimalSchema.SelectionSet {
-        static var __parentType: ParentType { .Union(TypesUsed.Union.ClassroomPet) }
+        static var __parentType: ParentType { .Union(AnimalSchema.ClassroomPet.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }

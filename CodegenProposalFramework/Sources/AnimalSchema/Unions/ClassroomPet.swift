@@ -1,6 +1,6 @@
 import CodegenProposalFramework
 
-public enum ClassroomPet: UnionType {
+public enum ClassroomPet: UnionType, Equatable {
   case Cat(Cat)
   case Bird(Bird)
   case Rat(Rat)
@@ -25,4 +25,8 @@ public enum ClassroomPet: UnionType {
       return entity
     }
   }
+
+  static public let possibleTypes: [CacheEntity.Type] =
+    [AnimalSchema.Cat.self, AnimalSchema.Bird.self, AnimalSchema.Rat.self,
+     AnimalSchema.PetRock.self]
 }

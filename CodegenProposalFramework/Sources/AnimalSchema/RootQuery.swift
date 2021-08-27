@@ -1,8 +1,8 @@
 import Foundation
 import CodegenProposalFramework
 
-public final class RootQuery: CacheEntity {
-  override public class var __typename: String { "ROOT_QUERY" } // tODO: or QUERY? or what?
+public final class Query: CacheEntity {
+  override public class var __typename: String { "Query" }
 
   var allAnimals: [Animal] = []
   var allPets: [Pet] = []

@@ -88,6 +88,37 @@ class UnionTests: XCTestCase {
     expect(union != cat2).to(beTrue())
   }
 
+  func test__unionTypeEquatable__isIdenticalEntity_returnsTrue() throws {
+    // given
+    let cat = Cat(transaction: transaction)
+
+    // when
+    let classroomPet = ClassroomPet(cat)
+
+    // then
+    expect(classroomPet == .Cat(cat)).to(beTrue())
+    expect(classroomPet == cat).to(beTrue())
+
+    expect(classroomPet != .Cat(cat)).to(beFalse())
+    expect(classroomPet != cat).to(beFalse())
+  }
+
+  func test__unionTypeEquatable__isNotIdenticalEntity_returnsFalse() throws {
+    // given
+    let cat = Cat(transaction: transaction)
+    let cat2 = Cat(transaction: transaction)
+
+    // when
+    let classroomPet = ClassroomPet(cat)
+
+    // then
+    expect(classroomPet == .Cat(cat2)).to(beFalse())
+    expect(classroomPet == cat2).to(beFalse())
+
+    expect(classroomPet != .Cat(cat2)).to(beTrue())
+    expect(classroomPet != cat2).to(beTrue())
+  }
+
   func test__patternMatching__matchesCasesWithIdenticalEntity() throws {
     // given
     let cat = Cat(transaction: transaction)

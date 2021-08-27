@@ -1,7 +1,7 @@
 public enum ParentType {
   case ObjectType(CacheEntity.Type)
   case Interface(CacheInterface.Type)
-  case Union(SchemaUnion)
+  case Union(UnionType.Type)
 }
 
 public protocol SelectionSet: ResponseObject {

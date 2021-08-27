@@ -5,13 +5,13 @@ struct ClassroomPetsQuery {
   let data: ResponseData
 
   struct ResponseData: AnimalSchema.SelectionSet {
-    static var __parentType: ParentType { .ObjectType(AnimalSchema.RootQuery.self) }
+    static var __parentType: ParentType { .ObjectType(AnimalSchema.Query.self) }
     let data: ResponseDict
 
     var classroomPets: [ClassroomPet] { data["classroomPets"] }
 
     struct ClassroomPet: AnimalSchema.SelectionSet, HasFragments {
-      static var __parentType: ParentType { .Union(TypesUsed.Union.ClassroomPet) }
+      static var __parentType: ParentType { .Union(AnimalSchema.ClassroomPet.self) }
       let data: ResponseDict
 
       var asAnimal: AsAnimal? { _asType() }
