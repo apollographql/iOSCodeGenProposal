@@ -75,7 +75,7 @@ extension GraphQLEnum {
   }
 }
 
-// MARK: Pattern Matching Helpers
+// MARK: Optional<GraphQLEnum<T>> Equatable
 
 public func ==<T: RawRepresentable & CaseIterable>(lhs: GraphQLEnum<T>?, rhs: T) -> Bool
 where T.RawValue == String {
@@ -87,10 +87,13 @@ where T.RawValue == String {
   return lhs?.rawValue != rhs.rawValue
 }
 
-public func ~=<T>(lhs: T, rhs: GraphQLEnum<T>) -> Bool {
-  switch rhs {
-  case let .case(rhs) where rhs == lhs: return true
-  case let .__unknown(rhsRawValue) where rhsRawValue == lhs.rawValue: return true
-  default: return false
+// MARK: Pattern Matching
+extension GraphQLEnum {
+  public static func ~=(lhs: T, rhs: GraphQLEnum<T>) -> Bool {
+    switch rhs {
+    case let .case(rhs) where rhs == lhs: return true
+    case let .__unknown(rhsRawValue) where rhsRawValue == lhs.rawValue: return true
+    default: return false
+    }
   }
 }

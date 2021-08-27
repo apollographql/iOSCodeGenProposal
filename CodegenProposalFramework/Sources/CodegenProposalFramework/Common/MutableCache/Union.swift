@@ -33,11 +33,24 @@ public enum Union<T: UnionType>: Cacheable, Equatable {
     with cacheData: Any,
     in transaction: CacheTransaction
   ) throws -> Self {
-    guard let entity = cacheData as? CacheEntity else {
+    guard let entity = entity(with: cacheData, in: transaction) else {
       throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: T.self)
     }
 
     return try Self(entity)
+  }
+
+  private static func entity(
+    with cacheData: Any,
+    in transaction: CacheTransaction
+  ) -> CacheEntity? {
+    switch cacheData {
+    case let entity as CacheEntity: return entity
+    case let interface as CacheInterface: return interface.entity
+    case let key as CacheKey: return transaction.entity(withKey: key)
+    case let data as [String: Any]: return transaction.entity(withData: data)
+    default: return nil
+    }
   }
 
   var value: T? {
@@ -79,8 +92,25 @@ extension Union {
   }
 }
 
-// MARK: Pattern Matching Helpers
+// MARK: Optional<Union<T>> Equatable
 
+public func ==<T: UnionType>(lhs: Union<T>?, rhs: T) -> Bool {
+  return lhs?.entity === rhs.entity
+}
+
+public func !=<T: UnionType>(lhs: Union<T>?, rhs: T) -> Bool {
+  return lhs?.entity !== rhs.entity
+}
+
+public func ==<T: UnionType>(lhs: Union<T>?, rhs: CacheEntity) -> Bool {
+  return lhs?.entity === rhs
+}
+
+public func !=<T: UnionType>(lhs: Union<T>?, rhs: CacheEntity) -> Bool {
+  return lhs?.entity !== rhs
+}
+
+// MARK: Pattern Matching Helpers
 extension Union {
   public static func ~=(lhs: T, rhs: Union<T>) -> Bool {
     switch rhs {
