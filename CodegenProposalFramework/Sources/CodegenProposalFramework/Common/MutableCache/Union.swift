@@ -11,7 +11,6 @@ public protocol UnionType {
 }
 
 public enum Union<T: UnionType>: AnyUnion, Equatable {
-  // TODO: Union that includes interface type
 
   case `case`(T)
   case __unknown(CacheEntity)
