@@ -55,18 +55,10 @@ open class Object: ObjectType, Cacheable {
       return transaction.object(withData: data) as! Self
 
     case let interface as Interface:
-      guard let object = interface.object as? Self else {
-        throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
-        // TODO: wrong error type
-      }
-      return object
+      return interface.object as! Self
 
     case let union as AnyUnion:
-      guard let object = union.object as? Self else {
-        throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
-        // TODO: wrong error type
-      }
-      return object
+      return union.object as! Self
 
     default:
       throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
