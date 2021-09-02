@@ -83,4 +83,109 @@ class ObjectTests: XCTestCase {
     // then
     expect(dog.bestFriend?.object).to(beIdenticalTo(bestFriend))
   }
+
+  // MARK: Covariant Fields
+
+  func test_setCovariantField_withInterfaceType_toInvalidType_throwsInvalidValueForCovariantFieldError() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = try HousePet(dog)
+
+    let bird = Bird(transaction: transaction)
+    let birdAsPet = try Pet(bird)
+
+    let expectedError = CacheError(
+      reason: .invalidValue(birdAsPet, forCovariantFieldOfType: HousePet.self),
+      type: .write,
+      field: "bestFriend",
+      object: dog
+    )
+
+    asHousePet.bestFriend = birdAsPet
+
+    expect(self.transaction.errors.first).to(equal(expectedError))
+    expect(dog.bestFriend).to(beNil())
+    expect(asHousePet.bestFriend).to(beNil())
+  }
+
+  func test_setCovariantField_withInterfaceType_toValidType_setsFieldOnObject() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = try HousePet(dog)
+
+    let bestFriendAsDog = try Pet(Dog(transaction: transaction))
+
+    asHousePet.bestFriend = bestFriendAsDog
+
+    expect(self.transaction.errors).to(beEmpty())
+    expect(dog.bestFriend?.object).to(beIdenticalTo(bestFriendAsDog.object))
+    expect(asHousePet.bestFriend?.object).to(beIdenticalTo(bestFriendAsDog.object))
+  }
+
+  func test_setCovariantField_withObjectType_toInvalidType_throwsInvalidValueForCovariantFieldError() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = try HousePet(dog)
+
+    let bird = Bird(transaction: transaction)
+    let birdAsPet = try Pet(bird)
+
+    let expectedError = CacheError(
+      reason: .invalidValue(birdAsPet, forCovariantFieldOfType: Cat.self),
+      type: .write,
+      field: "rival",
+      object: dog
+    )
+
+    asHousePet.rival = birdAsPet
+
+    expect(self.transaction.errors.first).to(matchError(expectedError))
+    expect(dog.bestFriend).to(beNil())
+    expect(asHousePet.bestFriend).to(beNil())
+  }
+
+  func test_setCovariantField_withObjectType_toValidType_setsFieldOnObject() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = try HousePet(dog)
+
+    let rivalAsPet = try Pet(Cat(transaction: transaction))
+
+    asHousePet.rival = rivalAsPet
+
+    expect(self.transaction.errors).to(beEmpty())
+    expect(dog.rival).to(beIdenticalTo(rivalAsPet.object))
+    expect(asHousePet.rival?.object).to(beIdenticalTo(rivalAsPet.object))
+  }
+
+  func test_setCovariantField_withUnionType_toInvalidType_throwsInvalidValueForCovariantFieldError() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = try HousePet(dog)
+
+    let cat = Cat(transaction: transaction)
+    let catAsClassroomPet = try Union<ClassroomPet>(cat)
+
+    let expectedError = CacheError(
+      reason: .invalidValue(catAsClassroomPet, forCovariantFieldOfType: Bird.self),
+      type: .write,
+      field: "livesWith",
+      object: dog
+    )
+
+    asHousePet.livesWith = catAsClassroomPet
+
+    expect(self.transaction.errors.first).to(matchError(expectedError))
+    expect(dog.livesWith).to(beNil())
+    expect(asHousePet.livesWith).to(beNil())
+  }
+
+  func test_setCovariantField_withUnionType_toValidType_setsFieldOnObject() throws {
+    let dog = Dog(transaction: transaction)
+    let asHousePet = try HousePet(dog)
+
+    let bird = Bird(transaction: transaction)
+    let birdAsClassroomPet = try Union<ClassroomPet>(bird)
+
+    asHousePet.livesWith = birdAsClassroomPet
+
+    expect(self.transaction.errors).to(beEmpty())
+    expect(dog.livesWith).to(beIdenticalTo(bird))
+    expect(asHousePet.livesWith?.object).to(beIdenticalTo(bird))
+  }
 }
