@@ -1,6 +1,6 @@
 import CodegenProposalFramework
 
-public final class Fish: CacheEntity {
+public final class Fish: Object {
   override public class var __typename: String { "Fish" }
 
   @CacheList var predators: [Animal]

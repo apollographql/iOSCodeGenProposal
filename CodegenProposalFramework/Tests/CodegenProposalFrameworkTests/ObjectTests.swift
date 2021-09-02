@@ -4,7 +4,7 @@ import Nimble
 @testable import AnimalsAPI
 @testable import AnimalSchema
 
-class CacheEntityTests: XCTestCase {
+class ObjectTests: XCTestCase {
 
   var transaction: MockTransaction!
 
@@ -41,17 +41,17 @@ class CacheEntityTests: XCTestCase {
     expect(dog.data["__typename"] as? String).to(equal("Dog"))
   }
 
-  func test__init__dataMissingTypeName_forUnknownEntity_setsTypenameToUnknownTypeName() throws {
+  func test__init__dataMissingTypeName_forUnknownObject_setsTypenameToUnknownTypeName() throws {
     // when
-    let dog = CacheEntity(transaction: transaction, data: [:])
+    let dog = Object(transaction: transaction, data: [:])
 
     // then
-    expect(dog.data["__typename"] as? String).to(equal(CacheEntity.UnknownTypeName))
+    expect(dog.data["__typename"] as? String).to(equal(Object.UnknownTypeName))
   }
 
-  // MARK: Cache Entity Field Tests
+  // MARK: Object Field Tests
 
-  func test_getCacheEntityField_fromNestedData_createsEntityWithData() throws {
+  func test_getObjectField_fromNestedData_createsObjectWithData() throws {
     // given
     let dog = Dog(transaction: transaction)
     dog.data["height"] = [
@@ -61,14 +61,14 @@ class CacheEntityTests: XCTestCase {
     ]
 
     // when
-    let heightEntity = dog.height
+    let heightObject = dog.height
 
     // then
-    expect(heightEntity?.meters).to(equal(1))
-    expect(heightEntity?.feet).to(equal(3))
+    expect(heightObject?.meters).to(equal(1))
+    expect(heightObject?.feet).to(equal(3))
   }
 
-  func test_getCacheEntityField_fromCacheKeyReference_getsEntityWithKeyFromCache() throws {
+  func test_getObjectField_fromCacheKeyReference_getsObjectWithKeyFromCache() throws {
     // given
     let key = CacheKey("123")
     let dog = Dog(transaction: transaction)
@@ -81,6 +81,6 @@ class CacheEntityTests: XCTestCase {
     dog.data["bestFriend"] = key
 
     // then
-    expect(dog.bestFriend?.entity).to(beIdenticalTo(bestFriend))
+    expect(dog.bestFriend?.object).to(beIdenticalTo(bestFriend))
   }
 }

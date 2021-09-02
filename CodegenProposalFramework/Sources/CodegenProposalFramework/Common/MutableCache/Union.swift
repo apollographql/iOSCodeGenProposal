@@ -1,29 +1,29 @@
-protocol AnyUnion: AnyCacheObject {
-  var entity: CacheEntity { get }
+protocol AnyUnion: ObjectType {
+  var object: Object { get }
 }
 
 // MARK: - UnionType
 public protocol UnionType {
-  static var possibleTypes: [CacheEntity.Type] { get }
-  var entity: CacheEntity { get }
+  static var possibleTypes: [Object.Type] { get }
+  var object: Object { get }
 
-  init?(_ entity: CacheEntity)
+  init?(_ object: Object)
 }
 
 public enum Union<T: UnionType>: AnyUnion, Equatable {
 
   case `case`(T)
-  case __unknown(CacheEntity)
+  case __unknown(Object)
 
-  init(_ entity: CacheEntity) throws {
-    guard let value = T.init(entity) else {
-      let entityType = type(of: entity)
-      guard entityType != CacheEntity.self else {
-        self = .__unknown(entity)
+  init(_ object: Object) throws {
+    guard let value = T.init(object) else {
+      let objectType = type(of: object)
+      guard objectType != Object.self else {
+        self = .__unknown(object)
         return
       }
 
-      throw CacheError.Reason.invalidEntityType(type(of: entity), forAbstractType: Self.self)
+      throw CacheError.Reason.invalidObjectType(type(of: object), forAbstractType: Self.self)
     }
 
     self = .case(value)
@@ -33,22 +33,22 @@ public enum Union<T: UnionType>: AnyUnion, Equatable {
     with cacheData: Any,
     in transaction: CacheTransaction
   ) throws -> Self {
-    guard let entity = entity(with: cacheData, in: transaction) else {
+    guard let object = object(with: cacheData, in: transaction) else {
       throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: T.self)
     }
 
-    return try Self(entity)
+    return try Self(object)
   }
 
-  private static func entity(
+  private static func object(
     with cacheData: Any,
     in transaction: CacheTransaction
-  ) -> CacheEntity? {
+  ) -> Object? {
     switch cacheData {
-    case let entity as CacheEntity: return entity
-    case let interface as CacheInterface: return interface.entity
-    case let key as CacheKey: return transaction.entity(withKey: key)
-    case let data as [String: Any]: return transaction.entity(withData: data)
+    case let object as Object: return object
+    case let interface as Interface: return interface.object
+    case let key as CacheKey: return transaction.object(withKey: key)
+    case let data as [String: Any]: return transaction.object(withData: data)
     default: return nil
     }
   }
@@ -60,80 +60,80 @@ public enum Union<T: UnionType>: AnyUnion, Equatable {
     }
   }
 
-  var entity: CacheEntity {
+  var object: Object {
     switch self {
-    case let .case(value): return value.entity
-    case let .__unknown(entity): return entity
+    case let .case(value): return value.object
+    case let .__unknown(object): return object
     }
   }
 
-  public var _transaction: CacheTransaction { entity._transaction }
-  public var data: [String : Any] { entity.data }
+  public var _transaction: CacheTransaction { object._transaction }
+  public var data: [String : Any] { object.data }
 
   public func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws {
-    try entity.set(value: value, forField: field)
+    try object.set(value: value, forField: field)
   }
 }
 
 // MARK: Union Equatable
 extension Union {
   public static func ==(lhs: Union<T>, rhs: Union<T>) -> Bool {
-    return lhs.entity === rhs.entity
+    return lhs.object === rhs.object
   }
 
   public static func ==(lhs: Union<T>, rhs: T) -> Bool {
-    return lhs.entity === rhs.entity
+    return lhs.object === rhs.object
   }
 
-  public static func ==(lhs: Union<T>, rhs: CacheEntity) -> Bool {
-    return lhs.entity === rhs
+  public static func ==(lhs: Union<T>, rhs: Object) -> Bool {
+    return lhs.object === rhs
   }
 
   public static func !=(lhs: Union<T>, rhs: Union<T>) -> Bool {
-    return lhs.entity !== rhs.entity
+    return lhs.object !== rhs.object
   }
 
   public static func !=(lhs: Union<T>, rhs: T) -> Bool {
-    return lhs.entity !== rhs.entity
+    return lhs.object !== rhs.object
   }
 
-  public static func !=(lhs: Union<T>, rhs: CacheEntity) -> Bool {
-    return lhs.entity !== rhs
+  public static func !=(lhs: Union<T>, rhs: Object) -> Bool {
+    return lhs.object !== rhs
   }
 }
 
 // MARK: Optional<Union<T>> Equatable
 
 public func ==<T: UnionType>(lhs: Union<T>?, rhs: Union<T>) -> Bool {
-  return lhs?.entity === rhs.entity
+  return lhs?.object === rhs.object
 }
 
 public func ==<T: UnionType>(lhs: Union<T>?, rhs: T) -> Bool {
-  return lhs?.entity === rhs.entity
+  return lhs?.object === rhs.object
 }
 
-public func ==<T: UnionType>(lhs: Union<T>?, rhs: CacheEntity) -> Bool {
-  return lhs?.entity === rhs
+public func ==<T: UnionType>(lhs: Union<T>?, rhs: Object) -> Bool {
+  return lhs?.object === rhs
 }
 
 public func !=<T: UnionType>(lhs: Union<T>?, rhs: Union<T>) -> Bool {
-  return lhs?.entity !== rhs.entity
+  return lhs?.object !== rhs.object
 }
 
 public func !=<T: UnionType>(lhs: Union<T>?, rhs: T) -> Bool {
-  return lhs?.entity !== rhs.entity
+  return lhs?.object !== rhs.object
 }
 
-public func !=<T: UnionType>(lhs: Union<T>?, rhs: CacheEntity) -> Bool {
-  return lhs?.entity !== rhs
+public func !=<T: UnionType>(lhs: Union<T>?, rhs: Object) -> Bool {
+  return lhs?.object !== rhs
 }
 
 // MARK: Union Pattern Matching Helpers
 extension Union {
   public static func ~=(lhs: T, rhs: Union<T>) -> Bool {
     switch rhs {
-    case let .case(rhs) where rhs.entity === lhs.entity: return true
-    case let .__unknown(rhsEntity) where rhsEntity === lhs.entity: return true
+    case let .case(rhs) where rhs.object === lhs.object: return true
+    case let .__unknown(rhsObject) where rhsObject === lhs.object: return true
     default: return false
     }
   }
@@ -142,36 +142,36 @@ extension Union {
 // MARK: UnionType Equatable
 extension UnionType where Self: Equatable {
   public static func ==(lhs: Self, rhs: Self) -> Bool {
-    lhs.entity === rhs.entity
+    lhs.object === rhs.object
   }
 
-  public static func ==(lhs: Self, rhs: CacheEntity) -> Bool {
-    lhs.entity === rhs
+  public static func ==(lhs: Self, rhs: Object) -> Bool {
+    lhs.object === rhs
   }
 
   public static func !=(lhs: Self, rhs: Self) -> Bool {
-    lhs.entity !== rhs.entity
+    lhs.object !== rhs.object
   }
 
-  public static func !=(lhs: Self, rhs: CacheEntity) -> Bool {
-    lhs.entity !== rhs
+  public static func !=(lhs: Self, rhs: Object) -> Bool {
+    lhs.object !== rhs
   }
 }
 
 // MARK: Optional<UnionType> Equatable
 
 public func ==<T: UnionType>(lhs: T?, rhs: T) -> Bool {
-  return lhs?.entity === rhs.entity
+  return lhs?.object === rhs.object
 }
 
 public func !=<T: UnionType>(lhs: T?, rhs: T) -> Bool {
-  return lhs?.entity !== rhs.entity
+  return lhs?.object !== rhs.object
 }
 
-public func ==<T: UnionType>(lhs: T?, rhs: CacheEntity) -> Bool {
-  return lhs?.entity === rhs
+public func ==<T: UnionType>(lhs: T?, rhs: Object) -> Bool {
+  return lhs?.object === rhs
 }
 
-public func !=<T: UnionType>(lhs: T?, rhs: CacheEntity) -> Bool {
-  return lhs?.entity !== rhs
+public func !=<T: UnionType>(lhs: T?, rhs: Object) -> Bool {
+  return lhs?.object !== rhs
 }

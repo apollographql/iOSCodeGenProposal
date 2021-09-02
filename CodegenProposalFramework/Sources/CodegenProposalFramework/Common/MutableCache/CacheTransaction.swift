@@ -5,41 +5,41 @@ public protocol CacheKeyResolver {
 }
 
 public class CacheTransaction {
-  let entityFactory: SchemaTypeFactory.Type
+  let objectFactory: SchemaTypeFactory.Type
   let keyResolver: CacheKeyResolver
   private(set) var errors: [CacheError] = []
-  private var fetchedEntities: [CacheKey: CacheEntity] = [:]
+  private var fetchedObjects: [CacheKey: Object] = [:]
 
   init(
-    entityFactory: SchemaTypeFactory.Type,
+    objectFactory: SchemaTypeFactory.Type,
     keyResolver: CacheKeyResolver
   ) {
-    self.entityFactory = entityFactory
+    self.objectFactory = objectFactory
     self.keyResolver = keyResolver
   }
 
-  func entity(withKey key: CacheKey) -> CacheEntity? {
-    fetchedEntities[key] // TODO: if not fetched yet, fetch from store
+  func object(withKey key: CacheKey) -> Object? {
+    fetchedObjects[key] // TODO: if not fetched yet, fetch from store
   }
 
-  func entity(withData data: [String: Any]) -> CacheEntity {
+  func object(withData data: [String: Any]) -> Object {
     let cacheKey = keyResolver.cacheKey(for: data)
 
-    if let cacheKey = cacheKey, let entity = fetchedEntities[cacheKey] {
-      return entity
+    if let cacheKey = cacheKey, let object = fetchedObjects[cacheKey] {
+      return object
     }
 
     guard let typename = data["__typename"] as? String,
-          let type = entityFactory.entityType(forTypename: typename) else {
+          let type = objectFactory.objectType(forTypename: typename) else {
       fatalError()
     }
 
-    let entity = type.init(transaction: self, data: data)
+    let object = type.init(transaction: self, data: data)
     if let cacheKey = cacheKey {
-      fetchedEntities[cacheKey] = entity
+      fetchedObjects[cacheKey] = object
     }
 
-    return entity
+    return object
   }
 
   func log(_ error: CacheError) {
@@ -50,17 +50,16 @@ public class CacheTransaction {
     // TODO
   }
 
-//  func interface<T: CacheInterface>(withData data: [String: Any]) -> T {
-//    return T.init(entity: entity(withData: data))
+//  func interface<T: Interface>(withData data: [String: Any]) -> T {
+//    return T.init(object: object(withData: data))
 //  }
 }
 
 struct CacheError: Error, Equatable {
   enum Reason: Error {
     case unrecognizedCacheData(_ data: Any, forType: Any.Type)
-    case invalidEntityType(_ type: CacheEntity.Type, forAbstractType: Cacheable.Type)
-//    case invalidEntityType(_ type: CacheEntity.Type, forUnion: Any.Type)
-    case invalidValue(_ value: Cacheable?, forCovariantFieldOfType: AnyCacheObject.Type)
+    case invalidObjectType(_ type: Object.Type, forAbstractType: Cacheable.Type)
+    case invalidValue(_ value: Cacheable?, forCovariantFieldOfType: ObjectType.Type)
   }
 
   enum `Type` {
@@ -70,21 +69,21 @@ struct CacheError: Error, Equatable {
   let reason: Reason
   let type: Type
   let field: String
-  let object: AnyCacheObject?
+  let object: ObjectType?
 
   var message: String {
         switch self.reason {
     case let .unrecognizedCacheData(data, type):
       return "Cache data '\(data)' was unrecognized for conversion to type '\(type)'."
 
-    case let .invalidEntityType(type, forAbstractType: abstractType):
+    case let .invalidObjectType(type, forAbstractType: abstractType):
       switch abstractType {
-      case is CacheInterface.Type:
-        return "Entity of type '\(type)' does not implement interface '\(abstractType)'."
+      case is Interface.Type:
+        return "Object of type '\(type)' does not implement interface '\(abstractType)'."
       case is AnyUnion.Type:
-        return "Entity of type '\(type)' is not a valid type for union '\(abstractType)'."
+        return "Object of type '\(type)' is not a valid type for union '\(abstractType)'."
       default:
-        return "Entity of type '\(type)' is not a valid type for '\(abstractType)'."
+        return "Object of type '\(type)' is not a valid type for '\(abstractType)'."
       }
 
     case let .invalidValue(value, forCovariantFieldOfType: fieldType):

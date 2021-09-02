@@ -1,6 +1,6 @@
 import CodegenProposalFramework
 
-public final class HousePet: CacheInterface {
+public final class HousePet: Interface {
   @CacheField("species") var species: String?
   @CacheField("height") var height: Height?
 //  @CacheField("predators") var predators: [HousePet]

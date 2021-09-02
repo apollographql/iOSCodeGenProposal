@@ -1,6 +1,6 @@
 import CodegenProposalFramework
 
-public final class WarmBlooded: CacheInterface {
+public final class WarmBlooded: Interface {
   @CacheField("species") var species: String?
   @CacheField("height") var height: Height?
 //  @CacheField("predators") var predators: [Animal]

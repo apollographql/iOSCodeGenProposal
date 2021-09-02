@@ -33,7 +33,7 @@ struct ClassroomPetsWithSubtypesQuery {
         case other(ResponseDict)
 
         init(data: ResponseDict) {
-          switch Schema.entityType(forTypename: data["__typename"]) {
+          switch Schema.objectType(forTypename: data["__typename"]) {
           case is Bird.Type: self = .bird(AsBird(data: data))
           case is Cat.Type: self = .cat(AsCat(data: data))
           case is Rat.Type: self = .rat(AsRat(data: data))

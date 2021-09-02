@@ -1,7 +1,7 @@
 import Foundation
 import CodegenProposalFramework
 
-public final class Query: CacheEntity {
+public final class Query: Object {
   override public class var __typename: String { "Query" }
 
   var allAnimals: [Animal] = []

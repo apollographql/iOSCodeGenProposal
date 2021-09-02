@@ -7,7 +7,7 @@ public struct CacheField<T: Cacheable> {
     self.field = field
   }
 
-  public static subscript<E: AnyCacheObject>(
+  public static subscript<E: ObjectType>(
     _enclosingInstance instance: E,
     wrapped wrappedKeyPath: ReferenceWritableKeyPath<E, T?>,
     storage storageKeyPath: ReferenceWritableKeyPath<E, Self>
@@ -38,7 +38,7 @@ public struct CacheField<T: Cacheable> {
 //      // case .none: // TODO
 //      case is ScalarType:
         try instance.set(value: newValue, forField: wrapper)
-////      case let entity as CacheEntity:
+////      case let object as Object:
 //
 //
 //
@@ -50,7 +50,7 @@ public struct CacheField<T: Cacheable> {
           reason: error,
           type: .write,
           field: field,
-          object: entity(for: instance)
+          object: object(for: instance)
         )
         instance._transaction.log(error)
 
@@ -63,39 +63,40 @@ public struct CacheField<T: Cacheable> {
   private func replace(
     data: Any,
     with parsedValue: T,
-    on instance: AnyCacheObject
+    on instance: ObjectType
   ) throws {
-    /// Only need to do this for CacheEntity, Enums, and custom scalars.
+    /// Only need to do this for Object, Enums, and custom scalars.
     /// DO NOT DO THIS when value is a CacheInterface ON a CacheInterface instance
     /// For ScalarTypes, its redundant
     /// TODO: Write tests for this.
     switch (parsedValue) {
-    case is CacheEntity where !(data is CacheEntity),
-         is CacheInterface where instance is CacheEntity,
+    case is Object where !(data is Object),
+         is Interface where instance is Object,
          is CustomScalarType:
       try instance.set(value: parsedValue, forField: self)
 
-//    case let interface as CacheInterface where instance is CacheInterface:
-//      try instance.set(value: entity, forField: self)
+//    case let interface as Interface where instance is Interface:
+//      try instance.set(value: object, forField: self)
 //      break // TODO
 
-    case is CacheInterface, is ScalarType: break
+    case is Interface, is ScalarType: break
     default: break
     }
   }
 
-  private static func entity(for instance: AnyCacheObject) -> CacheEntity {
+  private static func object(for instance: ObjectType) -> Object {
     switch instance {
-    case let entity as CacheEntity: return entity
-    case let interface as CacheInterface: return interface.entity
-    default: fatalError("AnyCacheObject can only be a CacheEntity or a CacheInterface.")
+    case let object as Object: return object
+    case let interface as Interface: return interface.object
+
+    default: fatalError("AnyCacheObject can only be an Object or a Interface.")
     }
   }
 
 //  public var projectedValue: CacheField { self }
 
   @available(*, unavailable,
-  message: "This property wrapper can only be applied to AnyCacheObjects."
+  message: "This property wrapper can only be applied to ObjectType."
   )
   public var wrappedValue: T? { get { fatalError() } set { fatalError() } }
 }

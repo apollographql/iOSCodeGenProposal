@@ -1,6 +1,6 @@
 public enum ParentType {
-  case ObjectType(CacheEntity.Type)
-  case Interface(CacheInterface.Type)
+  case ObjectType(Object.Type)
+  case Interface(Interface.Type)
   case Union(UnionType.Type)
 }
 
@@ -16,7 +16,7 @@ public protocol SelectionSet: ResponseObject {
 
 extension SelectionSet {
 
-  var __objectType: CacheEntity.Type? { Schema.entityType(forTypename: __typename) }
+  var __objectType: Object.Type? { Schema.objectType(forTypename: __typename) }
 //    Schema.ObjectType(rawValue: __typename) ?? .unknownCase }
 
   var __typename: String { data["__typename"] }

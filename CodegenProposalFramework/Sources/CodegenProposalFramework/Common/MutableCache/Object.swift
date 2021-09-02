@@ -1,4 +1,4 @@
-public protocol AnyCacheObject: Cacheable {
+public protocol ObjectType: Cacheable {
   var _transaction: CacheTransaction { get }
   var data: [String: Any] { get }
 
@@ -6,11 +6,11 @@ public protocol AnyCacheObject: Cacheable {
 }
 
 /// A type that can be the value of a `@CacheField` property. In other words, a `Cacheable` type
-/// can be the value of a field on a `CacheEntity` or `CacheInterface`
+/// can be the value of a field on an `Object` or `Interface`
 ///
 /// # Conforming Types:
-/// - `CacheEntity`
-/// - `CacheInterface`
+/// - `Object`
+/// - `Interface`
 /// - `ScalarType` (`String`, `Int`, `Bool`, `Float`)
 /// - `CustomScalarType`
 /// - `GraphQLEnum` (via `CustomScalarType`)
@@ -18,7 +18,7 @@ public protocol Cacheable {
   static func value(with cacheData: Any, in transaction: CacheTransaction) throws -> Self
 }
 
-open class CacheEntity: AnyCacheObject, Cacheable {
+open class Object: ObjectType, Cacheable {
   public final let _transaction: CacheTransaction
   public internal(set) final var data: [String: Any]
   open class var __metadata: Metadata { Metadata.Empty }
@@ -46,24 +46,24 @@ open class CacheEntity: AnyCacheObject, Cacheable {
       return dataAsSelf
 
     case let key as CacheKey:
-      return transaction.entity(withKey: key) as! Self
+      return transaction.object(withKey: key) as! Self
 
     case let data as [String: Any]:
-      return transaction.entity(withData: data) as! Self
+      return transaction.object(withData: data) as! Self
 
-    case let interface as CacheInterface:
-      guard let entity = interface.entity as? Self else {
+    case let interface as Interface:
+      guard let object = interface.object as? Self else {
         throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
         // TODO: wrong error type
       }
-      return entity
+      return object
 
     case let union as AnyUnion:
-      guard let entity = union.entity as? Self else {
+      guard let object = union.object as? Self else {
         throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
         // TODO: wrong error type
       }
-      return entity
+      return object
 
     default:
       throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
@@ -79,7 +79,7 @@ open class CacheEntity: AnyCacheObject, Cacheable {
     }
 
     switch T.self {
-    case is AnyCacheObject.Type:
+    case is ObjectType.Type:
       // Check for field covariance
       if let covariantFieldType = Self.__metadata.fieldTypeIfCovariant(forField: fieldName) {
         try set(value: value, forCovariantField: fieldName, convertingToType: covariantFieldType)
@@ -101,15 +101,15 @@ open class CacheEntity: AnyCacheObject, Cacheable {
   private func set(
     value: Cacheable,
     forCovariantField fieldName: String,
-    convertingToType covariantFieldType: AnyCacheObject.Type
+    convertingToType covariantFieldType: ObjectType.Type
   ) throws {
     do {
       switch covariantFieldType {
-      case let interfaceType as CacheInterface.Type:
+      case let interfaceType as Interface.Type:
         data[fieldName] = try interfaceType.value(with: value, in: _transaction)
 
-      case let entityType as CacheEntity.Type:
-        data[fieldName] = try entityType.value(with: value, in: _transaction)
+      case let objectType as Object.Type:
+        data[fieldName] = try objectType.value(with: value, in: _transaction)
 
       default: break // TODO: throw error or fatal error?
       }
@@ -120,24 +120,24 @@ open class CacheEntity: AnyCacheObject, Cacheable {
   }
 }
 
-extension CacheEntity {
+extension Object {
   public struct Metadata {
-    private let implementedInterfaces: [CacheInterface.Type]?
-    private let covariantFields: [String: AnyCacheObject.Type]?
+    private let implementedInterfaces: [Interface.Type]?
+    private let covariantFields: [String: ObjectType.Type]?
 
     fileprivate static let Empty = Metadata()
 
-    public init(implements: [CacheInterface.Type]? = nil,
-                covariantFields: [String: AnyCacheObject.Type]? = nil) {
+    public init(implements: [Interface.Type]? = nil,
+                covariantFields: [String: ObjectType.Type]? = nil) {
       self.implementedInterfaces = implements
       self.covariantFields = covariantFields
     }
 
-    func fieldTypeIfCovariant(forField field: String) -> AnyCacheObject.Type? {
+    func fieldTypeIfCovariant(forField field: String) -> ObjectType.Type? {
       covariantFields?[field]
     }
 
-    func implements(_ interface: CacheInterface.Type) -> Bool {
+    func implements(_ interface: Interface.Type) -> Bool {
       implementedInterfaces?.contains(where: { $0 == interface }) ?? false
     }
   }
@@ -145,68 +145,6 @@ extension CacheEntity {
 
 public enum MockError: Error {
   case mock // TODO
-}
-
-open class CacheInterface: AnyCacheObject, Cacheable {
-
-  final let entity: CacheEntity
-  final var underlyingType: CacheEntity.Type { Swift.type(of: entity) } // TODO: Delete?
-
-  public static var fields: [String : Cacheable.Type] { [:] }
-
-  public final var _transaction: CacheTransaction { entity._transaction }
-  public final var data: [String: Any] { entity.data }
-
-  public required init(_ entity: CacheEntity) throws {
-    let entityType = type(of: entity)    
-    guard entityType.__metadata.implements(Self.self) else {
-      throw CacheError.Reason.invalidEntityType(entityType, forAbstractType: Self.self)
-    }
-
-    self.entity = entity
-  }
-
-  public required convenience init(_ interface: CacheInterface) throws {
-    try self.init(interface.entity)
-  }
-
-  public static func value(
-    with cacheData: Any,
-    in transaction: CacheTransaction
-  ) throws -> Self {
-    switch cacheData {
-    case let entity as CacheEntity:
-      return try Self(entity)
-
-    case let key as CacheKey:
-      return try Self(transaction.entity(withKey: key)!)
-
-    case let data as [String: Any]:
-      return try Self(transaction.entity(withData: data))
-
-    case let interface as CacheInterface:
-      return try Self(interface)
-
-    default:
-      throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self) // TODO
-    }
-  }
-
-  public final func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws {
-    try entity.set(value: value, forField: field)
-  }
-
-  //  func asUnderlyingType() -> CacheEntity {
-  //    underlyingType.init(in: _transaction, data: data)
-  //  }
-  //
-  //  func `as`<T: CacheEntity>(type: T.Type) -> T? {
-  //    T.init(in: _transaction, data: data) // TODO: Type conversion checking
-  //  }
-  //
-  //  func `as`<T: CacheInterface>(type: T.Type) -> T? {
-  //    T.init(in: _transaction, data: data) // TODO: Type conversion checking
-  //  }
 }
 
 /// Represents a key that references a record in the cache.

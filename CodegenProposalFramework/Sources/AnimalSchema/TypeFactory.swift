@@ -4,7 +4,7 @@ public protocol SelectionSet: CodegenProposalFramework.SelectionSet
 where Schema == AnimalSchemaTypeFactory {}
 
 public enum AnimalSchemaTypeFactory: SchemaTypeFactory {
-  public static func entityType(forTypename __typename: String) -> CacheEntity.Type? {
+  public static func objectType(forTypename __typename: String) -> Object.Type? {
     switch __typename {
     case "Bird": return Bird.self
     case "Cat": return Cat.self

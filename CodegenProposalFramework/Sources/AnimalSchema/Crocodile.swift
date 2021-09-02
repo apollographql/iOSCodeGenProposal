@@ -1,6 +1,6 @@
 import CodegenProposalFramework
 
-public final class Crocodile: CacheEntity {
+public final class Crocodile: Object {
   override public class var __typename: String { "Crocodile" }
 
   @CacheField("species") var species: String?

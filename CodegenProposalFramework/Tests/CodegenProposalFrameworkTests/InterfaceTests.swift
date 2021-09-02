@@ -4,7 +4,7 @@ import Nimble
 @testable import AnimalsAPI
 @testable import AnimalSchema
 
-class CacheInterfaceTests: XCTestCase {
+class InterfaceTests: XCTestCase {
 
   var transaction: MockTransaction!
 
@@ -18,9 +18,9 @@ class CacheInterfaceTests: XCTestCase {
     super.tearDown()
   }
 
-  // MARK: Cache Entity Field
+  // MARK: Object Field
 
-  func test_getCacheEntityField_fromNestedData_createsEntityWithData() throws {
+  func test_getObjectField_fromNestedData_createsObjectWithData() throws {
     // given
     let dog = Dog(transaction: transaction)
     dog.data["height"] = [
@@ -32,14 +32,14 @@ class CacheInterfaceTests: XCTestCase {
 
     // when
     let asHousePet = try HousePet(dog)
-    let heightEntity = asHousePet.height
+    let heightObject = asHousePet.height
 
     // then
-    expect(heightEntity?.meters).to(equal(1))
-    expect(heightEntity?.feet).to(equal(3))
+    expect(heightObject?.meters).to(equal(1))
+    expect(heightObject?.feet).to(equal(3))
   }
 
-  func test_getCacheEntityField_fromCacheKeyReference_getsEntityWithKeyFromCache() throws {
+  func test_getObjectField_fromCacheKeyReference_getsObjectWithKeyFromCache() throws {
     // given
     let key = CacheKey("123")
     let dog = Dog(transaction: transaction)
@@ -52,12 +52,12 @@ class CacheInterfaceTests: XCTestCase {
     let asHousePet = try HousePet(dog)
 
     // then
-    expect(asHousePet.bestFriend?.entity).to(beIdenticalTo(bestFriend))
+    expect(asHousePet.bestFriend?.object).to(beIdenticalTo(bestFriend))
   }
 
   // MARK: Covariant Fields
 
-  func test_setCovariantField_withInterfaceType_toInvalidType_throwsInvalidEntityTypeError() throws {
+  func test_setCovariantField_withInterfaceType_toInvalidType_throwsInvalidValueForCovariantFieldError() throws {
     let dog = Dog(transaction: transaction)
     let asHousePet = try HousePet(dog)
 
@@ -78,7 +78,7 @@ class CacheInterfaceTests: XCTestCase {
     expect(asHousePet.bestFriend).to(beNil())
   }
 
-  func test_setCovariantField_withInterfaceType_toValidType_setsFieldOnEntity() throws {
+  func test_setCovariantField_withInterfaceType_toValidType_setsFieldOnObject() throws {
     let dog = Dog(transaction: transaction)
     let asHousePet = try HousePet(dog)
 
@@ -87,11 +87,11 @@ class CacheInterfaceTests: XCTestCase {
     asHousePet.bestFriend = bestFriendAsDog
 
     expect(self.transaction.errors).to(beEmpty())
-    expect(dog.bestFriend?.entity).to(beIdenticalTo(bestFriendAsDog.entity))
-    expect(asHousePet.bestFriend?.entity).to(beIdenticalTo(bestFriendAsDog.entity))
+    expect(dog.bestFriend?.object).to(beIdenticalTo(bestFriendAsDog.object))
+    expect(asHousePet.bestFriend?.object).to(beIdenticalTo(bestFriendAsDog.object))
   }
 
-  func test_setCovariantField_withEntityType_toInvalidType_throwsInvalidEntityTypeError() throws {
+  func test_setCovariantField_withObjectType_toInvalidType_throwsInvalidValueForCovariantFieldError() throws {
     let dog = Dog(transaction: transaction)
     let asHousePet = try HousePet(dog)
 
@@ -112,7 +112,7 @@ class CacheInterfaceTests: XCTestCase {
     expect(asHousePet.bestFriend).to(beNil())
   }
 
-  func test_setCovariantField_withEntityType_toValidType_setsFieldOnEntity() throws {
+  func test_setCovariantField_withObjectType_toValidType_setsFieldOnObject() throws {
     let dog = Dog(transaction: transaction)
     let asHousePet = try HousePet(dog)
 
@@ -121,11 +121,11 @@ class CacheInterfaceTests: XCTestCase {
     asHousePet.rival = rivalAsPet
 
     expect(self.transaction.errors).to(beEmpty())
-    expect(dog.rival).to(beIdenticalTo(rivalAsPet.entity))
-    expect(asHousePet.rival?.entity).to(beIdenticalTo(rivalAsPet.entity))
+    expect(dog.rival).to(beIdenticalTo(rivalAsPet.object))
+    expect(asHousePet.rival?.object).to(beIdenticalTo(rivalAsPet.object))
   }
 
-  func test_setCovariantField_withUnionType_toInvalidType_throwsInvalidEntityTypeError() throws {
+  func test_setCovariantField_withUnionType_toInvalidType_throwsInvalidValueForCovariantFieldError() throws {
     let dog = Dog(transaction: transaction)
     let asHousePet = try HousePet(dog)
 
@@ -146,7 +146,7 @@ class CacheInterfaceTests: XCTestCase {
     expect(asHousePet.livesWith).to(beNil())
   }
 
-  func test_setCovariantField_withUnionType_toValidType_setsFieldOnEntity() throws {
+  func test_setCovariantField_withUnionType_toValidType_setsFieldOnObject() throws {
     let dog = Dog(transaction: transaction)
     let asHousePet = try HousePet(dog)
 
@@ -157,6 +157,6 @@ class CacheInterfaceTests: XCTestCase {
 
     expect(self.transaction.errors).to(beEmpty())
     expect(dog.livesWith).to(beIdenticalTo(bird))
-    expect(asHousePet.livesWith?.entity).to(beIdenticalTo(bird))
+    expect(asHousePet.livesWith?.object).to(beIdenticalTo(bird))
   }
 }

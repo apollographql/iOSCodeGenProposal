@@ -1,6 +1,6 @@
 import CodegenProposalFramework
 
-public final class PetRock: CacheEntity {
+public final class PetRock: Object {
   override public class var __typename: String { "PetRock" }
   
   @CacheField("humanName") var humanName: String?
