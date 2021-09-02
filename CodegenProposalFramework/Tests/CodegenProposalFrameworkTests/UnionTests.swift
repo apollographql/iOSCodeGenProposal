@@ -177,6 +177,19 @@ class UnionTests: XCTestCase {
     expect(classroomPet).to(equal(.__unknown(unknownEntity)))
   }
 
+
+  func test__init__givenUnknownEntityWithConcreteTypeName_returnsUnknownCase() throws {
+    // given
+    let unknownEntity = CacheEntity(transaction: transaction)
+    unknownEntity.data["__typename"] = "CatDog"
+
+    // when
+    let classroomPet = try Union<ClassroomPet>(unknownEntity)
+
+    // then
+    expect(classroomPet).to(equal(.__unknown(unknownEntity)))
+  }
+
   // MARK: valueWithCacheDataInTransaction Tests
 
   func test__valueWithCacheDataInTransaction__givenEntityOfValidType_returnsUnionOfType() throws {

@@ -6,7 +6,7 @@ class MockTransaction: CacheTransaction {
   var cache: [String: CacheEntity] = [:]
 
   init() {
-    super.init(entityFactory: AnimalSchema.TypesUsed.self, keyResolver: MockCacheKeyResolver())
+    super.init(entityFactory: AnimalSchemaTypeFactory.self, keyResolver: MockCacheKeyResolver())
   }
 
   override func entity(withKey key: CacheKey) -> CacheEntity? {

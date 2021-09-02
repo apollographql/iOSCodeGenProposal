@@ -18,8 +18,8 @@ public enum Union<T: UnionType>: AnyUnion, Equatable {
 
   init(_ entity: CacheEntity) throws {
     guard let value = T.init(entity) else {
-      guard entity.__typename != CacheEntity.UnknownTypeName else {
-        // TODO: Unknown types with a known type name should be supported?
+      let entityType = type(of: entity)
+      guard entityType != CacheEntity.self else {
         self = .__unknown(entity)
         return
       }
