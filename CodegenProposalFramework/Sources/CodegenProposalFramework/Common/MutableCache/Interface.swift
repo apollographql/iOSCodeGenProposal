@@ -11,7 +11,7 @@ open class Interface: ObjectType, Cacheable {
   public required init(_ object: Object) throws {
     let objectType = type(of: object)
     guard objectType.__metadata.implements(Self.self) else {
-      throw CacheError.Reason.invalidObjectType(objectType, forAbstractType: Self.self)
+      throw CacheError.Reason.invalidObjectType(objectType, forExpectedType: Self.self)
     }
 
     self.object = object
@@ -26,6 +26,9 @@ open class Interface: ObjectType, Cacheable {
     in transaction: CacheTransaction
   ) throws -> Self {
     switch cacheData {
+    case let dataAsSelf as Self:
+      return dataAsSelf
+
     case let object as Object:
       return try Self(object)
 

@@ -23,7 +23,7 @@ public enum Union<T: UnionType>: AnyUnion, Equatable {
         return
       }
 
-      throw CacheError.Reason.invalidObjectType(type(of: object), forAbstractType: Self.self)
+      throw CacheError.Reason.invalidObjectType(type(of: object), forExpectedType: Self.self)
     }
 
     self = .case(value)

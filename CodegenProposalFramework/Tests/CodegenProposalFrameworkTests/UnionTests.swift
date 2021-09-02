@@ -158,7 +158,7 @@ class UnionTests: XCTestCase {
     let dog = Dog(transaction: transaction)
 
     let expectedError = CacheError.Reason
-      .invalidObjectType(Dog.self, forAbstractType: Union<ClassroomPet>.self)
+      .invalidObjectType(Dog.self, forExpectedType: Union<ClassroomPet>.self)
 
     // when
     expect(try Union<ClassroomPet>(dog))
@@ -208,7 +208,7 @@ class UnionTests: XCTestCase {
     let dog = Dog(transaction: transaction)
 
     let expectedError = CacheError.Reason
-      .invalidObjectType(Dog.self, forAbstractType: Union<ClassroomPet>.self)
+      .invalidObjectType(Dog.self, forExpectedType: Union<ClassroomPet>.self)
 
     // when
     expect(try Union<ClassroomPet>.value(with: dog, in: self.transaction))
@@ -246,7 +246,7 @@ class UnionTests: XCTestCase {
 
     // when
     let expectedError = CacheError.Reason
-      .invalidObjectType(Dog.self, forAbstractType: Union<ClassroomPet>.self)
+      .invalidObjectType(Dog.self, forExpectedType: Union<ClassroomPet>.self)
 
     // when
     expect(try Union<ClassroomPet>.value(with: pet, in: self.transaction))
@@ -278,7 +278,7 @@ class UnionTests: XCTestCase {
 
     // when
     let expectedError = CacheError.Reason
-      .invalidObjectType(Dog.self, forAbstractType: Union<ClassroomPet>.self)
+      .invalidObjectType(Dog.self, forExpectedType: Union<ClassroomPet>.self)
 
     // then
     // when
@@ -308,7 +308,7 @@ class UnionTests: XCTestCase {
 
     // when
     let expectedError = CacheError.Reason
-      .invalidObjectType(Dog.self, forAbstractType: Union<ClassroomPet>.self)
+      .invalidObjectType(Dog.self, forExpectedType: Union<ClassroomPet>.self)
 
     // then
     // when

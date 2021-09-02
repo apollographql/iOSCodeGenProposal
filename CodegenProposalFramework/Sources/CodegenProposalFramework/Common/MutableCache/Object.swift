@@ -46,7 +46,10 @@ open class Object: ObjectType, Cacheable {
       return dataAsSelf
 
     case let key as CacheKey:
-      return transaction.object(withKey: key) as! Self
+      guard let object = transaction.object(withKey: key) else {
+        throw CacheError.Reason.objectNotFound(forCacheKey: key)
+      }
+      return object as! Self
 
     case let data as [String: Any]:
       return transaction.object(withData: data) as! Self
