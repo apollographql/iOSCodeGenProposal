@@ -50,15 +50,4 @@ open class Interface: ObjectType, Cacheable {
     try object.set(value: value, forField: field)
   }
 
-  //  func asUnderlyingType() -> Object {
-  //    underlyingType.init(in: _transaction, data: data)
-  //  }
-  //
-  //  func `as`<T: Object>(type: T.Type) -> T? {
-  //    T.init(in: _transaction, data: data) // TODO: Type conversion checking
-  //  }
-  //
-  //  func `as`<T: Interface>(type: T.Type) -> T? {
-  //    T.init(in: _transaction, data: data) // TODO: Type conversion checking
-  //  }
 }
