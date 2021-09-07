@@ -1,10 +1,10 @@
 import CodegenProposalFramework
 
 public final class WarmBlooded: Interface {
-  @CacheField("species") var species: String?
-  @CacheField("height") var height: Height?
-//  @CacheField("predators") var predators: [Animal]
-  @CacheField("skinCovering") var skinCovering: GraphQLEnum<SkinCovering>?
-  @CacheField("bodyTemperature") var bodyTemperature: Int?
-  @CacheField("laysEggs") var laysEggs: Bool?
+  @Field("species") var species: String?
+  @Field("height") var height: Height?
+//  @Field("predators") var predators: [Animal]
+  @Field("skinCovering") var skinCovering: GraphQLEnum<SkinCovering>?
+  @Field("bodyTemperature") var bodyTemperature: Int?
+  @Field("laysEggs") var laysEggs: Bool?
 }

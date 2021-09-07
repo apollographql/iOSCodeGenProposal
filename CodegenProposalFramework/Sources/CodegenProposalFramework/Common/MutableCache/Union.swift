@@ -70,7 +70,7 @@ public enum Union<T: UnionType>: AnyUnion, Equatable {
   public var _transaction: CacheTransaction { object._transaction }
   public var data: [String : Any] { object.data }
 
-  public func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws {
+  public func set<T: Cacheable>(value: T?, forField field: Field<T>) throws {
     try object.set(value: value, forField: field)
   }
 }

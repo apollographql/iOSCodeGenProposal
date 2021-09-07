@@ -1,7 +1,7 @@
 import CodegenProposalFramework
 
 public final class Pet: Interface {
-  @CacheField("humanName") var humanName: String?
-  @CacheField("favoriteToy") var favoriteToy: String?
-  @CacheField("owner") var owner: Human?
+  @Field("humanName") var humanName: String?
+  @Field("favoriteToy") var favoriteToy: String?
+  @Field("owner") var owner: Human?
 }

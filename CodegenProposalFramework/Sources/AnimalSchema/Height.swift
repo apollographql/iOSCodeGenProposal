@@ -3,10 +3,10 @@ import CodegenProposalFramework
 public final class Height: Object {
   override public class var __typename: String { "Height" }
 
-  @CacheField("relativeSize") var relativeSize: GraphQLEnum<RelativeSize>?
-  @CacheField("centimeters") var centimeters: Int?
-  @CacheField("meters") var meters: Int?
-  @CacheField("feet") var feet: Int?
-  @CacheField("inches") var inches: Int?
-  @CacheField("yards") var yards: Int?
+  @Field("relativeSize") var relativeSize: GraphQLEnum<RelativeSize>?
+  @Field("centimeters") var centimeters: Int?
+  @Field("meters") var meters: Int?
+  @Field("feet") var feet: Int?
+  @Field("inches") var inches: Int?
+  @Field("yards") var yards: Int?
 }

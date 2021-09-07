@@ -1,5 +1,5 @@
 @propertyWrapper
-public struct CacheField<T: Cacheable> {
+public struct Field<T: Cacheable> {
 
   let field: StaticString
 

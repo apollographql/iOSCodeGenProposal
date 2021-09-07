@@ -1,16 +1,16 @@
 import CodegenProposalFramework
 
 public final class HousePet: Interface {
-  @CacheField("species") var species: String?
-  @CacheField("height") var height: Height?
-//  @CacheField("predators") var predators: [HousePet]
-  @CacheField("skinCovering") var skinCovering: GraphQLEnum<SkinCovering>?
-  @CacheField("humanName") var humanName: String?
-  @CacheField("favoriteToy") var favoriteToy: String?
-  @CacheField("owner") var owner: Human?
-  @CacheField("bodyTemperature") var bodyTemperature: Int?
-  @CacheField("laysEggs") var laysEggs: Bool?
-  @CacheField("bestFriend") var bestFriend: Pet?
-  @CacheField("rival") var rival: Pet?
-  @CacheField("livesWith") var livesWith: Union<ClassroomPet>?
+  @Field("species") var species: String?
+  @Field("height") var height: Height?
+//  @Field("predators") var predators: [HousePet]
+  @Field("skinCovering") var skinCovering: GraphQLEnum<SkinCovering>?
+  @Field("humanName") var humanName: String?
+  @Field("favoriteToy") var favoriteToy: String?
+  @Field("owner") var owner: Human?
+  @Field("bodyTemperature") var bodyTemperature: Int?
+  @Field("laysEggs") var laysEggs: Bool?
+  @Field("bestFriend") var bestFriend: Pet?
+  @Field("rival") var rival: Pet?
+  @Field("livesWith") var livesWith: Union<ClassroomPet>?
 }

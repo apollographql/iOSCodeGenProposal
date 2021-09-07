@@ -2,7 +2,7 @@ public protocol ObjectType: Cacheable {
   var _transaction: CacheTransaction { get }
   var data: [String: Any] { get }
 
-  func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws
+  func set<T: Cacheable>(value: T?, forField field: Field<T>) throws
 }
 
 /// A type that can be the value of a `@CacheField` property. In other words, a `Cacheable` type
@@ -76,7 +76,7 @@ open class Object: ObjectType, Cacheable {
     }
   }
 
-  public final func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws {
+  public final func set<T: Cacheable>(value: T?, forField field: Field<T>) throws {
     let fieldName = field.field.description
 
     guard let value = value else {

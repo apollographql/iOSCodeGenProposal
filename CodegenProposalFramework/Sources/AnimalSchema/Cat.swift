@@ -3,16 +3,16 @@ import CodegenProposalFramework
 public final class Cat: Object {
   override public class var __typename: String { "Cat" }
 
-  @CacheList var predators: [Animal]
-  @CacheField("species") var species: String?
-  @CacheField("height") var height: Height?
-  @CacheField("skinCovering") var skinCovering: GraphQLEnum<SkinCovering>?
-  @CacheField("humanName") var humanName: String?
-  @CacheField("favoriteToy") var favoriteToy: String?
-  @CacheField("owner") var owner: Human?
-  @CacheField("bodyTemperature") var bodyTemperature: Int?
-  @CacheField("laysEggs") var laysEggs: Bool?
-  @CacheField("isJellicle") var isJellicle: Bool?
+//  @CacheList var predators: [Animal]
+  @Field("species") var species: String?
+  @Field("height") var height: Height?
+  @Field("skinCovering") var skinCovering: GraphQLEnum<SkinCovering>?
+  @Field("humanName") var humanName: String?
+  @Field("favoriteToy") var favoriteToy: String?
+  @Field("owner") var owner: Human?
+  @Field("bodyTemperature") var bodyTemperature: Int?
+  @Field("laysEggs") var laysEggs: Bool?
+  @Field("isJellicle") var isJellicle: Bool?
 
   override public class var __metadata: Metadata { _metadata }
   private static let _metadata: Metadata = Metadata(

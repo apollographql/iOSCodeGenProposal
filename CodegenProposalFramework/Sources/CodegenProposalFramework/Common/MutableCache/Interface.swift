@@ -46,7 +46,7 @@ open class Interface: ObjectType, Cacheable {
     }
   }
 
-  public final func set<T: Cacheable>(value: T?, forField field: CacheField<T>) throws {
+  public final func set<T: Cacheable>(value: T?, forField field: Field<T>) throws {
     try object.set(value: value, forField: field)
   }
 
