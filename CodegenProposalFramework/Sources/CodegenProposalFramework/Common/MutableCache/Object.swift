@@ -41,24 +41,35 @@ open class Object: ObjectType, Cacheable {
     with cacheData: Any,
     in transaction: CacheTransaction
   ) throws -> Self {
+    let object = try getObject(with: cacheData, in: transaction)
+    guard let objectAsSelf = object as? Self else {
+      throw CacheError.Reason.invalidObjectType(type(of: object), forExpectedType: Self.self)
+    }
+    return objectAsSelf
+  }
+
+  private static func getObject(
+    with cacheData: Any,
+    in transaction: CacheTransaction
+  ) throws -> Object {
     switch cacheData {
-    case let dataAsSelf as Self:
-      return dataAsSelf
+    case let object as Object:
+      return object
 
     case let key as CacheKey:
       guard let object = transaction.object(withKey: key) else {
         throw CacheError.Reason.objectNotFound(forCacheKey: key)
       }
-      return object as! Self
+      return object
 
     case let data as [String: Any]:
-      return transaction.object(withData: data) as! Self
+      return transaction.object(withData: data)
 
     case let interface as Interface:
-      return interface.object as! Self
+      return interface.object
 
     case let union as AnyUnion:
-      return union.object as! Self
+      return union.object
 
     default:
       throw CacheError.Reason.unrecognizedCacheData(cacheData, forType: Self.self)
