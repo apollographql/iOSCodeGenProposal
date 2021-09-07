@@ -8,6 +8,7 @@
 import XCTest
 @testable import CodegenProposalFramework
 @testable import AnimalsAPI
+@testable import AnimalSchema
 
 class SanityCheckTests: XCTestCase {
 
@@ -31,8 +32,8 @@ class SanityCheckTests: XCTestCase {
       ],
       "predators": [
         [
-          "__typename": "Coyote",
-          "species": "Coyote",
+          "__typename": "Human",
+          "species": "Human",
           "bodyTemperature": 96,
           "height": [
             "__typename": "Height",
@@ -134,7 +135,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForInterface_withConcreteTypeThatDoesNotImplementInterface() throws {
-    dataDict["__typename"] = AnimalSchema.ObjectType.Fish.rawValue
+    dataDict["__typename"] = Fish.__typename
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
@@ -143,7 +144,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForConcreteType_withDifferentConcreteType() throws {
-    dataDict["__typename"] = AnimalSchema.ObjectType.Fish.rawValue
+    dataDict["__typename"] = Fish.__typename
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
@@ -157,7 +158,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForUnionType_withConcreteTypeMatchingAMemberType() throws {
-    dataDict["__typename"] = AnimalSchema.ObjectType.Bird.rawValue
+    dataDict["__typename"] = Bird.__typename
     dataDict["wingspan"] = 15
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
@@ -168,7 +169,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditionForUnionType_withConcreteTypeNotMatchingAMemberType() throws {
-    dataDict["__typename"] = AnimalSchema.ObjectType.Crocodile.rawValue
+    dataDict["__typename"] = Crocodile.__typename
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
@@ -178,14 +179,14 @@ class SanityCheckTests: XCTestCase {
 
   func testListField() throws {
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
-    let coyote = subject.predators[0]
+    let human = subject.predators[0]
     let crocodile = subject.predators[1]
 
-    XCTAssertEqual(coyote.species, "Coyote")
-    XCTAssertEqual(coyote.asWarmBlooded?.bodyTemperature, 96)
-    XCTAssertEqual(coyote.asWarmBlooded?.height.meters, 3)
-    XCTAssertEqual(coyote.asWarmBlooded?.height.yards, 1)
-    XCTAssertEqual(coyote.asWarmBlooded?.laysEggs, false)
+    XCTAssertEqual(human.species, "Human")
+    XCTAssertEqual(human.asWarmBlooded?.bodyTemperature, 96)
+    XCTAssertEqual(human.asWarmBlooded?.height.meters, 3)
+    XCTAssertEqual(human.asWarmBlooded?.height.yards, 1)
+    XCTAssertEqual(human.asWarmBlooded?.laysEggs, false)
 
     XCTAssertEqual(crocodile.species, "Crocodile")
   }
@@ -193,22 +194,22 @@ class SanityCheckTests: XCTestCase {
   func testEnumField_withKnownValue() throws {
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
-    XCTAssertEqual(subject.skinCovering, GraphQLEnum(AnimalSchema.SkinCovering.FUR))
+    XCTAssertEqual(subject.skinCovering, GraphQLEnum(SkinCovering.FUR))
     XCTAssertEqual(
       subject.skinCovering,
-      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue)
+      GraphQLEnum<SkinCovering>.__unknown(SkinCovering.FUR.rawValue)
     )
     XCTAssertEqual(
-      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue),
-      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue)
+      GraphQLEnum<SkinCovering>.__unknown(SkinCovering.FUR.rawValue),
+      GraphQLEnum<SkinCovering>.__unknown(SkinCovering.FUR.rawValue)
     )
     XCTAssertNotEqual(
-      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue),
-      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown("UNKNOWN")
+      GraphQLEnum<SkinCovering>.__unknown(SkinCovering.FUR.rawValue),
+      GraphQLEnum<SkinCovering>.__unknown("UNKNOWN")
     )
     XCTAssertEqual(subject.skinCovering?.value, .FUR)
     XCTAssertNotEqual(subject.skinCovering?.value, .FEATHERS)
-    XCTAssertEqual(subject.skinCovering?.rawValue, AnimalSchema.SkinCovering.FUR.rawValue)
+    XCTAssertEqual(subject.skinCovering?.rawValue, SkinCovering.FUR.rawValue)
     XCTAssertTrue(subject.skinCovering == .FUR)
     XCTAssertFalse(subject.skinCovering != .FUR)
     XCTAssertFalse(subject.skinCovering == .FEATHERS)
@@ -220,22 +221,22 @@ class SanityCheckTests: XCTestCase {
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
-    XCTAssertNotEqual(subject.skinCovering, GraphQLEnum(AnimalSchema.SkinCovering.FUR))
+    XCTAssertNotEqual(subject.skinCovering, GraphQLEnum(SkinCovering.FUR))
     XCTAssertNotEqual(
       subject.skinCovering,
-      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue)
+      GraphQLEnum<SkinCovering>.__unknown(SkinCovering.FUR.rawValue)
     )
     XCTAssertEqual(
       subject.skinCovering,
-      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown("TEST_UNKNOWN")
+      GraphQLEnum<SkinCovering>.__unknown("TEST_UNKNOWN")
     )
     XCTAssertNotEqual(
       subject.skinCovering,
-      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown("OTHER_UNKNOWN")
+      GraphQLEnum<SkinCovering>.__unknown("OTHER_UNKNOWN")
     )
     XCTAssertNotEqual(
       subject.skinCovering,
-      GraphQLEnum<AnimalSchema.SkinCovering>.__unknown(AnimalSchema.SkinCovering.FUR.rawValue)
+      GraphQLEnum<SkinCovering>.__unknown(SkinCovering.FUR.rawValue)
     )
 
     XCTAssertNil(subject.skinCovering?.value)
@@ -303,7 +304,7 @@ class SanityCheckTests: XCTestCase {
     data = ResponseDict(data: dataDict)
     let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
 
-    XCTAssertEqual(subject.skinCovering, GraphQLEnum(AnimalSchema.SkinCovering.FUR))
+    XCTAssertEqual(subject.skinCovering, GraphQLEnum(SkinCovering.FUR))
   }
 
   func testOptionalEnumField_withNilValue() throws {

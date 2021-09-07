@@ -1,16 +1,17 @@
 @testable import CodegenProposalFramework
+import AnimalSchema
 
 struct ClassroomPetsWithSubtypesQuery {
   let data: ResponseData
 
-  struct ResponseData: SelectionSet {
-    static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Query) }
+  struct ResponseData: AnimalSchema.SelectionSet {
+    static var __parentType: ParentType { .ObjectType(AnimalSchema.Query.self) }
     let data: ResponseDict
 
     var classroomPets: [ClassroomPet] { data["classroomPets"] }
 
-    struct ClassroomPet: SelectionSet {
-      static var __parentType: SelectionSetType<AnimalSchema> { .Union(.ClassroomPet) }
+    struct ClassroomPet: AnimalSchema.SelectionSet {
+      static var __parentType: ParentType { .Union(AnimalSchema.ClassroomPet.self) }
       let data: ResponseDict
 
       var asAnimal: AsAnimal? { _asType() }
@@ -32,27 +33,27 @@ struct ClassroomPetsWithSubtypesQuery {
         case other(ResponseDict)
 
         init(data: ResponseDict) {
-          switch Schema.ObjectType(rawValue: data["__typename"]) {
-          case .Bird: self = .bird(AsBird(data: data))
-          case .Cat: self = .cat(AsCat(data: data))
-          case .Rat: self = .rat(AsRat(data: data))
-          case .PetRock: self = .petRock(AsPetRock(data: data))
+          switch Schema.objectType(forTypename: data["__typename"]) {
+          case is Bird.Type: self = .bird(AsBird(data: data))
+          case is Cat.Type: self = .cat(AsCat(data: data))
+          case is Rat.Type: self = .rat(AsRat(data: data))
+          case is PetRock.Type: self = .petRock(AsPetRock(data: data))
           default: self = .other(data)
           }
         }
       }
 
       /// `ClassroomPet.AsAnimal`
-      struct AsAnimal: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Animal) }
+      struct AsAnimal: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
       }
 
       /// `ClassroomPet.AsPet`
-      struct AsPet: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Pet) }
+      struct AsPet: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .Interface(AnimalSchema.Pet.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -60,8 +61,8 @@ struct ClassroomPetsWithSubtypesQuery {
       }
 
       /// `ClassroomPet.AsWarmBlooded`
-      struct AsWarmBlooded: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Animal) }
+      struct AsWarmBlooded: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -69,8 +70,8 @@ struct ClassroomPetsWithSubtypesQuery {
       }
 
       /// `ClassroomPet.AsCat`
-      struct AsCat: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Cat) }
+      struct AsCat: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .ObjectType(AnimalSchema.Cat.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -82,8 +83,8 @@ struct ClassroomPetsWithSubtypesQuery {
 
 
       /// `ClassroomPet.AsBird`
-      struct AsBird: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Bird) }
+      struct AsBird: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .ObjectType(AnimalSchema.Bird.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -93,8 +94,8 @@ struct ClassroomPetsWithSubtypesQuery {
       }
 
       /// `ClassroomPet.AsRat`
-      struct AsRat: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Rat) }
+      struct AsRat: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .ObjectType(AnimalSchema.Rat.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -103,8 +104,8 @@ struct ClassroomPetsWithSubtypesQuery {
       }
 
       /// `ClassroomPet.AsPetRock`
-      struct AsPetRock: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.PetRock) }
+      struct AsPetRock: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .ObjectType(AnimalSchema.PetRock.self) }
         let data: ResponseDict
 
         var humanName: String? { data["humanName"] }

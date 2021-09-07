@@ -5,7 +5,7 @@ let package = Package(
   name: "CodegenProposalFramework",
   platforms: [
     .iOS(.v12),
-    .macOS(.v10_14),
+    .macOS(.v10_15),
     .tvOS(.v12),
     .watchOS(.v5)
   ],
@@ -17,6 +17,9 @@ let package = Package(
     .package(name: "Apollo",
              url: "https://github.com/apollographql/apollo-ios.git",
              .upToNextMajor(from: "0.41.0")),
+    .package(name: "Nimble",
+             url: "https://github.com/Quick/Nimble.git",
+             .upToNextMajor(from: "9.2.0")),
   ],
   targets: [
     .target(
@@ -38,11 +41,15 @@ let package = Package(
     ),
     .target(
       name: "AnimalsAPI",
-      dependencies: ["CodegenProposalFramework"],
+      dependencies: ["AnimalSchema", "CodegenProposalFramework"],
       resources: [.process("GraphQL")]
+    ),
+    .target(
+      name: "AnimalSchema",
+      dependencies: ["CodegenProposalFramework"]
     ),
     .testTarget(
       name: "CodegenProposalFrameworkTests",
-      dependencies: ["CodegenProposalFramework", "AnimalsAPI"]),
+      dependencies: ["CodegenProposalFramework", "AnimalsAPI", "Nimble"]),
   ]
 )

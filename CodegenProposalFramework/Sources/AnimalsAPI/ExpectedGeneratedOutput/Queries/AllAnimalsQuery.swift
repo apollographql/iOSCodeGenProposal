@@ -1,4 +1,7 @@
 @testable import CodegenProposalFramework
+import AnimalSchema
+@_exported import enum AnimalSchema.SkinCovering
+@_exported import enum AnimalSchema.RelativeSize
 
 // TODO: Fragment with nested type condition
 // TODO: Figure out access control on everything
@@ -7,21 +10,22 @@
 struct AllAnimalsQuery {
   let data: ResponseData
 
-  struct ResponseData: SelectionSet {
-    static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Query) }
+  struct ResponseData: AnimalSchema.SelectionSet {
+
+    static var __parentType: ParentType { .ObjectType(AnimalSchema.Query.self) }
     let data: ResponseDict
 
     var allAnimals: [Animal] { data["allAnimals"] }
 
     /// `Animal`
-    struct Animal: SelectionSet, HasFragments {
-      static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Animal) }
+    struct Animal: AnimalSchema.SelectionSet, HasFragments {
+      static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
       let data: ResponseDict
 
       var species: String { data["species"] }
       var height: Height { data["height"] }
       var predators: [Predators] { data["predators"] }
-      var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
+      var skinCovering: GraphQLEnum<SkinCovering>? { data["skinCovering"] }
 
       var asCat: AsCat? { _asType() }
       var asWarmBlooded: AsWarmBlooded? { _asType() }
@@ -35,8 +39,8 @@ struct AllAnimalsQuery {
       }
 
       /// `Animal.Height`
-      struct Height: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+      struct Height: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
         let data: ResponseDict
 
         var feet: Int { data["feet"] }
@@ -48,8 +52,8 @@ struct AllAnimalsQuery {
       }
 
       /// `Animal.Predators`
-      struct Predators: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Animal) }
+      struct Predators: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -57,8 +61,8 @@ struct AllAnimalsQuery {
         var asWarmBlooded: AsWarmBlooded? { _asType() }
 
         /// `AllAnimals.Predators.AsWarmBlooded`
-        struct AsWarmBlooded: SelectionSet, HasFragments {
-          static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.WarmBlooded) }
+        struct AsWarmBlooded: AnimalSchema.SelectionSet, HasFragments {
+          static var __parentType: ParentType { .Interface(AnimalSchema.WarmBlooded.self) }
           let data: ResponseDict
 
           var bodyTemperature: Int { data["bodyTemperature"] }
@@ -75,8 +79,8 @@ struct AllAnimalsQuery {
             var warmBloodedDetails: WarmBloodedDetails { _toFragment() }
           }
 
-          struct Height: SelectionSet {
-            static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+          struct Height: AnimalSchema.SelectionSet {
+            static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
             let data: ResponseDict
 
             var meters: Int { data["meters"] }
@@ -86,14 +90,14 @@ struct AllAnimalsQuery {
       }
 
       /// `Animal.AsCat`
-      struct AsCat: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Cat) }
+      struct AsCat: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .ObjectType(AnimalSchema.Cat.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
         var height: Height { data["height"] }
         var predators: [Predators] { data["predators"] }
-        var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
+        var skinCovering: GraphQLEnum<SkinCovering>? { data["skinCovering"] }
         var humanName: String? { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }
         var owner: PetDetails.Human? { data["owner"] } // - NOTE:
@@ -102,15 +106,15 @@ struct AllAnimalsQuery {
         var bodyTemperature: Int { data["bodyTemperature"] }
         var isJellicle: Bool { data["isJellicle"] }
 
-        struct Height: SelectionSet {
-          static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+        struct Height: AnimalSchema.SelectionSet {
+          static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
           let data: ResponseDict
 
           var feet: Int { data["feet"] }
           var inches: Int { data["inches"] }
           var meters: Int { data["meters"] }
           var centimeters: Int { data["centimeters"] }
-          var relativeSize: GraphQLEnum<Schema.RelativeSize> { data["relativeSize"] }
+          var relativeSize: GraphQLEnum<RelativeSize> { data["relativeSize"] }
           // - NOTE :
           // Because we know that the `Cat` is an `Animal` at this point, we can just merge the
           // centimeters and relativeSize fields. We don't need to create a `var asAnimal: Animal.AsCat.AsAnimal`.
@@ -125,15 +129,15 @@ struct AllAnimalsQuery {
       // we would use a custom `TypeCondition` with the fragment type condition nested inside.
       // See `Predators.AsWarmBlooded` for an example of this.
       /// `Animal.AsWarmBlooded`
-      struct AsWarmBlooded: SelectionSet, HasFragments {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.WarmBlooded) }
+      struct AsWarmBlooded: AnimalSchema.SelectionSet, HasFragments {
+        static var __parentType: ParentType { .Interface(AnimalSchema.WarmBlooded.self) }
 
         let data: ResponseDict
 
         var species: String { data["species"] }
         var height: Height  { data["height"] }
         var predators: [Predators]  { data["predators"] }
-        var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
+        var skinCovering: GraphQLEnum<SkinCovering>? { data["skinCovering"] }
         var bodyTemperature: Int { data["bodyTemperature"] }
 
         struct Fragments: ResponseObject {
@@ -143,8 +147,8 @@ struct AllAnimalsQuery {
           var warmBloodedDetails: WarmBloodedDetails  { _toFragment() }
         }
 
-        struct Height: SelectionSet {
-          static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+        struct Height: AnimalSchema.SelectionSet {
+          static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
           let data: ResponseDict
 
           var feet: Int { data["feet"] }
@@ -155,14 +159,14 @@ struct AllAnimalsQuery {
       }
 
       /// `Animal.AsPet`
-      struct AsPet: SelectionSet, HasFragments {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.Pet) }
+      struct AsPet: AnimalSchema.SelectionSet, HasFragments {
+        static var __parentType: ParentType { .Interface(AnimalSchema.Pet.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
         var height: Height  { data["height"] }
         var predators: [Predators]  { data["predators"] }
-        var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
+        var skinCovering: GraphQLEnum<SkinCovering>? { data["skinCovering"] }
         var humanName: String? { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }
         var owner: PetDetails.Human? { data["owner"] } // - NOTE:
@@ -178,15 +182,15 @@ struct AllAnimalsQuery {
           var petDetails: PetDetails  { _toFragment() }
         }
 
-        struct Height: SelectionSet {
-          static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+        struct Height: AnimalSchema.SelectionSet {
+          static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
           let data: ResponseDict
 
           var feet: Int { data["feet"] }
           var inches: Int { data["inches"] }
           var meters: Int { data["meters"] }
           var centimeters: Int { data["centimeters"] }
-          var relativeSize: GraphQLEnum<Schema.RelativeSize> { data["relativeSize"] }
+          var relativeSize: GraphQLEnum<RelativeSize> { data["relativeSize"] }
           // - NOTE :
           // Because we know that the `AsPet` is an `Animal` at this point, we can just merge the
           // `centimeters` and `relativeSize` fields.
@@ -194,14 +198,14 @@ struct AllAnimalsQuery {
         }
 
         /// `Animal.AsPet.AsWarmBlooded`
-        struct AsWarmBlooded: SelectionSet, HasFragments {
-          static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.WarmBlooded) }
+        struct AsWarmBlooded: AnimalSchema.SelectionSet, HasFragments {
+          static var __parentType: ParentType { .Interface(AnimalSchema.WarmBlooded.self) }
           let data: ResponseDict
 
           var species: String { data["species"] }
           var height: Height  { data["height"] }
           var predators: [Predators]  { data["predators"] }
-          var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
+          var skinCovering: GraphQLEnum<SkinCovering>? { data["skinCovering"] }
           var humanName: String? { data["humanName"] }
           var favoriteToy: String { data["favoriteToy"] }
           var owner: PetDetails.Human? { data["owner"] } // - NOTE:
@@ -217,41 +221,41 @@ struct AllAnimalsQuery {
             var warmBloodedDetails: WarmBloodedDetails  { _toFragment() }
           }
 
-          struct Height: SelectionSet {
-            static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+          struct Height: AnimalSchema.SelectionSet {
+            static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
             let data: ResponseDict
 
             var feet: Int { data["feet"] }
             var inches: Int { data["inches"] }
             var meters: Int { data["meters"] }
             var centimeters: Int { data["centimeters"] }
-            var relativeSize: GraphQLEnum<Schema.RelativeSize> { data["relativeSize"] }
+            var relativeSize: GraphQLEnum<RelativeSize> { data["relativeSize"] }
             var yards: Int { data["yards"] }
           }
         }
       }
 
       /// `Animal.AsClassroomPet`
-      struct AsClassroomPet: SelectionSet {
-        static var __parentType: SelectionSetType<AnimalSchema> { .Union(.ClassroomPet) }
+      struct AsClassroomPet: AnimalSchema.SelectionSet {
+        static var __parentType: ParentType { .Union(AnimalSchema.ClassroomPet.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
         var height: Height { data["height"] }
         var predators: [Predators] { data["predators"] }
-        var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
+        var skinCovering: GraphQLEnum<SkinCovering>? { data["skinCovering"] }
 
         var asBird: AsBird? { _asType() }
 
         /// `Animal.AsClassroomPet.AsBird`
-        struct AsBird: SelectionSet {
-          static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Bird) }
+        struct AsBird: AnimalSchema.SelectionSet {
+          static var __parentType: ParentType { .ObjectType(AnimalSchema.Bird.self) }
           let data: ResponseDict
 
           var species: String { data["species"] }
           var height: Height { data["height"] }
           var predators: [Predators] { data["predators"] }
-          var skinCovering: GraphQLEnum<Schema.SkinCovering>? { data["skinCovering"] }
+          var skinCovering: GraphQLEnum<SkinCovering>? { data["skinCovering"] }
           var humanName: String? { data["humanName"] }
           var favoriteToy: String { data["favoriteToy"] }
           var owner: PetDetails.Human? { data["owner"] } // - NOTE:
@@ -260,15 +264,15 @@ struct AllAnimalsQuery {
           var bodyTemperature: Int { data["bodyTemperature"] }
           var wingspan: Int { data["wingspan"] }
 
-          struct Height: SelectionSet {
-            static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+          struct Height: AnimalSchema.SelectionSet {
+            static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
             let data: ResponseDict
 
             var feet: Int { data["feet"] }
             var inches: Int { data["inches"] }
             var meters: Int { data["meters"] }
             var centimeters: Int { data["centimeters"] }
-            var relativeSize: GraphQLEnum<Schema.RelativeSize> { data["relativeSize"] }
+            var relativeSize: GraphQLEnum<RelativeSize> { data["relativeSize"] }
           }
         }
       }

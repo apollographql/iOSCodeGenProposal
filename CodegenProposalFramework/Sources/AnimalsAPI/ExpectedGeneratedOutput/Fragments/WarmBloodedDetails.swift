@@ -1,4 +1,5 @@
 @testable import CodegenProposalFramework
+import AnimalSchema
 
 /// A response data object for a `WarmBloodedDetails` fragment
 ///
@@ -11,16 +12,16 @@
 ///   }
 /// }
 /// ```
-struct WarmBloodedDetails: SelectionSet, Fragment {
-  static var __parentType: SelectionSetType<AnimalSchema> { .Interface(.WarmBlooded) }
+struct WarmBloodedDetails: AnimalSchema.SelectionSet, Fragment {
+  static var __parentType: ParentType { .Interface(AnimalSchema.WarmBlooded.self) }
 
   let data: ResponseDict
 
   var bodyTemperature: Int { data["bodyTemperature"] }
   var height: Height  { data["height"] }
 
-  struct Height: SelectionSet {
-    static var __parentType: SelectionSetType<AnimalSchema> { .ObjectType(.Height) }
+  struct Height: AnimalSchema.SelectionSet {
+    static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
     let data: ResponseDict
 
     var meters: Int { data["meters"] }
