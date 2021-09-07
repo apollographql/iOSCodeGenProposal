@@ -21,7 +21,7 @@ struct PetDetails: AnimalSchema.SelectionSet, Fragment {
   var owner: Human? { data["owner"] }
 
   struct Human: AnimalSchema.SelectionSet {
-    static var __parentType: ParentType { .ObjectType(AnimalSchema.Human.self) }
+    static var __parentType: ParentType { .Object(AnimalSchema.Human.self) }
     let data: ResponseDict
 
     var firstName: String { data["firstName"] }

@@ -1,5 +1,5 @@
 public enum ParentType {
-  case ObjectType(Object.Type)
+  case Object(Object.Type)
   case Interface(Interface.Type)
   case Union(UnionType.Type)
 }
@@ -10,14 +10,13 @@ public protocol SelectionSet: ResponseObject {
 
   /// The GraphQL type for the `SelectionSet`.
   ///
-  /// This may be a concrete type (`ConcreteType`) or an abstract type (`Interface`, or `Union`).
+  /// This may be a concrete type (`Object`) or an abstract type (`Interface`, or `Union`).
   static var __parentType: ParentType { get }
 }
 
 extension SelectionSet {
 
   var __objectType: Object.Type? { Schema.objectType(forTypename: __typename) }
-//    Schema.ObjectType(rawValue: __typename) ?? .unknownCase }
 
   var __typename: String { data["__typename"] }
 
@@ -31,7 +30,7 @@ extension SelectionSet {
     guard let __objectType = __objectType else { return nil }
 
     switch T.__parentType {
-    case .ObjectType(let type):
+    case .Object(let type):
       guard __objectType == type else { return nil }
 
     case .Interface(let interface):

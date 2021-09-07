@@ -21,7 +21,7 @@ struct WarmBloodedDetails: AnimalSchema.SelectionSet, Fragment {
   var height: Height  { data["height"] }
 
   struct Height: AnimalSchema.SelectionSet {
-    static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
+    static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
     let data: ResponseDict
 
     var meters: Int { data["meters"] }

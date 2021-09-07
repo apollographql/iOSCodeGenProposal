@@ -12,7 +12,7 @@ struct AllAnimalsQuery {
 
   struct ResponseData: AnimalSchema.SelectionSet {
 
-    static var __parentType: ParentType { .ObjectType(AnimalSchema.Query.self) }
+    static var __parentType: ParentType { .Object(AnimalSchema.Query.self) }
     let data: ResponseDict
 
     var allAnimals: [Animal] { data["allAnimals"] }
@@ -40,7 +40,7 @@ struct AllAnimalsQuery {
 
       /// `Animal.Height`
       struct Height: AnimalSchema.SelectionSet {
-        static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
+        static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
         let data: ResponseDict
 
         var feet: Int { data["feet"] }
@@ -80,7 +80,7 @@ struct AllAnimalsQuery {
           }
 
           struct Height: AnimalSchema.SelectionSet {
-            static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
+            static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
             let data: ResponseDict
 
             var meters: Int { data["meters"] }
@@ -91,7 +91,7 @@ struct AllAnimalsQuery {
 
       /// `Animal.AsCat`
       struct AsCat: AnimalSchema.SelectionSet {
-        static var __parentType: ParentType { .ObjectType(AnimalSchema.Cat.self) }
+        static var __parentType: ParentType { .Object(AnimalSchema.Cat.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -107,7 +107,7 @@ struct AllAnimalsQuery {
         var isJellicle: Bool { data["isJellicle"] }
 
         struct Height: AnimalSchema.SelectionSet {
-          static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
+          static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
           let data: ResponseDict
 
           var feet: Int { data["feet"] }
@@ -148,7 +148,7 @@ struct AllAnimalsQuery {
         }
 
         struct Height: AnimalSchema.SelectionSet {
-          static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
+          static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
           let data: ResponseDict
 
           var feet: Int { data["feet"] }
@@ -183,7 +183,7 @@ struct AllAnimalsQuery {
         }
 
         struct Height: AnimalSchema.SelectionSet {
-          static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
+          static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
           let data: ResponseDict
 
           var feet: Int { data["feet"] }
@@ -222,7 +222,7 @@ struct AllAnimalsQuery {
           }
 
           struct Height: AnimalSchema.SelectionSet {
-            static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
+            static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
             let data: ResponseDict
 
             var feet: Int { data["feet"] }
@@ -249,7 +249,7 @@ struct AllAnimalsQuery {
 
         /// `Animal.AsClassroomPet.AsBird`
         struct AsBird: AnimalSchema.SelectionSet {
-          static var __parentType: ParentType { .ObjectType(AnimalSchema.Bird.self) }
+          static var __parentType: ParentType { .Object(AnimalSchema.Bird.self) }
           let data: ResponseDict
 
           var species: String { data["species"] }
@@ -265,7 +265,7 @@ struct AllAnimalsQuery {
           var wingspan: Int { data["wingspan"] }
 
           struct Height: AnimalSchema.SelectionSet {
-            static var __parentType: ParentType { .ObjectType(AnimalSchema.Height.self) }
+            static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
             let data: ResponseDict
 
             var feet: Int { data["feet"] }

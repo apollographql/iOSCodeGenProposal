@@ -35,10 +35,10 @@ public struct CacheField<T: Cacheable> {
       do {
 //
 //      switch newValue {
-//      // case .none: // TODO
+//      case .none: // TODO
 //      case is ScalarType:
         try instance.set(value: newValue, forField: wrapper)
-////      case let object as Object:
+//      case let object as Object:
 //
 //
 //
@@ -74,6 +74,7 @@ public struct CacheField<T: Cacheable> {
          is Interface where instance is Object,
          is CustomScalarType:
       try instance.set(value: parsedValue, forField: self)
+    // TODO: This should not trigger objects to become dirty.
 
 //    case let interface as Interface where instance is Interface:
 //      try instance.set(value: object, forField: self)

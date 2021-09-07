@@ -5,7 +5,7 @@ struct ClassroomPetsQuery {
   let data: ResponseData
 
   struct ResponseData: AnimalSchema.SelectionSet {
-    static var __parentType: ParentType { .ObjectType(AnimalSchema.Query.self) }
+    static var __parentType: ParentType { .Object(AnimalSchema.Query.self) }
     let data: ResponseDict
 
     var classroomPets: [ClassroomPet] { data["classroomPets"] }
@@ -56,7 +56,7 @@ struct ClassroomPetsQuery {
 
       /// `ClassroomPet.AsCat`
       struct AsCat: AnimalSchema.SelectionSet {
-        static var __parentType: ParentType { .ObjectType(AnimalSchema.Cat.self) }
+        static var __parentType: ParentType { .Object(AnimalSchema.Cat.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -68,7 +68,7 @@ struct ClassroomPetsQuery {
 
       /// `ClassroomPet.AsBird`
       struct AsBird: AnimalSchema.SelectionSet {
-        static var __parentType: ParentType { .ObjectType(AnimalSchema.Bird.self) }
+        static var __parentType: ParentType { .Object(AnimalSchema.Bird.self) }
         let data: ResponseDict
 
         var species: String { data["species"] }
@@ -79,7 +79,7 @@ struct ClassroomPetsQuery {
 
       /// `ClassroomPet.AsPetRock`
       struct AsPetRock: AnimalSchema.SelectionSet {
-        static var __parentType: ParentType { .ObjectType(AnimalSchema.PetRock.self) }
+        static var __parentType: ParentType { .Object(AnimalSchema.PetRock.self) }
         let data: ResponseDict
 
         var humanName: String? { data["humanName"] }
