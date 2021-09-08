@@ -1,17 +1,21 @@
+public protocol AnySelectionSet: ResponseObject, OutputTypeConvertible {
+//  static var selections: [Selection] { get }
+
+  /// The GraphQL type for the `SelectionSet`.
+  ///
+  /// This may be a concrete type (`Object`) or an abstract type (`Interface`, or `Union`).
+  static var __parentType: ParentType { get }
+}
+
 public enum ParentType {
   case Object(Object.Type)
   case Interface(Interface.Type)
   case Union(UnionType.Type)
 }
 
-public protocol SelectionSet: ResponseObject {
+public protocol SelectionSet: AnySelectionSet {
 
   associatedtype Schema: SchemaTypeFactory
-
-  /// The GraphQL type for the `SelectionSet`.
-  ///
-  /// This may be a concrete type (`Object`) or an abstract type (`Interface`, or `Union`).
-  static var __parentType: ParentType { get }
 }
 
 extension SelectionSet {
@@ -27,18 +31,8 @@ extension SelectionSet {
   /// Generated call sites are guaranteed by the GraphQL compiler to be safe.
   /// Unsupported usage may result in unintended consequences including crashes.
   func _asType<T: SelectionSet>() -> T? where T.Schema == Schema {
-    guard let __objectType = __objectType else { return nil }
-
-    switch T.__parentType {
-    case .Object(let type):
-      guard __objectType == type else { return nil }
-
-    case .Interface(let interface):
-      guard __objectType.__metadata.implements(interface) else { return nil }
-
-    case .Union(let union):
-      guard union.possibleTypes.contains(where: { $0 == __objectType }) else { return nil }
-    }
+    guard let __objectType = __objectType,
+          __objectType._canBeConverted(to: T.__parentType) else { return nil }
 
     return T.init(data: data)
   }

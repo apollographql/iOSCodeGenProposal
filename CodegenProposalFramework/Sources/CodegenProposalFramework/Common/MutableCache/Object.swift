@@ -146,6 +146,20 @@ extension Object {
     func implements(_ interface: Interface.Type) -> Bool {
       implementedInterfaces?.contains(where: { $0 == interface }) ?? false
     }
+
+  }
+
+  public static func _canBeConverted(to otherType: ParentType) -> Bool {
+    switch otherType {
+    case .Object(let otherType):
+      return self == otherType
+
+    case .Interface(let interface):
+      return Self.__metadata.implements(interface)
+
+    case .Union(let union):
+      return union.possibleTypes.contains(where: { $0 == self })
+    }
   }
 }
 

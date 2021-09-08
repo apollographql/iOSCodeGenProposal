@@ -11,8 +11,10 @@ struct AllAnimalsQuery {
   let data: ResponseData
 
   struct ResponseData: AnimalSchema.SelectionSet {
-
     static var __parentType: ParentType { .Object(AnimalSchema.Query.self) }
+    static var selections: [Selection] { [
+//      .field("allAnimals", type: .list(Animal.self)),
+    ] }
     let data: ResponseDict
 
     var allAnimals: [Animal] { data["allAnimals"] }
@@ -20,6 +22,10 @@ struct AllAnimalsQuery {
     /// `Animal`
     struct Animal: AnimalSchema.SelectionSet, HasFragments {
       static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
+      static var selections: [Selection] { [
+        .field("species", String.self),
+        .field("height", Height.self),
+      ] }
       let data: ResponseDict
 
       var species: String { data["species"] }
@@ -41,6 +47,11 @@ struct AllAnimalsQuery {
       /// `Animal.Height`
       struct Height: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
+        static var selections: [Selection] { [
+          .field("feet", Int.self),
+          .field("inches", Int.self),
+          .field("meters", Int.self),
+        ] }
         let data: ResponseDict
 
         var feet: Int { data["feet"] }

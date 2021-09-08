@@ -1,9 +1,10 @@
-public protocol ScalarType: Cacheable {}
+public protocol ScalarType: Cacheable, OutputTypeConvertible {}
 
 extension String: ScalarType {}
 extension Int: ScalarType {}
 extension Bool: ScalarType {}
 extension Float: ScalarType {}
+extension Double: ScalarType {}
 
 extension ScalarType {
   public static func value(with cacheData: Any, in transaction: CacheTransaction) throws -> Self {
