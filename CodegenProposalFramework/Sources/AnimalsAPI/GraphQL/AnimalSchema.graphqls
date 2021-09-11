@@ -28,6 +28,7 @@ interface HousePet implements Animal & Pet {
   bestFriend: Pet
   rival: Pet
   livesWith: ClassroomPet
+  sleepsInOwnersBed: Boolean!
 }
 
 interface WarmBlooded implements Animal {
@@ -84,6 +85,7 @@ type Dog implements Animal & Pet & HousePet & WarmBlooded {
   bestFriend: HousePet
   rival: Cat
   livesWith: Bird
+  sleepsInOwnersBed: Boolean!
 }
 
 type Bird implements Animal & Pet & WarmBlooded {

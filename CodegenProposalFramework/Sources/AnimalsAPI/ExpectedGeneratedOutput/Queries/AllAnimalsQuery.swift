@@ -101,7 +101,7 @@ struct AllAnimalsQuery {
       }
 
       /// `Animal.AsCat`
-      struct AsCat: AnimalSchema.SelectionSet {
+      struct AsCat: AnimalSchema.TypeCase {
         static var __parentType: ParentType { .Object(AnimalSchema.Cat.self) }
         let data: ResponseDict
 

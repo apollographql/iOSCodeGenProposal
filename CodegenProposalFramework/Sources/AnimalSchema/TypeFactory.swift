@@ -1,6 +1,9 @@
 @testable import CodegenProposalFramework
 
-public protocol SelectionSet: CodegenProposalFramework.SelectionSet
+public protocol SelectionSet: CodegenProposalFramework.SelectionSet & RootSelectionSet
+where Schema == AnimalSchemaTypeFactory {}
+
+public protocol TypeCase: CodegenProposalFramework.TypeCase
 where Schema == AnimalSchemaTypeFactory {}
 
 public enum AnimalSchemaTypeFactory: SchemaTypeFactory {

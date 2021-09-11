@@ -29,3 +29,16 @@ extension HasFragments {
   /// the object can be converted to.
   var fragments: Fragments { Fragments(data: data) }
 }
+
+public protocol TypeCase: SelectionSet {
+//  static var __parentType: ParentType { get }
+//  static var selections: [Selection] { get }
+//  static var parent: AnySelectionSet.Type { get }
+//  static var directSelections: [Selection] { get }
+}
+
+//extension TypeCaseSelectionSet {
+//  static var selections: [Selection] {
+//    parent.selections + directSelections
+//  }
+//}

@@ -1,4 +1,4 @@
-public protocol AnySelectionSet: ResponseObject, OutputTypeConvertible {
+public protocol AnySelectionSet: ResponseObject {
 //  static var selections: [Selection] { get }
 
   /// The GraphQL type for the `SelectionSet`.
@@ -6,6 +6,8 @@ public protocol AnySelectionSet: ResponseObject, OutputTypeConvertible {
   /// This may be a concrete type (`Object`) or an abstract type (`Interface`, or `Union`).
   static var __parentType: ParentType { get }
 }
+
+public protocol RootSelectionSet: AnySelectionSet, OutputTypeConvertible { }
 
 public enum ParentType {
   case Object(Object.Type)

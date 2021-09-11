@@ -18,6 +18,22 @@ query AllAnimals {
         }
       }
     }
+    ... on HousePet {
+      bestFriend {
+        humanName
+      }
+      rival {
+        humanName
+      }
+    }
+    ... on Dog {
+      bestFriend {
+        sleepsInOwnersBed
+      }
+      rival {
+        isJellicle
+      }
+    }
     ... on Cat {
       isJellicle
     }

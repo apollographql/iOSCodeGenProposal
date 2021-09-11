@@ -1,5 +1,3 @@
-import Foundation
-
 public enum Selection {
   case field(Field)
   case booleanCondition(BooleanCondition)
@@ -38,7 +36,7 @@ public enum Selection {
 
     public indirect enum OutputType {
       case scalar(ScalarType.Type)
-      case object(AnySelectionSet.Type)
+      case object(RootSelectionSet.Type)
       case nonNull(OutputType)
       case list(OutputType)
 
@@ -76,12 +74,12 @@ public enum Selection {
   }
 
   public struct TypeCase {
-    public let variants: [String: [Selection]]
-    public let `default`: [Selection]
+    public let type: ParentType
+    public let selections: [Selection]
 
-    public init(variants: [String: [Selection]], default: [Selection]) {
-      self.variants = variants
-      self.default = `default`;
+    public init(type: ParentType, selections: [Selection]) {
+      self.type = type
+      self.selections = selections
     }
   }
 
@@ -133,7 +131,7 @@ extension Array: OutputTypeConvertible where Element: OutputTypeConvertible {
   }
 }
 
-extension AnySelectionSet {
+extension RootSelectionSet {
   @inlinable public static var asOutputType: Selection.Field.OutputType {
     .nonNull(.object(self))
   }
