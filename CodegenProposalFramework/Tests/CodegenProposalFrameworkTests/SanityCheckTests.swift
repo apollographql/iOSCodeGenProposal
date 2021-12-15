@@ -246,6 +246,14 @@ class SanityCheckTests: XCTestCase {
     XCTAssertTrue(subject.skinCovering != .FUR)
     XCTAssertFalse(subject.skinCovering == .FEATHERS)
     XCTAssertTrue(subject.skinCovering != .FEATHERS)
+
+    switch subject.skinCovering! {
+    case .case(.FEATHERS): break
+    case .case(.FUR): break
+    case .case(.HAIR): break
+    case .case(.SCALES): break
+    case .__unknown(_): break
+    }
   }
 
   func testOptionalScalarField_withValue() throws {

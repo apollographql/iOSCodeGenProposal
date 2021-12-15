@@ -15,11 +15,10 @@ let package = Package(
   ],
   dependencies: [
     .package(name: "Apollo",
-             url: "https://github.com/apollographql/apollo-ios.git",
-             .upToNextMajor(from: "0.41.0")),
+             path: "/Users/amdev/Documents/repos/apollo-ios"),
     .package(name: "Nimble",
              url: "https://github.com/Quick/Nimble.git",
-             .upToNextMajor(from: "9.2.0")),
+             .upToNextMajor(from: "9.2.1")),
   ],
   targets: [
     .target(
@@ -34,10 +33,7 @@ let package = Package(
         .product(name: "Apollo", package: "Apollo"),
         .product(name: "ApolloCodegenLib", package: "Apollo"),
         "AnimalsAPI"
-      ],
-      resources: [
-        .process("AnimalSchema.graphqls")
-      ]
+      ]      
     ),
     .target(
       name: "AnimalsAPI",

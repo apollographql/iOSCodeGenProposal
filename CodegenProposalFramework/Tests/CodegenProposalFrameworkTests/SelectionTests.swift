@@ -61,7 +61,7 @@ class SelectionTests: XCTestCase {
 
 }
 
-fileprivate struct MockSelectionSet: AnySelectionSet {
+fileprivate struct MockSelectionSet: RootSelectionSet {
   static var __parentType: ParentType = .Object(Object.self)
 
   let data: ResponseDict
