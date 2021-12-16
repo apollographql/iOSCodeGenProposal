@@ -1,24 +1,23 @@
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 import AnimalSchema
 
-/// A response data object for a `HeightInMeters` fragment
-///
-/// ```
-/// fragment HeightInMeters on Animal {
-///   height {
-///     meters
-///   }
-/// }
-/// ```
 struct HeightInMeters: AnimalSchema.SelectionSet, Fragment {
+  static let fragmentDefinition: String = """
+  fragment HeightInMeters on Animal {
+    height {
+      meters
+    }
+  }
+  """
+
   static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
-  let data: ResponseDict
+  let data: DataDict
 
   var height: Height  { data["height"] }
 
   struct Height: AnimalSchema.SelectionSet {
     static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
-    let data: ResponseDict
+    let data: DataDict
 
     var meters: Int { data["meters"] }
   }

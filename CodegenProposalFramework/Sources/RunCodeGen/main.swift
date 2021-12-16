@@ -2,7 +2,7 @@ import Foundation
 import ApolloCodegenLib
 import AnimalsAPI
 
-let generator = try! ApolloCodegenFrontend.init()
+let generator = try! GraphQLJSFrontend.init()
 
 let animalSchema = try! generator.loadSchema(from: AnimalsAPI.Resources.Schema)
 let animalOperations = try! generator.mergeDocuments(

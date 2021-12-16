@@ -1,7 +1,8 @@
 import XCTest
 import Nimble
 @testable import Apollo
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
+@testable import AnimalSchema
 
 class SelectionTests: XCTestCase {
 
@@ -61,12 +62,14 @@ class SelectionTests: XCTestCase {
 
 }
 
-fileprivate struct MockSelectionSet: RootSelectionSet {
+fileprivate struct MockSelectionSet: RootSelectionSet, ApolloAPI.SelectionSet {
+  typealias Schema = AnimalSchema.Schema
+
   static var __parentType: ParentType = .Object(Object.self)
 
-  let data: ResponseDict
+  let data: DataDict
 
-  init(data: ResponseDict) {
+  init(data: DataDict) {
     self.data = data
   }
 

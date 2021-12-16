@@ -1,24 +1,24 @@
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 
-public protocol SelectionSet: CodegenProposalFramework.SelectionSet & RootSelectionSet
-where Schema == AnimalSchemaTypeFactory {}
+public protocol SelectionSet: ApolloAPI.SelectionSet & ApolloAPI.RootSelectionSet
+where Schema == AnimalSchema.Schema {}
 
-public protocol TypeCase: CodegenProposalFramework.TypeCase
-where Schema == AnimalSchemaTypeFactory {}
+public protocol TypeCase: ApolloAPI.SelectionSet & ApolloAPI.TypeCase
+where Schema == AnimalSchema.Schema {}
 
-public enum AnimalSchemaTypeFactory: SchemaTypeFactory {
+public enum Schema: SchemaConfiguration {
   public static func objectType(forTypename __typename: String) -> Object.Type? {
     switch __typename {
-    case "Bird": return Bird.self
-    case "Cat": return Cat.self
-    case "Crocodile": return Crocodile.self
-    case "Dog": return Dog.self
-    case "Fish": return Fish.self
-    case "Height": return Height.self
-    case "Human": return Human.self
-    case "PetRock": return PetRock.self
-    case "Query": return Query.self
-    case "Rat": return Rat.self
+    case "Bird": return AnimalSchema.Bird.self
+    case "Cat": return AnimalSchema.Cat.self
+    case "Crocodile": return AnimalSchema.Crocodile.self
+    case "Dog": return AnimalSchema.Dog.self
+    case "Fish": return AnimalSchema.Fish.self
+    case "Height": return AnimalSchema.Height.self
+    case "Human": return AnimalSchema.Human.self
+    case "PetRock": return AnimalSchema.PetRock.self
+    case "Query": return AnimalSchema.Query.self
+    case "Rat": return AnimalSchema.Rat.self
     default: return nil
     }
   }

@@ -33,11 +33,14 @@ let package = Package(
         .product(name: "Apollo", package: "Apollo"),
         .product(name: "ApolloCodegenLib", package: "Apollo"),
         "AnimalsAPI"
-      ]      
+      ]
     ),
     .target(
       name: "AnimalsAPI",
-      dependencies: ["AnimalSchema", "CodegenProposalFramework"],
+      dependencies: [
+        "AnimalSchema",
+        .product(name: "ApolloAPI", package: "Apollo")
+      ],
       resources: [.process("GraphQL")]
     ),
     .target(

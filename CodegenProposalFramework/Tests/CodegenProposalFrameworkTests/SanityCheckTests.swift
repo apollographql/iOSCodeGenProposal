@@ -6,13 +6,13 @@
 //
 
 import XCTest
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 @testable import AnimalsAPI
 @testable import AnimalSchema
 
 class SanityCheckTests: XCTestCase {
 
-  var data: ResponseDict!
+  var data: DataDict!
   var dataDict: [String: Any]!
 
   override func setUpWithError() throws {
@@ -58,7 +58,7 @@ class SanityCheckTests: XCTestCase {
       ]
     ]
 
-    data = ResponseDict(data: dataDict)
+    data = DataDict(dataDict)
   }
 
   override func tearDownWithError() throws {
@@ -66,13 +66,13 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testSpecies() throws {
-    let cat = AllAnimalsQuery.ResponseData.Animal(data: data)
+    let cat = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertEqual(cat.species, "Cat")
   }
 
   func testAsTypeCondition_fieldOnTypeNested2TypeConditionsDeep() throws {
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertEqual(subject.species, "Cat")
     XCTAssertEqual(subject.asPet?.species, "Cat")
@@ -80,7 +80,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeConditions_withDuplicateFieldOnParent() throws {
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertEqual(subject.species, "Cat")
     XCTAssertEqual(subject.height.feet, 2)
@@ -119,7 +119,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testAsTypeCondition_withFragmentsOnParent_convertToFragments() throws {
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertEqual(subject.fragments.heightInMeters.height.meters, 10)
 
@@ -131,13 +131,13 @@ class SanityCheckTests: XCTestCase {
 
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.fragments.heightInMeters.height.meters, 10)
     XCTAssertEqual(subject.asPet?.asWarmBlooded?.fragments.warmBloodedDetails.height.meters, 10)
-    XCTAssertEqual(subject.asPet?.asWarmBlooded?.fragments.petDetails.favoriteToy, "Shoelaces")
+    XCTAssertEqual(subject.asPet?.asWarmBlooded?.fragments.petDetails.favoriteToy, "Shoelaces")    
   }
 
   func testAsTypeConditionForInterface_withConcreteTypeThatDoesNotImplementInterface() throws {
     dataDict["__typename"] = Fish.__typename
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertNil(subject.asWarmBlooded)
     XCTAssertNotNil(subject.asPet)
@@ -145,14 +145,14 @@ class SanityCheckTests: XCTestCase {
 
   func testAsTypeConditionForConcreteType_withDifferentConcreteType() throws {
     dataDict["__typename"] = Fish.__typename
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertNil(subject.asCat)
   }
 
   func testAsTypeConditionForConcreteType_withMatchingConcreteType() throws {
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertNotNil(subject.asCat)
   }
@@ -160,8 +160,8 @@ class SanityCheckTests: XCTestCase {
   func testAsTypeConditionForUnionType_withConcreteTypeMatchingAMemberType() throws {
     dataDict["__typename"] = Bird.__typename
     dataDict["wingspan"] = 15
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     let asClassroomPet = subject.asClassroomPet
     XCTAssertNotNil(asClassroomPet)
@@ -170,15 +170,15 @@ class SanityCheckTests: XCTestCase {
 
   func testAsTypeConditionForUnionType_withConcreteTypeNotMatchingAMemberType() throws {
     dataDict["__typename"] = Crocodile.__typename
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     let asClassroomPet = subject.asClassroomPet
     XCTAssertNil(asClassroomPet)    
   }
 
   func testListField() throws {
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
     let human = subject.predators[0]
     let crocodile = subject.predators[1]
 
@@ -192,7 +192,7 @@ class SanityCheckTests: XCTestCase {
   }
 
   func testEnumField_withKnownValue() throws {
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertEqual(subject.skinCovering, GraphQLEnum(SkinCovering.FUR))
     XCTAssertEqual(
@@ -218,8 +218,8 @@ class SanityCheckTests: XCTestCase {
 
   func testEnumField_withUnknownValue() throws {
     dataDict["skinCovering"] = "TEST_UNKNOWN"
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertNotEqual(subject.skinCovering, GraphQLEnum(SkinCovering.FUR))
     XCTAssertNotEqual(
@@ -258,24 +258,24 @@ class SanityCheckTests: XCTestCase {
 
   func testOptionalScalarField_withValue() throws {
     dataDict["humanName"] = "Anastasia"
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertEqual(subject.asPet?.humanName, "Anastasia")
   }
 
   func testOptionalScalarField_withNilValue() throws {
     dataDict["humanName"] = nil
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertNil(subject.asPet?.humanName)
   }
 
   func testOptionalScalarField_withNullValue() throws {
     dataDict["humanName"] = NSNull()
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertNil(subject.asPet?.humanName)
   }
@@ -285,48 +285,48 @@ class SanityCheckTests: XCTestCase {
       "__typename": "Human",
       "firstName": "Hugh"
     ]
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertEqual(subject.asPet?.owner?.firstName, "Hugh")
   }
 
   func testOptionalNestedTypeField_withNilValue() throws {
     dataDict["owner"] = nil
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertNil(subject.asPet?.owner)
   }
 
   func testOptionalNestedTypeField_withNullValue() throws {
     dataDict["owner"] = NSNull()
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertNil(subject.asPet?.owner)
   }
 
   func testOptionalEnumField_withValue() throws {
     dataDict["skinCovering"] = "FUR"
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertEqual(subject.skinCovering, GraphQLEnum(SkinCovering.FUR))
   }
 
   func testOptionalEnumField_withNilValue() throws {
     dataDict["skinCovering"] = nil
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertNil(subject.skinCovering)
   }
 
   func testOptionalEnumField_withNullValue() throws {
     dataDict["skinCovering"] = NSNull()
-    data = ResponseDict(data: dataDict)
-    let subject = AllAnimalsQuery.ResponseData.Animal(data: data)
+    data = DataDict(dataDict)
+    let subject = AllAnimalsQuery.Data.Animal(data: data)
 
     XCTAssertNil(subject.skinCovering)
   }

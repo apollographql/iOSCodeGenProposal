@@ -1,4 +1,4 @@
-import CodegenProposalFramework
+import ApolloAPI
 
 public final class WarmBlooded: Interface {
   @Field("species") var species: String?

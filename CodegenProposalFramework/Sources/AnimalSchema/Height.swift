@@ -1,4 +1,4 @@
-import CodegenProposalFramework
+import ApolloAPI
 
 public final class Height: Object {
   override public class var __typename: String { "Height" }

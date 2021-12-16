@@ -1,6 +1,6 @@
 import XCTest
 import Nimble
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 @testable import AnimalsAPI
 @testable import AnimalSchema
 
@@ -290,7 +290,7 @@ class UnionTests: XCTestCase {
   func test__valueWithCacheDataInTransaction__givenCacheKeyForObjectOfValidType_returnsUnionOfType() throws {
     // given
     let cat = Cat(transaction: transaction)
-    let key = CacheKey("123")
+    let key = CacheReference("123")
     transaction.cache[key.key] = cat
 
     // when
@@ -303,7 +303,7 @@ class UnionTests: XCTestCase {
   func test__valueWithCacheDataInTransaction__givenCacheKeyForObjectOfInvalidType_throwsInvalidObjectError() throws {
     // given
     let dog = Dog(transaction: transaction)
-    let key = CacheKey("123")
+    let key = CacheReference("123")
     transaction.cache[key.key] = dog
 
     // when

@@ -1,4 +1,4 @@
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 @testable import AnimalSchema
 
 class MockTransaction: CacheTransaction {
@@ -6,16 +6,16 @@ class MockTransaction: CacheTransaction {
   var cache: [String: Object] = [:]
 
   init() {
-    super.init(objectFactory: AnimalSchemaTypeFactory.self, keyResolver: MockCacheKeyResolver())
+    super.init(schema: AnimalSchema.Schema.self)
   }
 
-  override func object(withKey key: CacheKey) -> Object? {
+  override func object(for key: CacheReference) -> Object? {
     return cache[key.key]
   }
 }
 
-struct MockCacheKeyResolver: CacheKeyResolver {
-  func cacheKey(for: [String : Any]) -> CacheKey? {
+class MockCacheKeyProvider: Object, CacheKeyProvider {
+  static func cacheKey(for: [String : Any]) -> String? {
     return nil
   }
 }

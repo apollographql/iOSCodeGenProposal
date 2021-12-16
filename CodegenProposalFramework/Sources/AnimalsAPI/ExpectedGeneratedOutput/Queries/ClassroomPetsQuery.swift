@@ -1,18 +1,18 @@
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 import AnimalSchema
 
 struct ClassroomPetsQuery {
-  let data: ResponseData
+  let data: Data
 
-  struct ResponseData: AnimalSchema.SelectionSet {
+  struct Data: AnimalSchema.SelectionSet {
     static var __parentType: ParentType { .Object(AnimalSchema.Query.self) }
-    let data: ResponseDict
+    let data: DataDict
 
     var classroomPets: [ClassroomPet] { data["classroomPets"] }
 
-    struct ClassroomPet: AnimalSchema.SelectionSet, HasFragments {
+    struct ClassroomPet: AnimalSchema.SelectionSet {
       static var __parentType: ParentType { .Union(AnimalSchema.ClassroomPet.self) }
-      let data: ResponseDict
+      let data: DataDict
 
       var asAnimal: AsAnimal? { _asType() }
       var asPet: AsPet? { _asType() }
@@ -22,8 +22,8 @@ struct ClassroomPetsQuery {
       var asBird: AsBird? { _asType() }
       var asPetRock: AsPetRock? { _asType() }
 
-      struct Fragments: ResponseObject {
-        let data: ResponseDict
+      struct Fragments: FragmentContainer {
+        let data: DataDict
 
         var classroomPetDetails: ClassroomPetDetails { _toFragment() }
       }
@@ -31,7 +31,7 @@ struct ClassroomPetsQuery {
       /// `ClassroomPet.AsAnimal`
       struct AsAnimal: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
-        let data: ResponseDict
+        let data: DataDict
 
         var species: String { data["species"] }
       }
@@ -39,7 +39,7 @@ struct ClassroomPetsQuery {
       /// `ClassroomPet.AsPet`
       struct AsPet: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Interface(AnimalSchema.Pet.self) }
-        let data: ResponseDict
+        let data: DataDict
 
         var species: String { data["species"] }
         var humanName: String? { data["humanName"] }
@@ -48,7 +48,7 @@ struct ClassroomPetsQuery {
       /// `ClassroomPet.AsWarmBlooded`
       struct AsWarmBlooded: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
-        let data: ResponseDict
+        let data: DataDict
 
         var species: String { data["species"] }
         var laysEggs: Bool { data["laysEggs"] }
@@ -57,7 +57,7 @@ struct ClassroomPetsQuery {
       /// `ClassroomPet.AsCat`
       struct AsCat: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Object(AnimalSchema.Cat.self) }
-        let data: ResponseDict
+        let data: DataDict
 
         var species: String { data["species"] }
         var humanName: String? { data["humanName"] }
@@ -69,7 +69,7 @@ struct ClassroomPetsQuery {
       /// `ClassroomPet.AsBird`
       struct AsBird: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Object(AnimalSchema.Bird.self) }
-        let data: ResponseDict
+        let data: DataDict
 
         var species: String { data["species"] }
         var humanName: String? { data["humanName"] }
@@ -80,7 +80,7 @@ struct ClassroomPetsQuery {
       /// `ClassroomPet.AsPetRock`
       struct AsPetRock: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Object(AnimalSchema.PetRock.self) }
-        let data: ResponseDict
+        let data: DataDict
 
         var humanName: String? { data["humanName"] }
         var favoriteToy: String { data["favoriteToy"] }

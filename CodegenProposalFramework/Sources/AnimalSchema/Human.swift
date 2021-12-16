@@ -1,4 +1,4 @@
-import CodegenProposalFramework
+import ApolloAPI
 
 public final class Human: Object {
   override public class var __typename: String { "Human" }

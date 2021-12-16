@@ -1,6 +1,6 @@
 import XCTest
 import Nimble
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 @testable import AnimalsAPI
 @testable import AnimalSchema
 
@@ -72,7 +72,7 @@ class ObjectTests: XCTestCase {
 
   func test_getObjectField_fromCacheKeyReference_getsObjectWithKeyFromCache() throws {
     // given
-    let key = CacheKey("123")
+    let key = CacheReference("123")
     let dog = Dog(transaction: transaction)
 
     let rival = Cat(transaction: transaction)
@@ -88,7 +88,7 @@ class ObjectTests: XCTestCase {
 
   func test_getObjectField_fromCacheKeyReference_objectNotInCache_returnsNilWithNoErrors() throws {
     // given
-    let key = CacheKey("123")
+    let key = CacheReference("123")
     let dog = Dog(transaction: transaction)
 
     dog.data["rival"] = key
@@ -120,7 +120,7 @@ class ObjectTests: XCTestCase {
 
   func test_getInterfaceField_fromCacheKeyReference_getsObjectWithKeyFromCache() throws {
     // given
-    let key = CacheKey("123")
+    let key = CacheReference("123")
     let dog = Dog(transaction: transaction)
 
     let bestFriend = Dog(transaction: transaction)

@@ -1,10 +1,14 @@
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 import AnimalSchema
 
 /// A response data object for a `ClassroomPetDetails` fragment
 struct ClassroomPetDetails: AnimalSchema.SelectionSet, Fragment {
+  static let fragmentDefinition: String = """
+  TODO: ADD!
+  """
+
   static var __parentType: ParentType { .Union(AnimalSchema.ClassroomPet.self) }
-  let data: ResponseDict
+  let data: DataDict
 
   var asAnimal: AsAnimal? { _asType() }
   var asPet: AsPet? { _asType() }
@@ -17,7 +21,7 @@ struct ClassroomPetDetails: AnimalSchema.SelectionSet, Fragment {
   /// `ClassroomPet.AsAnimal`
   struct AsAnimal: AnimalSchema.SelectionSet {
     static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
-    let data: ResponseDict
+    let data: DataDict
 
     var species: String { data["species"] }
   }
@@ -25,7 +29,7 @@ struct ClassroomPetDetails: AnimalSchema.SelectionSet, Fragment {
   /// `ClassroomPet.AsPet`
   struct AsPet: AnimalSchema.SelectionSet {
     static var __parentType: ParentType { .Interface(AnimalSchema.Pet.self) }
-    let data: ResponseDict
+    let data: DataDict
 
     var species: String { data["species"] }
     var humanName: String? { data["humanName"] }
@@ -34,7 +38,7 @@ struct ClassroomPetDetails: AnimalSchema.SelectionSet, Fragment {
   /// `ClassroomPet.AsWarmBlooded`
   struct AsWarmBlooded: AnimalSchema.SelectionSet {
     static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
-    let data: ResponseDict
+    let data: DataDict
 
     var species: String { data["species"] }
     var laysEggs: Bool { data["laysEggs"] }
@@ -43,7 +47,7 @@ struct ClassroomPetDetails: AnimalSchema.SelectionSet, Fragment {
   /// `ClassroomPet.AsCat`
   struct AsCat: AnimalSchema.SelectionSet {
     static var __parentType: ParentType { .Object(AnimalSchema.Cat.self) }
-    let data: ResponseDict
+    let data: DataDict
 
     var species: String { data["species"] }
     var humanName: String? { data["humanName"] }
@@ -55,7 +59,7 @@ struct ClassroomPetDetails: AnimalSchema.SelectionSet, Fragment {
   /// `ClassroomPet.AsBird`
   struct AsBird: AnimalSchema.SelectionSet {
     static var __parentType: ParentType { .Object(AnimalSchema.Bird.self) }
-    let data: ResponseDict
+    let data: DataDict
 
     var species: String { data["species"] }
     var humanName: String? { data["humanName"] }
@@ -66,7 +70,7 @@ struct ClassroomPetDetails: AnimalSchema.SelectionSet, Fragment {
   /// `ClassroomPet.AsPetRock`
   struct AsPetRock: AnimalSchema.SelectionSet {
     static var __parentType: ParentType { .Object(AnimalSchema.PetRock.self) }
-    let data: ResponseDict
+    let data: DataDict
 
     var humanName: String? { data["humanName"] }
     var favoriteToy: String { data["favoriteToy"] }

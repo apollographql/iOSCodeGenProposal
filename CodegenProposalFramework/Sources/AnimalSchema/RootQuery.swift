@@ -1,5 +1,5 @@
 import Foundation
-import CodegenProposalFramework
+import ApolloAPI
 
 public final class Query: Object {
   override public class var __typename: String { "Query" }

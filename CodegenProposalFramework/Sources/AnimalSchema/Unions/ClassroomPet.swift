@@ -1,4 +1,4 @@
-import CodegenProposalFramework
+import ApolloAPI
 
 public enum ClassroomPet: UnionType, Equatable {
   case Cat(Cat)

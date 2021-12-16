@@ -1,20 +1,19 @@
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 import AnimalSchema
 
-/// A response data object for a `PetDetails` fragment
-///
-/// ```
-/// fragment PetDetails on Pet {
-///  humanName
-///  favoriteToy
-///  owner {
-///    firstName
-///  }
-/// }
-/// ```
 struct PetDetails: AnimalSchema.SelectionSet, Fragment {
+  static let fragmentDefinition: String = """
+  fragment PetDetails on Pet {
+   humanName
+   favoriteToy
+   owner {
+     firstName
+   }
+  }
+  """
+
   static var __parentType: ParentType { .Interface(AnimalSchema.Pet.self) }
-  let data: ResponseDict
+  let data: DataDict
 
   var humanName: String? { data["humanName"] }
   var favoriteToy: String { data["favoriteToy"] }
@@ -22,7 +21,7 @@ struct PetDetails: AnimalSchema.SelectionSet, Fragment {
 
   struct Human: AnimalSchema.SelectionSet {
     static var __parentType: ParentType { .Object(AnimalSchema.Human.self) }
-    let data: ResponseDict
+    let data: DataDict
 
     var firstName: String { data["firstName"] }
   }

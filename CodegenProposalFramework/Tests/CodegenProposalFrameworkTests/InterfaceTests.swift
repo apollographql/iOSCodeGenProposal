@@ -1,6 +1,6 @@
 import XCTest
 import Nimble
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 @testable import AnimalsAPI
 @testable import AnimalSchema
 
@@ -41,7 +41,7 @@ class InterfaceTests: XCTestCase {
 
   func test_getObjectField_fromCacheKeyReference_getsObjectWithKeyFromCache() throws {
     // given
-    let key = CacheKey("123")
+    let key = CacheReference("123")
     let dog = Dog(transaction: transaction)
     dog.data["bestFriend"] = key
 

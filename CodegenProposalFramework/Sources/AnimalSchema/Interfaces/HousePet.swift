@@ -1,4 +1,4 @@
-import CodegenProposalFramework
+import ApolloAPI
 
 public final class HousePet: Interface {
   @Field("species") var species: String?

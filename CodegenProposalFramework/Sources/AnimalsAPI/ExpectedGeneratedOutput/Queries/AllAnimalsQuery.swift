@@ -1,4 +1,4 @@
-@testable import CodegenProposalFramework
+@testable import ApolloAPI
 import AnimalSchema
 @_exported import enum AnimalSchema.SkinCovering
 @_exported import enum AnimalSchema.RelativeSize
@@ -8,25 +8,25 @@ import AnimalSchema
 // TODO: inline fragment on union type `... on ClassroomPet { ... }`
 
 struct AllAnimalsQuery {
-  let data: ResponseData
+  let data: Data
 
-  struct ResponseData: AnimalSchema.SelectionSet {
+  struct Data: AnimalSchema.SelectionSet {
     static var __parentType: ParentType { .Object(AnimalSchema.Query.self) }
     static var selections: [Selection] { [
 //      .field("allAnimals", type: .list(Animal.self)),
     ] }
-    let data: ResponseDict
+    let data: DataDict
 
     var allAnimals: [Animal] { data["allAnimals"] }
 
     /// `Animal`
-    struct Animal: AnimalSchema.SelectionSet, HasFragments {
+    struct Animal: AnimalSchema.SelectionSet {
       static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
       static var selections: [Selection] { [
         .field("species", String.self),
         .field("height", Height.self),
       ] }
-      let data: ResponseDict
+      let data: DataDict
 
       var species: String { data["species"] }
       var height: Height { data["height"] }
@@ -38,8 +38,8 @@ struct AllAnimalsQuery {
       var asPet: AsPet? { _asType() }
       var asClassroomPet: AsClassroomPet? { _asType() }
 
-      struct Fragments: ResponseObject {
-        let data: ResponseDict
+      struct Fragments: FragmentContainer {
+        let data: DataDict
 
         var heightInMeters: HeightInMeters { _toFragment() }
       }
@@ -52,7 +52,7 @@ struct AllAnimalsQuery {
           .field("inches", Int.self),
           .field("meters", Int.self),
         ] }
-        let data: ResponseDict
+        let data: DataDict
 
         var feet: Int { data["feet"] }
         var inches: Int { data["inches"] }
@@ -65,16 +65,16 @@ struct AllAnimalsQuery {
       /// `Animal.Predators`
       struct Predators: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Interface(AnimalSchema.Animal.self) }
-        let data: ResponseDict
+        let data: DataDict
 
         var species: String { data["species"] }
 
         var asWarmBlooded: AsWarmBlooded? { _asType() }
 
         /// `AllAnimals.Predators.AsWarmBlooded`
-        struct AsWarmBlooded: AnimalSchema.SelectionSet, HasFragments {
+        struct AsWarmBlooded: AnimalSchema.SelectionSet {
           static var __parentType: ParentType { .Interface(AnimalSchema.WarmBlooded.self) }
-          let data: ResponseDict
+          let data: DataDict
 
           var bodyTemperature: Int { data["bodyTemperature"] }
           var height: Height { data["height"] }
@@ -84,15 +84,15 @@ struct AllAnimalsQuery {
           // Because the fragment type identically matches the type it is queried on, we do
           // not need an optional `TypeCondition` and can merge the fields up.
 
-          struct Fragments: ResponseObject {
-            let data: ResponseDict
+          struct Fragments: FragmentContainer {
+            let data: DataDict
 
             var warmBloodedDetails: WarmBloodedDetails { _toFragment() }
           }
 
           struct Height: AnimalSchema.SelectionSet {
             static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
-            let data: ResponseDict
+            let data: DataDict
 
             var meters: Int { data["meters"] }
             var yards: Int { data["yards"] }
@@ -103,7 +103,7 @@ struct AllAnimalsQuery {
       /// `Animal.AsCat`
       struct AsCat: AnimalSchema.TypeCase {
         static var __parentType: ParentType { .Object(AnimalSchema.Cat.self) }
-        let data: ResponseDict
+        let data: DataDict
 
         var species: String { data["species"] }
         var height: Height { data["height"] }
@@ -119,7 +119,7 @@ struct AllAnimalsQuery {
 
         struct Height: AnimalSchema.SelectionSet {
           static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
-          let data: ResponseDict
+          let data: DataDict
 
           var feet: Int { data["feet"] }
           var inches: Int { data["inches"] }
@@ -140,10 +140,10 @@ struct AllAnimalsQuery {
       // we would use a custom `TypeCondition` with the fragment type condition nested inside.
       // See `Predators.AsWarmBlooded` for an example of this.
       /// `Animal.AsWarmBlooded`
-      struct AsWarmBlooded: AnimalSchema.SelectionSet, HasFragments {
+      struct AsWarmBlooded: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Interface(AnimalSchema.WarmBlooded.self) }
 
-        let data: ResponseDict
+        let data: DataDict
 
         var species: String { data["species"] }
         var height: Height  { data["height"] }
@@ -151,8 +151,8 @@ struct AllAnimalsQuery {
         var skinCovering: GraphQLEnum<SkinCovering>? { data["skinCovering"] }
         var bodyTemperature: Int { data["bodyTemperature"] }
 
-        struct Fragments: ResponseObject {
-          let data: ResponseDict
+        struct Fragments: FragmentContainer {
+          let data: DataDict
 
           var heightInMeters: HeightInMeters { _toFragment() }
           var warmBloodedDetails: WarmBloodedDetails  { _toFragment() }
@@ -160,7 +160,7 @@ struct AllAnimalsQuery {
 
         struct Height: AnimalSchema.SelectionSet {
           static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
-          let data: ResponseDict
+          let data: DataDict
 
           var feet: Int { data["feet"] }
           var inches: Int { data["inches"] }
@@ -170,9 +170,9 @@ struct AllAnimalsQuery {
       }
 
       /// `Animal.AsPet`
-      struct AsPet: AnimalSchema.SelectionSet, HasFragments {
+      struct AsPet: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Interface(AnimalSchema.Pet.self) }
-        let data: ResponseDict
+        let data: DataDict
 
         var species: String { data["species"] }
         var height: Height  { data["height"] }
@@ -186,8 +186,8 @@ struct AllAnimalsQuery {
 
         var asWarmBlooded: AsWarmBlooded? { _asType() }
 
-        struct Fragments: ResponseObject {
-          let data: ResponseDict
+        struct Fragments: FragmentContainer {
+          let data: DataDict
 
           var heightInMeters: HeightInMeters { _toFragment() }
           var petDetails: PetDetails  { _toFragment() }
@@ -195,7 +195,7 @@ struct AllAnimalsQuery {
 
         struct Height: AnimalSchema.SelectionSet {
           static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
-          let data: ResponseDict
+          let data: DataDict
 
           var feet: Int { data["feet"] }
           var inches: Int { data["inches"] }
@@ -209,9 +209,9 @@ struct AllAnimalsQuery {
         }
 
         /// `Animal.AsPet.AsWarmBlooded`
-        struct AsWarmBlooded: AnimalSchema.SelectionSet, HasFragments {
+        struct AsWarmBlooded: AnimalSchema.SelectionSet {
           static var __parentType: ParentType { .Interface(AnimalSchema.WarmBlooded.self) }
-          let data: ResponseDict
+          let data: DataDict
 
           var species: String { data["species"] }
           var height: Height  { data["height"] }
@@ -224,8 +224,8 @@ struct AllAnimalsQuery {
           // by the fragment, we can just use the fragments `Human` type here.
           var bodyTemperature: Int { data["bodyTemperature"] }
 
-          struct Fragments: ResponseObject {
-            let data: ResponseDict
+          struct Fragments: FragmentContainer {
+            let data: DataDict
 
             var heightInMeters: HeightInMeters { _toFragment() }
             var petDetails: PetDetails  { _toFragment() }
@@ -234,7 +234,7 @@ struct AllAnimalsQuery {
 
           struct Height: AnimalSchema.SelectionSet {
             static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
-            let data: ResponseDict
+            let data: DataDict
 
             var feet: Int { data["feet"] }
             var inches: Int { data["inches"] }
@@ -249,7 +249,7 @@ struct AllAnimalsQuery {
       /// `Animal.AsClassroomPet`
       struct AsClassroomPet: AnimalSchema.SelectionSet {
         static var __parentType: ParentType { .Union(AnimalSchema.ClassroomPet.self) }
-        let data: ResponseDict
+        let data: DataDict
 
         var species: String { data["species"] }
         var height: Height { data["height"] }
@@ -261,7 +261,7 @@ struct AllAnimalsQuery {
         /// `Animal.AsClassroomPet.AsBird`
         struct AsBird: AnimalSchema.SelectionSet {
           static var __parentType: ParentType { .Object(AnimalSchema.Bird.self) }
-          let data: ResponseDict
+          let data: DataDict
 
           var species: String { data["species"] }
           var height: Height { data["height"] }
@@ -277,7 +277,7 @@ struct AllAnimalsQuery {
 
           struct Height: AnimalSchema.SelectionSet {
             static var __parentType: ParentType { .Object(AnimalSchema.Height.self) }
-            let data: ResponseDict
+            let data: DataDict
 
             var feet: Int { data["feet"] }
             var inches: Int { data["inches"] }
